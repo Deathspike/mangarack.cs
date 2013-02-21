@@ -1,0 +1,16 @@
+/MangaRack.Provider.MangaFox
+/packages/AForge*
+
+*/Debug
+*/Release
+*/bin
+*/obj
+
+*.config
+*.dll
+*.exe
+*.manifest
+*.pdb
+*.suo
+*.user
+*.xml

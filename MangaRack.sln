@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRack", "MangaRack\MangaRack.csproj", "{A244208E-7D81-4706-AF64-1EE4827AA8EF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRack.Provider", "MangaRack.Provider\MangaRack.Provider.csproj", "{34C1C9C3-BF86-462A-A90D-07AA0F7FEA34}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRack.Provider.MangaFox", "MangaRack.Provider.MangaFox\MangaRack.Provider.MangaFox.csproj", "{586194FC-0980-4BE6-B3D2-4D0777A55CE4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{ACF49EEF-6AA7-4969-8084-CEBECDF76A28}"
+	ProjectSection(SolutionItems) = preProject
+		Changes.txt = Changes.txt
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRack.Provider.Batoto", "MangaRack.Provider.Batoto\MangaRack.Provider.Batoto.csproj", "{E5626D0F-6E02-46A6-AB5F-3B21CC407CE1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRack.Provider.KissManga", "MangaRack.Provider.KissManga\MangaRack.Provider.KissManga.csproj", "{66D83EF3-52F8-47C1-8955-8FA952FEF272}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A244208E-7D81-4706-AF64-1EE4827AA8EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A244208E-7D81-4706-AF64-1EE4827AA8EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A244208E-7D81-4706-AF64-1EE4827AA8EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A244208E-7D81-4706-AF64-1EE4827AA8EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34C1C9C3-BF86-462A-A90D-07AA0F7FEA34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34C1C9C3-BF86-462A-A90D-07AA0F7FEA34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34C1C9C3-BF86-462A-A90D-07AA0F7FEA34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34C1C9C3-BF86-462A-A90D-07AA0F7FEA34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{586194FC-0980-4BE6-B3D2-4D0777A55CE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{586194FC-0980-4BE6-B3D2-4D0777A55CE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{586194FC-0980-4BE6-B3D2-4D0777A55CE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{586194FC-0980-4BE6-B3D2-4D0777A55CE4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5626D0F-6E02-46A6-AB5F-3B21CC407CE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5626D0F-6E02-46A6-AB5F-3B21CC407CE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5626D0F-6E02-46A6-AB5F-3B21CC407CE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5626D0F-6E02-46A6-AB5F-3B21CC407CE1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66D83EF3-52F8-47C1-8955-8FA952FEF272}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66D83EF3-52F8-47C1-8955-8FA952FEF272}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66D83EF3-52F8-47C1-8955-8FA952FEF272}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66D83EF3-52F8-47C1-8955-8FA952FEF272}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
