@@ -7,7 +7,6 @@
 */obj
 
 *.config
-*.dll
 *.exe
 *.manifest
 *.pdb
