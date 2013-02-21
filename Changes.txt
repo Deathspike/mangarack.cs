@@ -1,0 +1,40 @@
+This file contains public release notes. Refer to GIT commits for technical changes.
+
+2013, 18th of February
+- Corrected issue with image validation. Incorrect images now save correctly (B10).
+- Corrected preview image failure for Batoto (B11).
+- Implemented dependencies for .NET 4.0. Please install it when not available (B11).
+- Implemented KissManga synchronizer. This is an experimental additional, please report issues (B11).
+- Implemented stateful scraping. KissManga was being dorky; providers now use stateful scraping (B11).
+- Implemented support for chapter part x notation for Batoto (B10).
+
+2013, 16th of February
+- Corrected culture issue. The application now uses en-us culture despite host OS settings (B9).
+
+2013, 12th of Feburary
+- Implemented frame extraction to support animated images (B8).
+- Implemented temporaries; an archive is synchronized to a temporary file before moving (B8).
+
+2013, 10th of February
+- Corrected issue causing existing archives to be overwritten (B6).
+- Corrected issue causing first chapter #0 entries to be skipped (B7).
+- Corrected issue allowing a connection time-out to bypass archive clean-up (B6).
+- Corrected visual-feedback of re-adding archives into tracking (B7).
+- Corrected Batoto synchronizer to allow chapter entries with version numbering (B6).
+- Corrected Batoto synchronizer to allow chapter ranges (i.e. 100-200) (B6).
+- Implemented setting to disable volume numbering ("MangaRack": ["DisableWritingOfVolume"]) (B6).
+
+2013, 3th of February
+- Corrected Batoto to allow chapters without volume listing (B5).
+
+2013, 25th of January
+- Corrected MangaFox fall-back server when images are corrupted (B4).
+- Corrected slaves not closing as intended (B4).
+- Implemented initial support for Batoto resources (B4).
+- Prevented multiple instances of MangaRack from running at the same time (B4).
+
+2013, 24th of January
+- Changed persistence file to be indented for easier readability (B2).
+- Corrected minor behaviour issues that could result in a missing page (B3).
+- Corrected minor issues causing decreased performance (B3).
+- Corrected a massive issue causing pages to be iterated twice (B3).
