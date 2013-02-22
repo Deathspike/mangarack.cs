@@ -108,7 +108,7 @@ namespace MangaRack.Provider.KissManga {
 					}
 				});
 				// Return the pages.
-				return Pages.OrderBy(x => x.Key).Select(x => x.Value);
+				return Pages.Where(x => x.Value != null).OrderBy(x => x.Key).Select(x => x.Value);
 			}
 		}
 
