@@ -1,5 +1,9 @@
 This file contains public release notes. Refer to GIT commits for technical changes.
 
+2013, 23th of February
+- Fixed series with a trailing dot.
+- Fixed Ch.000 notation. Escaping better.
+
 2013, 22th of February
 - Corrected KissManga chapter notation (e.g. 15.005) (B12).
 - Corrected KissManga incorrect image handling; gracefully drops pages instead of crashing (B12).
