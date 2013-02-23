@@ -12,11 +12,14 @@ namespace MangaRack.Provider.KissManga {
 		/// <summary>
 		/// Returns a new string in which all occurrences of a specified string in the current instance are replaced with another specified string.
 		/// </summary>
+		/// <param name="Value">The value.</param>
 		/// <param name="OldValue">The string to be replaced.</param>
 		/// <param name="NewValue">The string to replace all occurrences of OldValue.</param>
-		public static string ReplaceWhile(this string Value, string OldValue, string NewValue) {
+		public static string ReplaceWhileWithDigit(this string Value, string OldValue, string NewValue) {
+			// Declare the index.
+			int Index;
 			// Iterate while the old value is available.
-			while (Value.IndexOf(OldValue) != -1) {
+			while ((Index = Value.IndexOf(OldValue)) != -1 && (Index + OldValue.Length > Value.Length || char.IsDigit(Value[Index + OldValue.Length]))) {
 				// Replace the old value with the new value.
 				Value = Value.Replace(OldValue, NewValue);
 			}
