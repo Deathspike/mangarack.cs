@@ -10,6 +10,18 @@ namespace MangaRack.Provider.KissManga {
 	/// </summary>
 	public static class ExtensionForString {
 		/// <summary>
+		/// Remove characters before and including the first occurrence of the subject.
+		/// </summary>
+		/// <param name="Value">The value.</param>
+		/// <param name="Subject">The subject.</param>
+		public static string RemoveToIncluding(this string Value, string Subject) {
+			// Declare the index.
+			int Index;
+			// Remove characters before and including the first occurrence of the subject.
+			return (Index = Value.IndexOf(Subject)) != -1 ? Value.Substring(0, Index + Subject.Length) : Value;
+		}
+
+		/// <summary>
 		/// Returns a new string in which all occurrences of a specified string in the current instance are replaced with another specified string.
 		/// </summary>
 		/// <param name="Value">The value.</param>
