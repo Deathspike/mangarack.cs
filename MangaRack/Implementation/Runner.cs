@@ -103,7 +103,7 @@ namespace MangaRack {
 						// Check if the number is valid.
 						if (PreviousNumber == -1 || Offset < CurrentNumber) {
 							// Initialize the (file) name.
-							string Name = string.Format("V{0} #{1}", CurrentVolume.ToString("00.#"), (Chapter.Number - Offset).ToString("000.#"));
+							string Name = string.Format("V{0} #{1}", CurrentVolume.ToString("00"), (Chapter.Number - Offset).ToString("000.####"));
 							// Check if the (file) name has not been persisted.
 							if (!_Storage.Contains(UniqueIdentifier, Name)) {
 								// Initialize the number of pages.

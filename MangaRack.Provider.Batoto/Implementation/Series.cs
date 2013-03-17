@@ -4,6 +4,7 @@
 // this file, you can obtain one at http://mozilla.org/MPL/2.0/.
 // ======================================================================
 using HtmlAgilityPack;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -136,7 +137,7 @@ namespace MangaRack.Provider.Batoto {
 						// ... with a references indicating a chapter ...
 						.Where(x => x.GetAttributeValue("href", string.Empty).Contains("/read/"))
 						// ... selecting each valid volume ...
-						.Select(x => new { Chapter = x, Match = Regex.Match(HtmlEntity.DeEntitize(x.InnerText).Trim(), @"(\s?Vol\.\s?(?<Volume>[0-9]+))?\s?(Ch\.)?\s?(?<Number>([0-9\.]+|Omake))(-[0-9\.]+)?(\s?v\.?[0-9]+)?(\s?\(?Part\s(?<Part>[0-9]+)\)?)?(\s?(-|\+)\s?)?\s?(Read Onl?ine|:?\s?(?<Title>.+?)?(Read Online)?)$", RegexOptions.IgnoreCase) })
+						.Select(x => new { Chapter = x, Match = Regex.Match(HtmlEntity.DeEntitize(x.InnerText).Trim(), @"(\s?Vol\.\s?(?<Volume>[0-9]+))?\s?(Ch\.)?\s?(?<Number>([0-9\.]+|Extra|Omake))(\s?-\s?[0-9\.]+)?(\s?v\.?[0-9]+)?(\s?\(?Part\s(?<Part>[0-9]+)\)?)?(\s?(-|\+)\s?)?\s?(Read Onl?ine|:?\s?(?<Title>.+?)?(Read Online)?)$", RegexOptions.IgnoreCase) })
 						// ... where the previous match was successful ...
 						.Where(x => x.Match.Success)
 						// ... selecting a proper type with all relevant information ...
@@ -154,18 +155,38 @@ namespace MangaRack.Provider.Batoto {
 						}
 						// Check if the number is invalid.
 						if (Listing.Number == -1) {
+							// Initialize the number of occurences per change.
+							Dictionary<double, int> Changes = new Dictionary<double, int>();
 							// Retrieve the parent.
-							Listing Parent = Listings[Listings.Length - 1];
+							Listing Parent = null;
 							// Iterate through each listing.
 							foreach (Listing Target in Listings) {
 								// Check if this is a candidate.
-								if (Target.Volume <= Listing.Volume) {
+								if (Target != Listing && Target.Volume == Listing.Volume) {
+									// Check if the parent has been set.
+									if (Parent != null) {
+										// Calculate the change.
+										double Change = Math.Round(Target.Number - Parent.Number, 4);
+										// Check if the change has been added once.
+										if (Changes.ContainsKey(Change)) {
+											// Increment the number of occurrences for this change.
+											Changes[Change]++;
+										} else {
+											// Set the number of occurrences for this change.
+											Changes[Change] = 1;
+										}
+									}
 									// Set the parent.
 									Parent = Target;
 								}
 							}
-							// Set the corrected number.
-							Listing.Number = Parent.Number + 0.5;
+							// Process the number.
+							if (true) {
+								// Retrieve the shift number.
+								double Shift = Changes.OrderByDescending(x => x.Value).First().Key;
+								// Set the corrected number.
+								Listing.Number = Parent == null || Changes.Count == 0 ? 0.5 : Math.Round(Parent.Number + (Shift <= 0 || Shift >= 1 ? 1 : Shift) / 2, 4);
+							}
 						}
 					}
 					// Set the value.
