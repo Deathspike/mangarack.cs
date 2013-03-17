@@ -195,7 +195,7 @@ namespace MangaRack {
 						// Write the ComicInfo/Manga element.
 						_XmlWriter.WriteElementString("Manga", "YesAndRightToLeft");
 						// Write the ComicInfo/Number element.
-						_XmlWriter.WriteElementString("Number", Chapter.Number.ToString("0.#"));
+						_XmlWriter.WriteElementString("Number", Chapter.Number.ToString("0.####"));
 						// Check if the volume is valid.
 						if (Volume >= 0) {
 							// Write the ComicInfo/Volume element.
