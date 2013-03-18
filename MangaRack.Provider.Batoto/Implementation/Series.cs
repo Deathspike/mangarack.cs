@@ -282,9 +282,11 @@ namespace MangaRack.Provider.Batoto {
 				// Check if the key-value store does not contain the key.
 				if (!_Contains(() => Title)) {
 					// Find each title element ...
-					_Set(() => Title, _HtmlDocument.DocumentNode.Descendants("title")
-						// ... and select the text without HTML entities ...
-						.Select(x => HtmlEntity.DeEntitize(x.InnerText))
+					_Set(() => Title, _HtmlDocument.DocumentNode.Descendants("h1")
+						// ... where the class is the page title ...
+						.Where(x=>HtmlEntity.DeEntitize(x.GetAttributeValue("class", string.Empty)).Split(' ').Contains("ipsType_pagetitle"))
+						// ... select the text without HTML entities ...
+						.Select(x => HtmlEntity.DeEntitize(x.InnerText).Trim())
 						// ... using the first match.
 						.FirstOrDefault());
 				}
