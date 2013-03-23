@@ -49,6 +49,8 @@ namespace MangaRack.Provider {
 			if (WebRequest is HttpWebRequest) {
 				// Retrieve the HttpWebRequest.
 				HttpWebRequest HttpWebRequest = (HttpWebRequest) WebRequest;
+				// Set the automatic decompression.
+				HttpWebRequest.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
 				// Set the cookies associated with the request.
 				HttpWebRequest.CookieContainer = _CookieContainer;
 				// Set the value of the user agent.
