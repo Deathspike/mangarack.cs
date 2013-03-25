@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extension\ExtensionForHtmlNode.cs" />
+    <Compile Include="Extension\ExtensionForString.cs" />
     <Compile Include="Implementation\Chapter.cs" />
     <Compile Include="Implementation\Page.cs" />
     <Compile Include="Implementation\Provider.cs" />
