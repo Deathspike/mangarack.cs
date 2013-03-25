@@ -18,7 +18,7 @@ namespace MangaRack.Provider.KissManga {
 			// Declare the index.
 			int Index;
 			// Remove characters before and including the first occurrence of the subject.
-			return (Index = Value.IndexOf(Subject)) != -1 ? Value.Substring(0, Index + Subject.Length) : Value;
+			return (Index = Value.IndexOf(Subject)) != -1 ? Value.Substring(Index + Subject.Length) : Value;
 		}
 
 		/// <summary>
