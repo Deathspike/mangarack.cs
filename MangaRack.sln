@@ -1,0 +1,44 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRack.Provider", "MangaRack.Provider\MangaRack.Provider.csproj", "{510009E1-FDD9-4841-B7C2-A531425AB955}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRack.Provider.Batoto", "MangaRack.Provider.Batoto\MangaRack.Provider.Batoto.csproj", "{E2BE84D8-12CE-4627-9685-F533906A5928}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRack.Provider.KissManga", "MangaRack.Provider.KissManga\MangaRack.Provider.KissManga.csproj", "{C8FFB2DB-713E-4038-B20E-7DD491C27F6C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRack.Provider.MangaFox", "MangaRack.Provider.MangaFox\MangaRack.Provider.MangaFox.csproj", "{8372AC2D-6147-41FD-A9E8-D93D54902996}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRack", "MangaRack\MangaRack.csproj", "{08E413AB-BEF5-4DBC-A3DE-108D5AD9321E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{510009E1-FDD9-4841-B7C2-A531425AB955}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{510009E1-FDD9-4841-B7C2-A531425AB955}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{510009E1-FDD9-4841-B7C2-A531425AB955}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{510009E1-FDD9-4841-B7C2-A531425AB955}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2BE84D8-12CE-4627-9685-F533906A5928}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2BE84D8-12CE-4627-9685-F533906A5928}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2BE84D8-12CE-4627-9685-F533906A5928}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2BE84D8-12CE-4627-9685-F533906A5928}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8FFB2DB-713E-4038-B20E-7DD491C27F6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8FFB2DB-713E-4038-B20E-7DD491C27F6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8FFB2DB-713E-4038-B20E-7DD491C27F6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8FFB2DB-713E-4038-B20E-7DD491C27F6C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8372AC2D-6147-41FD-A9E8-D93D54902996}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8372AC2D-6147-41FD-A9E8-D93D54902996}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8372AC2D-6147-41FD-A9E8-D93D54902996}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8372AC2D-6147-41FD-A9E8-D93D54902996}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08E413AB-BEF5-4DBC-A3DE-108D5AD9321E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08E413AB-BEF5-4DBC-A3DE-108D5AD9321E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08E413AB-BEF5-4DBC-A3DE-108D5AD9321E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08E413AB-BEF5-4DBC-A3DE-108D5AD9321E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
