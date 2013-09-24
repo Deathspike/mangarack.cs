@@ -63,7 +63,7 @@ The toggle to disable grayscale size comparison and save. This is the process of
 
 #### --image (-i).
 
-The toggle to disable image processing. This is the process of image manipulation to normalize color and contrast, and to sharpen each page. The feature was added to improve the overall quality of synchronized pages. Note that this is the most CPU intensive operation that can occur during synchronization. **This feature is not compatible with non Windows-based operating systems.**
+The toggle to disable image processing. This is the process of image manipulation to normalize color and contrast, and to sharpen each page. The feature was added to improve the overall quality of synchronized pages. Note that this is the most CPU intensive operation that can occur during synchronization. **This feature is not compatible with non-Windows-based operating systems.**
 
 #### --keep-alive (-k)
 
@@ -87,8 +87,8 @@ The file extension for each output file. Each output file is formatted with the 
 
 #### --chapter (-c)
 
-The chapter filter. This filter influences which chapters are subject to synchronization. A positive number indicates that all chapters above the provided number are to be synchronized, while a negative number indicates that all chapters below the provided number are to be synchronized.
+The chapter filter. This filter influences which chapters are subject to synchronization. A positive number indicates that all chapters above the provided number are to be synchronized, while a negative number indicates that all chapters below the provided absolute number are to be synchronized.
 
 #### --volume (-v)
 
-The volume filter. This filter influences which volumes are subject to synchronization. A positive number indicates that all volumes above the provided number are to be synchronized, while a negative number indicates that all volumes below the provided number are to be synchronized.
+The volume filter. This filter influences which volumes are subject to synchronization. A positive number indicates that all volumes above the provided number are to be synchronized, while a negative number indicates that all volumes below the provided absolute number are to be synchronized.
