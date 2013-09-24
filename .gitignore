@@ -1,0 +1,14 @@
+*/Debug
+*/Release
+*/bin
+*/obj
+
+*.config
+*.exe
+*.manifest
+*.pdb
+*.suo
+*.user
+*.xml
+
+MangaRack.txt
