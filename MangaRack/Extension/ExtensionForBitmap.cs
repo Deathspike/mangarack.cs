@@ -121,7 +121,7 @@ namespace MangaRack {
 					// Check if the line has black.
 					if (HasBlack) {
 						// Check if the first black line has not been set.
-						if (FirstBlack == -1 && (FirstBlack = Line) == 0) {
+						if (FirstBlack == -1 && (FirstBlack = Line > 5 ? 5 : Line) == 0) {
 							// Break when the first line is black.
 							break;
 						}
