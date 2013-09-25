@@ -12,7 +12,7 @@ namespace MangaRack.Provider.Batoto {
 		/// <summary>
 		/// Contains the provider.
 		/// </summary>
-		private IProvider _Provider;
+		private readonly IProvider _Provider;
 
 		#region Constructor
 		/// <summary>

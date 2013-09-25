@@ -15,7 +15,7 @@ namespace MangaRack.Provider {
 		/// <summary>
 		/// Contains the chapter.
 		/// </summary>
-		private IChapter _Chapter;
+		private readonly IChapter _Chapter;
 
 		/// <summary>
 		/// Contains the number.
