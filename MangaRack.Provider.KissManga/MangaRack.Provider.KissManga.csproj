@@ -50,7 +50,7 @@
       <HintPath>..\packages\HtmlAgilityPack-PCL.1.4.6\lib\HtmlAgilityPack-PCL.dll</HintPath>
     </Reference>
     <Reference Include="TinyHttp-PCL">
-      <HintPath>..\packages\TinyHTTP-PCL.1.0.5007.35975\lib\TinyHttp-PCL.dll</HintPath>
+      <HintPath>..\packages\TinyHTTP-PCL.1.0.5016.36187\lib\TinyHttp-PCL.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
