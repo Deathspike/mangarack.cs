@@ -31,11 +31,11 @@ namespace MangaRack.Provider.Batoto {
 		/// <param name="Done">The callback.</param>
 		public void Populate(Action<IPage> Done) {
 			// Get the document.
-			Http.Get(UniqueIdentifier + "?supress_webtoon=t", (Response) => {
+			Http.Get(UniqueIdentifier + "?supress_webtoon=t", (HtmlResponse) => {
 				// Initialize a new instance of the HtmlDocument class.
 				HtmlDocument HtmlDocument = new HtmlDocument();
 				// Load the document.
-				HtmlDocument.LoadHtml(Response.AsString());
+				HtmlDocument.LoadHtml(HtmlResponse.AsString());
 				// Find each image element ...
 				Http.Get(HtmlEntity.DeEntitize(HtmlDocument.DocumentNode.Descendants("img")
 					// ... find the comic image ...
@@ -43,7 +43,7 @@ namespace MangaRack.Provider.Batoto {
 					// ... and download the source image.
 					.GetAttributeValue("src", string.Empty)), (ImageResponse) => {
 						// Set the image.
-						Image = ImageResponse == null ? null : ImageResponse.AsBinary();
+						Image = ImageResponse.AsBinary();
 						// Invoke the callback.
 						Done(this);
 					});

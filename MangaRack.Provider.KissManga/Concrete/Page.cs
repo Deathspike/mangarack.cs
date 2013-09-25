@@ -31,7 +31,7 @@ namespace MangaRack.Provider.KissManga {
 			// Download the source image.
 			Http.Get(UniqueIdentifier, (ImageResponse) => {
 				// Set the image.
-				Image = ImageResponse == null ? null : ImageResponse.AsBinary();
+				Image = ImageResponse.AsBinary();
 				// Invoke the callback.
 				Done(this);
 			});
