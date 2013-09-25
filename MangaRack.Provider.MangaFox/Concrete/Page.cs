@@ -6,6 +6,7 @@
 using HtmlAgilityPack;
 using System;
 using System.Linq;
+using System.Net;
 using TinyHttp;
 
 namespace MangaRack.Provider.MangaFox {
@@ -31,11 +32,11 @@ namespace MangaRack.Provider.MangaFox {
 		/// <param name="Done">The callback.</param>
 		public void Populate(Action<IPage> Done) {
 			// Get the document.
-			Http.Get(UniqueIdentifier, (Response) => {
+			Http.Get(UniqueIdentifier, (HtmlResponse) => {
 				// Initialize a new instance of the HtmlDocument class.
 				HtmlDocument HtmlDocument = new HtmlDocument();
 				// Load the document.
-				HtmlDocument.LoadHtml(Response.AsString());
+				HtmlDocument.LoadHtml(HtmlResponse.AsString());
 				// Find each image element ...
 				Http.Get(HtmlEntity.DeEntitize(HtmlDocument.DocumentNode.Descendants("img")
 					// ... whith an identifier indicating the main image ...
@@ -44,10 +45,21 @@ namespace MangaRack.Provider.MangaFox {
 					.First()
 					// ... and get the main image.
 					.GetAttributeValue("src", string.Empty)), (ImageResponse) => {
-						// Set the image.
-						Image = ImageResponse == null ? null : ImageResponse.AsBinary();
-						// Invoke the callback.
-						Done(this);
+						// Check if the status code is invalid.
+						if (ImageResponse != null && ImageResponse.StatusCode != HttpStatusCode.OK) {
+							// Request an alternative resource using a GET.
+							Http.Get(ImageResponse.ResponseUri.AbsoluteUri.Replace("http://z.", "http://l."), (AlternativeImageResponse) => {
+								// Set the image.
+								Image = AlternativeImageResponse.AsBinary();
+								// Invoke the callback.
+								Done(this);
+							});
+						} else {
+							// Set the image.
+							Image = ImageResponse.AsBinary();
+							// Invoke the callback.
+							Done(this);
+						}
 					});
 			});
 		}
