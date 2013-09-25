@@ -17,6 +17,7 @@ namespace MangaRack.Provider {
 		/// Initialize a new instance of the Provider class.
 		/// </summary>
 		public static IProvider Create<T>() where T : IProvider {
+			// Initialize a new instance of the Provider class.
 			return Create(typeof(T));
 		}
 
