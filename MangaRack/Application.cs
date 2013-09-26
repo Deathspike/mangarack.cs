@@ -58,7 +58,7 @@ namespace MangaRack {
 			// Check if the file does exist.
 			if (File.Exists(FileName)) {
 				// Initialize a new instance of the List class.
-				List<string> ParallelItems = new List<string>();
+				List<Options> ParallelItems = new List<Options>();
 				// Initialize a new instance of the FileStream class.
 				using (FileStream FileStream = File.Open(FileName, FileMode.Open, FileAccess.Read, FileShare.Read)) {
 					// Initialize a new instance of the StreamReader class.
@@ -69,10 +69,10 @@ namespace MangaRack {
 							Options LineOptions = new Options();
 							// Parse each command line argument into the options instance and check if an unique identifier is available.
 							if (Parser.Default.ParseArguments(Line.Split(' '), LineOptions) && LineOptions.UniqueIdentifiers.Count != 0) {
-								// Check if worker processes are not disabled.
-								if (!LineOptions.DisableWorkerProcesses && !Options.DisableWorkerProcesses) {
+								// Check if worker threads are not disabled.
+								if (!LineOptions.DisableWorkerThreads && !Options.DisableWorkerThreads) {
 									// Add the line to the parallel item list.
-									ParallelItems.Add(Line);
+									ParallelItems.Add(LineOptions);
 								} else {
 									// Run in single processing mode.
 									Single(LineOptions);
@@ -81,24 +81,12 @@ namespace MangaRack {
 						}
 					}
 				}
-				// Check if worker processes are not disabled.
-				if (!Options.DisableWorkerProcesses) {
+				// Check if worker threads are not disabled.
+				if (!Options.DisableWorkerThreads) {
 					// Iterate through each parallel item.
 					Parallel.For(0, ParallelItems.Count, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, i => {
-						// Initialize a new instance of the ProcessStartInfo class.
-						ProcessStartInfo ProcessStartInfo = new ProcessStartInfo(string.Format("{0}.exe", ApplicationName), string.Format("-tk {0}", ParallelItems[i])) {
-							// Prevent the process from creating a window.
-							CreateNoWindow = true,
-							// Redirect the standard output.
-							RedirectStandardOutput = true,
-							// Disable shell execution.
-							UseShellExecute = false
-						};
-						// Start the process and read all lines from the process stream.
-						foreach (string Line in Process.Start(ProcessStartInfo).StandardOutput.ReadLines()) {
-							// Write the line.
-							Console.WriteLine(Line);
-						}
+						// Run in single processing mode.
+						Single(ParallelItems[i]);
 					});
 				}
 			}
@@ -111,6 +99,20 @@ namespace MangaRack {
 		public static void Main(string[] Arguments) {
 			// Initialize a new instance of the Options class.
 			Options Options = new Options();
+			// Occurs when an exception is not caught.
+			AppDomain.CurrentDomain.UnhandledException += (sender, e) => {
+				// Write the message.
+				Console.WriteLine(e.ExceptionObject);
+				// Check if the keep-alive behavior is not disabled.
+				if (!Options.DisableKeepAliveBehavior) {
+					// Write the message.
+					Console.WriteLine("Press [ENTER] to exit.");
+					// Prevent the console from closing.
+					Console.ReadLine();
+				}
+				// Exit the application.
+				Environment.Exit(0);
+			};
 			// Parse each command line argument into the options instance.
 			if (Parser.Default.ParseArguments(Arguments, Options)) {
 				// Initialize the begin time.
@@ -120,21 +122,6 @@ namespace MangaRack {
 					// Run in batch processing mode.
 					Batch(Options);
 				} else {
-					// Check if worker processes are not disabled.
-					if (!Options.DisableWorkerProcesses) {
-						// Initialize the parent process.
-						Process ParentProcess = Parent.GetParentProcess();
-						// Check if the parent process is valid.
-						if (ParentProcess != null) {
-							// Occurs when a process exits.
-							ParentProcess.Exited += (sender, e) => {
-								// Kill the current process.
-								Process.GetCurrentProcess().Kill();
-							};
-							// Enable raising events.
-							ParentProcess.EnableRaisingEvents = true;
-						}
-					}
 					// Run in single processing mode.
 					Single(Options);
 				}

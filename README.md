@@ -39,7 +39,7 @@ MangaRack is a console application. A number of options and filters are availabl
 	-k, --keep-alive     Disable keep-alive behavior.
 	-m, --meta           Disable embedded meta information.
 	-t, --total          Disable total elapsed time notification.
-	-w, --worker         Disable worker processes.
+	-w, --worker         Disable worker threads.
 	-e, --extension      The file extension for each output file. (Default: cbz)
 	-c, --chapter        The chapter filter.
 	-v, --volume         The volume filter.
@@ -79,7 +79,7 @@ The toggle to disable total elapsed time notification. This is the process of co
 
 #### --worker (-w)
 
-The toggle to disable worker processes. This is the process of spawning additional application instances to run synchronizations in parallel. The feature was added to improve performance of image manipulation by allowing the computation load to be distributed to each available CPU. **This feature is not compatible with non-Windows-based operating systems.**
+The toggle to disable worker threads. This is the process of spawning additional threads to run synchronizations in parallel. The feature was added to improve performance of synchronization and image manipulation by allowing the load to be distributed to each available CPU.
 
 #### --extension (-e)
 

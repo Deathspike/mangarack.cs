@@ -87,10 +87,10 @@ namespace MangaRack {
 		public bool DisableTotalElapsedTime { get; set; }
 
 		/// <summary>
-		/// Indicates whether worker processes are disabled.
+		/// Indicates whether worker threads are disabled.
 		/// </summary>
-		[Option('w', "worker", HelpText = "Disable worker processes.")]
-		public bool DisableWorkerProcesses { get; set; }
+		[Option('w', "worker", HelpText = "Disable worker threads.")]
+		public bool DisableWorkerThreads { get; set; }
 
 		/// <summary>
 		/// Contains the file extension for each output file.
