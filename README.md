@@ -47,7 +47,7 @@ MangaRack is a console application. A number of options and filters are availabl
 
 #### --animation (-a)
 
-The toggle to disable animation framing. This is the process of detecting animated pages and extracting the last frame. The feature was added to accommodate series in which pages are provided as an animation, presumably added to fool naïve synchronization implementations into getting an incorrect page.
+The toggle to disable animation framing. This is the process of detecting animated pages and extracting the last frame. The feature was added to accommodate series in which pages are provided as an animation, presumably added to fool naïve synchronization implementations into synchronizing an incorrect page.
 
 #### --duplication (-d)
 
@@ -79,7 +79,7 @@ The toggle to disable total elapsed time notification. This is the process of co
 
 #### --worker (-w)
 
-The toggle to disable worker threads. This is the process of spawning additional threads to run synchronizations in parallel. The feature was added to improve performance of synchronization and image manipulation by allowing the load to be distributed to each available CPU.
+The toggle to disable worker threads. This is the process of spawning additional threads to run synchronizations in parallel. The feature was added to improve performance of synchronization and image manipulation by allowing the networking and computation load to be distributed to each available CPU.
 
 #### --extension (-e)
 
