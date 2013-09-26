@@ -11,7 +11,6 @@ using MangaRack.Provider.KissManga;
 using MangaRack.Provider.MangaFox;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -58,7 +57,7 @@ namespace MangaRack {
 			// Check if the file does exist.
 			if (File.Exists(FileName)) {
 				// Initialize a new instance of the List class.
-				List<Options> ParallelItems = new List<Options>();
+				List<KeyValuePair<Options, string>> ParallelItems = new List<KeyValuePair<Options, string>>();
 				// Initialize a new instance of the FileStream class.
 				using (FileStream FileStream = File.Open(FileName, FileMode.Open, FileAccess.Read, FileShare.Read)) {
 					// Initialize a new instance of the StreamReader class.
@@ -69,13 +68,16 @@ namespace MangaRack {
 							Options LineOptions = new Options();
 							// Parse each command line argument into the options instance and check if an unique identifier is available.
 							if (Parser.Default.ParseArguments(Line.Split(' '), LineOptions) && LineOptions.UniqueIdentifiers.Count != 0) {
-								// Check if worker threads are not disabled.
-								if (!LineOptions.DisableWorkerThreads && !Options.DisableWorkerThreads) {
-									// Add the line to the parallel item list.
-									ParallelItems.Add(LineOptions);
-								} else {
-									// Run in single processing mode.
-									Single(LineOptions);
+								// Iterate through each unique identifier.
+								foreach (string UniqueIdentifier in LineOptions.UniqueIdentifiers) {
+									// Check if worker threads are not disabled.
+									if (!LineOptions.DisableWorkerThreads && !Options.DisableWorkerThreads) {
+										// Add the unique identifier of the line to the parallel item list.
+										ParallelItems.Add(new KeyValuePair<Options, string>(LineOptions, UniqueIdentifier));
+									} else {
+										// Run in single processing mode.
+										Single(LineOptions, UniqueIdentifier);
+									}
 								}
 							}
 						}
@@ -86,7 +88,7 @@ namespace MangaRack {
 					// Iterate through each parallel item.
 					Parallel.For(0, ParallelItems.Count, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, i => {
 						// Run in single processing mode.
-						Single(ParallelItems[i]);
+						Single(ParallelItems[i].Key, ParallelItems[i].Value);
 					});
 				}
 			}
@@ -122,8 +124,20 @@ namespace MangaRack {
 					// Run in batch processing mode.
 					Batch(Options);
 				} else {
-					// Run in single processing mode.
-					Single(Options);
+					// Check if worker threads are not disabled.
+					if (!Options.DisableWorkerThreads) {
+						// Iterate through each unique identifier.
+						Parallel.For(0, Options.UniqueIdentifiers.Count, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, i => {
+							// Run in single processing mode for the unique identifier.
+							Single(Options, Options.UniqueIdentifiers[i]);
+						});
+					} else {
+						// Iterate through each unique identifier.
+						foreach (string UniqueIdentifier in Options.UniqueIdentifiers) {
+							// Run in single processing mode for the unique identifier.
+							Single(Options, UniqueIdentifier);
+						}
+					}
 				}
 				// Check if the total elapsed time notification is not disabled.
 				if (!Options.DisableTotalElapsedTime) {
@@ -143,87 +157,85 @@ namespace MangaRack {
 		}
 
 		/// <summary>
-		/// Run in single processing mode.
+		/// Run in single processing mode for the unique identifier.
 		/// </summary>
 		/// <param name="Options">The collection of options.</param>
-		public static void Single(Options Options) {
-			// Iterate through each unique identifier.
-			foreach (string UniqueIdentifier in Options.UniqueIdentifiers) {
-				// Select the provider.
-				IProvider Provider = _Providers.FirstOrDefault(x => x.Open(UniqueIdentifier) != null);
-				// Check if the provider is valid.
-				if (Provider != null) {
-					// Initialize the series.
-					using (ISeries Series = Provider.Open(UniqueIdentifier).Populate()) {
-						// Initialize the series title.
-						string Title = Series.Title.InvalidatePath();
-						// Iterate through each chapter using the chapter and volume filters.
-						foreach (IChapter Chapter in Series.Chapters.Filter(Options)) {
-							// Use the chapter and dispose of it when done.
-							using (Chapter) {
-								// Initialize the file name.
-								string FileName = string.Format(Chapter.Volume == -1 ? "{0} #{2}.{3}" : "{0} V{1} #{2}.{3}", Title, Chapter.Volume.ToString("00"), Chapter.Number.ToString("000.####"), Options.FileExtension.InvalidatePath());
-								// Initialize the file path.
-								string FilePath = Path.Combine(Title, FileName);
-								// Check if the file should be downloaded.
-								if (Options.DisableDuplicationPrevention || !File.Exists(FilePath)) {
-									// Initialize a new instance of the List class.
-									List<Meta> MetaInformation = new List<Meta>();
-									// Initialize the temporary file path.
-									string TempFilePath = Path.GetTempFileName();
-									// Initialize the time.
-									long Time = DateTime.Now.Ticks;
-									// Initialize a new instance of the FileStream class.
-									using (FileStream FileStream = File.Open(TempFilePath, FileMode.Create)) {
-										// Set the temporary file path.
-										TempFilePath = FileStream.Name;
-										// Write the message.
-										Console.WriteLine("Fetching {0}", FileName);
-										// Initialize a new instance of the ZipOutputStream class.
-										using (ZipOutputStream ZipOutputStream = new ZipOutputStream(FileStream)) {
-											// Initialize the page number.
-											int PageNumber = 1;
-											// Check if the preview image is valid, write it to the stream and add meta-information to the collection.
-											if (Series.PreviewImage != null && Utilities.Write(MetaInformation, ZipOutputStream, Series.PreviewImage)) {
-												// Set the image type for the meta-information.
-												MetaInformation[0].Type = "Cover";
-											}
-											// Iterate through each page.
-											foreach (IPage Page in Chapter.Populate().Pages.Select(x => x.Populate())) {
-												// Use the page and dispose of it when done.
-												using (Page) {
-													// Write the processed image to the stream and add meta-information to the collection.
-													if (!Utilities.Write(MetaInformation, ZipOutputStream, Utilities.Image(Options, Provider, Page.Image))) {
-														// Write the message.
-														Console.WriteLine("Broken page #{0} in {1}", PageNumber.ToString("000"), FileName);
-													}
-													// Increment the page number.
-													PageNumber++;
+		/// <param name="UniqueIdentifier">The unique identifier.</param>
+		public static void Single(Options Options, string UniqueIdentifier) {
+			// Select the provider.
+			IProvider Provider = _Providers.FirstOrDefault(x => x.Open(UniqueIdentifier) != null);
+			// Check if the provider is valid.
+			if (Provider != null) {
+				// Initialize the series.
+				using (ISeries Series = Provider.Open(UniqueIdentifier).Populate()) {
+					// Initialize the series title.
+					string Title = Series.Title.InvalidatePath();
+					// Iterate through each chapter using the chapter and volume filters.
+					foreach (IChapter Chapter in Series.Chapters.Filter(Options)) {
+						// Use the chapter and dispose of it when done.
+						using (Chapter) {
+							// Initialize the file name.
+							string FileName = string.Format(Chapter.Volume == -1 ? "{0} #{2}.{3}" : "{0} V{1} #{2}.{3}", Title, Chapter.Volume.ToString("00"), Chapter.Number.ToString("000.####"), Options.FileExtension.InvalidatePath());
+							// Initialize the file path.
+							string FilePath = Path.Combine(Title, FileName);
+							// Check if the file should be downloaded.
+							if (Options.DisableDuplicationPrevention || !File.Exists(FilePath)) {
+								// Initialize a new instance of the List class.
+								List<Meta> MetaInformation = new List<Meta>();
+								// Initialize the temporary file path.
+								string TempFilePath = Path.GetTempFileName();
+								// Initialize the time.
+								long Time = DateTime.Now.Ticks;
+								// Initialize a new instance of the FileStream class.
+								using (FileStream FileStream = File.Open(TempFilePath, FileMode.Create)) {
+									// Set the temporary file path.
+									TempFilePath = FileStream.Name;
+									// Write the message.
+									Console.WriteLine("Fetching {0}", FileName);
+									// Initialize a new instance of the ZipOutputStream class.
+									using (ZipOutputStream ZipOutputStream = new ZipOutputStream(FileStream)) {
+										// Initialize the page number.
+										int PageNumber = 1;
+										// Check if the preview image is valid, write it to the stream and add meta-information to the collection.
+										if (Series.PreviewImage != null && Utilities.Write(MetaInformation, ZipOutputStream, Series.PreviewImage)) {
+											// Set the image type for the meta-information.
+											MetaInformation[0].Type = "Cover";
+										}
+										// Iterate through each page.
+										foreach (IPage Page in Chapter.Populate().Pages.Select(x => x.Populate())) {
+											// Use the page and dispose of it when done.
+											using (Page) {
+												// Write the processed image to the stream and add meta-information to the collection.
+												if (!Utilities.Write(MetaInformation, ZipOutputStream, Utilities.Image(Options, Provider, Page.Image))) {
+													// Write the message.
+													Console.WriteLine("Broken page #{0} in {1}", PageNumber.ToString("000"), FileName);
 												}
-											}
-											// Check if meta-information is not disabled.
-											if (!Options.DisableMetaInformation) {
-												// Write the meta-information to the stream.
-												Utilities.Write(MetaInformation, ZipOutputStream, Series, Chapter);
+												// Increment the page number.
+												PageNumber++;
 											}
 										}
+										// Check if meta-information is not disabled.
+										if (!Options.DisableMetaInformation) {
+											// Write the meta-information to the stream.
+											Utilities.Write(MetaInformation, ZipOutputStream, Series, Chapter);
+										}
 									}
-									// Check if the series directory does not exist.
-									if (!Directory.Exists(Title)) {
-										// Create the directory for the series.
-										Directory.CreateDirectory(Title);
-									}
-									// Move the temporary file to the file path.
-									File.Copy(TempFilePath, FilePath, true);
-									// Delete the temporary file.
-									File.Delete(TempFilePath);
-									// Check if a page has been processed.
-									if (MetaInformation.Count != 0) {
-										// Initialize the elapsed time.
-										TimeSpan Elapsed = new TimeSpan(DateTime.Now.Ticks - Time);
-										// Write the message.
-										Console.WriteLine("Finished {0} ({1}:{2}, {3}s/Page)", FileName, Elapsed.Minutes.ToString("00"), Elapsed.Seconds.ToString("00"), (Elapsed.TotalSeconds / MetaInformation.Count).ToString("0.0"));
-									}
+								}
+								// Check if the series directory does not exist.
+								if (!Directory.Exists(Title)) {
+									// Create the directory for the series.
+									Directory.CreateDirectory(Title);
+								}
+								// Move the temporary file to the file path.
+								File.Copy(TempFilePath, FilePath, true);
+								// Delete the temporary file.
+								File.Delete(TempFilePath);
+								// Check if a page has been processed.
+								if (MetaInformation.Count != 0) {
+									// Initialize the elapsed time.
+									TimeSpan Elapsed = new TimeSpan(DateTime.Now.Ticks - Time);
+									// Write the message.
+									Console.WriteLine("Finished {0} ({1}:{2}, {3}s/Page)", FileName, Elapsed.Minutes.ToString("00"), Elapsed.Seconds.ToString("00"), (Elapsed.TotalSeconds / MetaInformation.Count).ToString("0.0"));
 								}
 							}
 						}
