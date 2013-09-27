@@ -5,6 +5,7 @@
 // ======================================================================
 using CommandLine;
 using ICSharpCode.SharpZipLib.Zip;
+using MangaRack.Core;
 using MangaRack.Provider;
 using MangaRack.Provider.Batoto;
 using MangaRack.Provider.KissManga;
@@ -57,7 +58,7 @@ namespace MangaRack {
 			// Check if the file does exist.
 			if (File.Exists(FileName)) {
 				// Initialize a new instance of the List class.
-				List<KeyValuePair<Options, string>> ParallelItems = new List<KeyValuePair<Options, string>>();
+				List<KeyValuePair<Options, string>> WorkerItems = new List<KeyValuePair<Options, string>>();
 				// Initialize a new instance of the FileStream class.
 				using (FileStream FileStream = File.Open(FileName, FileMode.Open, FileAccess.Read, FileShare.Read)) {
 					// Initialize a new instance of the StreamReader class.
@@ -72,8 +73,8 @@ namespace MangaRack {
 								foreach (string UniqueIdentifier in LineOptions.UniqueIdentifiers) {
 									// Check if worker threads are not disabled.
 									if (!LineOptions.DisableWorkerThreads && !Options.DisableWorkerThreads) {
-										// Add the unique identifier of the line to the parallel item list.
-										ParallelItems.Add(new KeyValuePair<Options, string>(LineOptions, UniqueIdentifier));
+										// Add the unique identifier of the line to the worker item list.
+										WorkerItems.Add(new KeyValuePair<Options, string>(LineOptions, UniqueIdentifier));
 									} else {
 										// Run in single processing mode.
 										Single(LineOptions, UniqueIdentifier);
@@ -83,12 +84,12 @@ namespace MangaRack {
 						}
 					}
 				}
-				// Check if worker threads are not disabled.
-				if (!Options.DisableWorkerThreads) {
-					// Iterate through each parallel item.
-					Parallel.For(0, ParallelItems.Count, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, i => {
+				// Check if worker items are available.
+				if (WorkerItems.Count != 0) {
+					// Iterate through each worker item.
+					Parallel.For(0, WorkerItems.Count, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, i => {
 						// Run in single processing mode.
-						Single(ParallelItems[i].Key, ParallelItems[i].Value);
+						Single(WorkerItems[i].Key, WorkerItems[i].Value);
 					});
 				}
 			}
@@ -181,7 +182,7 @@ namespace MangaRack {
 							// Check if the file should be downloaded.
 							if (Options.DisableDuplicationPrevention || !File.Exists(FilePath)) {
 								// Initialize a new instance of the List class.
-								List<Meta> MetaInformation = new List<Meta>();
+								List<ComicInfoPage> MetaInformation = new List<ComicInfoPage>();
 								// Initialize the temporary file path.
 								string TempFilePath = Path.GetTempFileName();
 								// Initialize the time.
@@ -199,7 +200,7 @@ namespace MangaRack {
 										// Check if the preview image is valid, write it to the stream and add meta-information to the collection.
 										if (Series.PreviewImage != null && Utilities.Write(MetaInformation, ZipOutputStream, Series.PreviewImage)) {
 											// Set the image type for the meta-information.
-											MetaInformation[0].Type = "Cover";
+											MetaInformation[0].Type = "FrontCover";
 										}
 										// Iterate through each page.
 										foreach (IPage Page in Chapter.Populate().Pages.Select(x => x.Populate())) {
@@ -217,7 +218,7 @@ namespace MangaRack {
 										// Check if meta-information is not disabled.
 										if (!Options.DisableMetaInformation) {
 											// Write the meta-information to the stream.
-											Utilities.Write(MetaInformation, ZipOutputStream, Series, Chapter);
+											Utilities.Write(ZipOutputStream, Series, Chapter, MetaInformation);
 										}
 									}
 								}
