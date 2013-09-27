@@ -46,7 +46,6 @@
     <Compile Include="Concrete\ComicInfoPage.cs" />
     <Compile Include="Concrete\ComicInfoPageCollection.cs" />
     <Compile Include="Concrete\ComicInfoSplitter.cs" />
-    <Compile Include="Extension\ExtensionForComicInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
