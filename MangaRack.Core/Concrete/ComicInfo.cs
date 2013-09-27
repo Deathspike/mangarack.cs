@@ -3,6 +3,8 @@
 // License, version 2.0. If a copy of the MPL was not distributed with 
 // this file, you can obtain one at http://mozilla.org/MPL/2.0/.
 // ======================================================================
+using MangaRack.Provider;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml.Serialization;
@@ -14,6 +16,35 @@ namespace MangaRack.Core {
 	[XmlRoot("ComicInfo")]
 	public sealed class ComicInfo {
 		#region Methods
+		/// <summary>
+		/// Transcribe the series, chapter and pages information.
+		/// </summary>
+		/// <param name="Series">The series.</param>
+		/// <param name="Chapter">The chapter.</param>
+		/// <param name="Pages">Each page.</param>
+		public void Transcribe(ISeries Series, IChapter Chapter, IEnumerable<ComicInfoPage> Pages) {
+			// Set each genre.
+			this.Genre = new ComicInfoSplitter(Series.Genres);
+			// Set the manga specification.
+			this.Manga = "YesAndRightToLeft";
+			// Set the number.
+			this.Number = Chapter.Number;
+			// Set each page.
+			this.Pages = new ComicInfoPageCollection(Pages);
+			// Set each penciller.
+			this.Penciller = new ComicInfoSplitter(Series.Artists);
+			// Set the series.
+			this.Series = Series.Title;
+			// Set the summary.
+			this.Summary = Series.Summary;
+			// Set the title.
+			this.Title = Chapter.Title;
+			// Set the volume.
+			this.Volume = Chapter.Volume;
+			// Set each writer.
+			this.Writer = new ComicInfoSplitter(Series.Authors);
+		}
+
 		/// <summary>
 		/// Save the instance to a stream.
 		/// </summary>
