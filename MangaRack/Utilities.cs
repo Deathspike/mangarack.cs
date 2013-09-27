@@ -4,12 +4,10 @@
 // this file, you can obtain one at http://mozilla.org/MPL/2.0/.
 // ======================================================================
 using ICSharpCode.SharpZipLib.Zip;
+using MangaRack.Core;
 using MangaRack.Provider;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Xml;
 
 namespace MangaRack {
 	/// <summary>
@@ -100,7 +98,7 @@ namespace MangaRack {
 		/// <param name="MetaInformation">The meta-information.</param>
 		/// <param name="ZipOutputStream">The output stream.</param>
 		/// <param name="Image">The image.</param>
-		public static bool Write(IList<Meta> MetaInformation, ZipOutputStream ZipOutputStream, byte[] Image) {
+		public static bool Write(IList<ComicInfoPage> MetaInformation, ZipOutputStream ZipOutputStream, byte[] Image) {
 			// Create a bitmap from the byte array.
 			using (Bitmap Bitmap = Image.ToBitmap()) {
 				// Check if the bitmap is valid.
@@ -114,15 +112,15 @@ namespace MangaRack {
 					// Close the file entry.
 					ZipOutputStream.CloseEntry();
 					// Add meta-information ...
-					MetaInformation.Add(new Meta {
+					MetaInformation.Add(new ComicInfoPage {
 						// ... with the image height ...
-						Height = Bitmap.Height,
+						ImageHeight = Bitmap.Height,
 						// ... with the file name ...
-						FileName = FileName,
+						Key = FileName,
 						// ... with the file size ...
-						Size = Image.Length,
+						ImageSize = Image.Length,
 						// ... with the image width.
-						Width = Bitmap.Width
+						ImageWidth = Bitmap.Width
 					});
 					// Return true.
 					return true;
@@ -135,111 +133,21 @@ namespace MangaRack {
 		/// <summary>
 		/// Write the meta-information to the stream.
 		/// </summary>
-		/// <param name="MetaInformation">The meta-information.</param>
 		/// <param name="ZipOutputStream">The output stream.</param>
 		/// <param name="Series">The series.</param>
 		/// <param name="Chapter">The chapter.</param>
-		public static void Write(IList<Meta> MetaInformation, ZipOutputStream ZipOutputStream, ISeries Series, IChapter Chapter) {
-			// Initialize a new instance of the MemoryStream class.
-			using (MemoryStream MemoryStream = new MemoryStream()) {
-				// Initialize the xml writer to write meta-information.
-				using (XmlWriter XmlWriter = XmlWriter.Create(MemoryStream, new XmlWriterSettings { Indent = true })) {
-					// ==================================================
-					// Basic Information
-					// --------------------------------------------------
-					XmlWriter.WriteStartElement("ComicInfo");
-					// Write the ComicInfo/xmlns:xsd attribute.
-					XmlWriter.WriteAttributeString("xmlns", "xsd", null, "http://www.w3.org/2001/XMLSchema");
-					// Write the ComicInfo/xmlns:xsi attribute.
-					XmlWriter.WriteAttributeString("xmlns", "xsi", null, "http://www.w3.org/2001/XMLSchema-instance");
-					// Write the ComicInfo/Manga element.
-					XmlWriter.WriteElementString("Manga", "YesAndRightToLeft");
-					// Write the ComicInfo/Number element.
-					XmlWriter.WriteElementString("Number", Chapter.Number.ToString("0.####"));
-					// Check if the volume is valid.
-					if (Chapter.Volume >= 0) {
-						// Write the ComicInfo/Volume element.
-						XmlWriter.WriteElementString("Volume", Chapter.Volume.ToString("0"));
-					}
-
-					// ==================================================
-					// Additional Information
-					// --------------------------------------------------
-					if (Series.Genres.Count() != 0) {
-						// Write the ComicInfo/Genre element.
-						XmlWriter.WriteElementString("Genre", string.Join(", ", Series.Genres.ToArray()));
-					}
-					// Check if a artist is available.
-					if (Series.Artists.Count() != 0) {
-						// Write the ComicInfo/Penciller element.
-						XmlWriter.WriteElementString("Penciller", string.Join(", ", Series.Artists.ToArray()));
-					}
-					// Check if the title of the series is available.
-					if (!string.IsNullOrEmpty(Series.Title)) {
-						// Write the ComicInfo/Series element.
-						XmlWriter.WriteElementString("Series", Series.Title.Trim());
-					}
-					// Check if the summary is available.
-					if (!string.IsNullOrEmpty(Series.Summary)) {
-						// Write the ComicInfo/Summary element.
-						XmlWriter.WriteElementString("Summary", Series.Summary.Trim());
-					}
-					// Check if the title of the chapter is available.
-					if (!string.IsNullOrEmpty(Chapter.Title)) {
-						// Write the ComicInfo/Title element.
-						XmlWriter.WriteElementString("Title", Chapter.Title.Trim());
-					}
-					// Check if a author is available.
-					if (Series.Authors.Count() != 0) {
-						// Write the ComicInfo/Writer element.
-						XmlWriter.WriteElementString("Writer", string.Join(", ", Series.Authors.ToArray()));
-					}
-
-					// ==================================================
-					// Page Information
-					// --------------------------------------------------
-					// Start writing the ComicInfo/Pages element.
-					XmlWriter.WriteStartElement("Pages");
-					// Iterate through each page meta information.
-					for (int i = 0; i < MetaInformation.Count; i++) {
-						// Initialize the meta-information entry.
-						Meta MetaInformationEntry = MetaInformation[i];
-						// Write the Page element for the Page.
-						XmlWriter.WriteStartElement("Page");
-						// Write the Image attribute for the Page.
-						XmlWriter.WriteAttributeString("Image", i.ToString());
-						// Write the ImageSize attribute for the Page.
-						XmlWriter.WriteAttributeString("ImageSize", MetaInformationEntry.Size.ToString());
-						// Write the ImageWidth attribute for the Page.
-						XmlWriter.WriteAttributeString("ImageWidth", MetaInformationEntry.Width.ToString());
-						// Write the ImageHeight attribute for the Page.
-						XmlWriter.WriteAttributeString("ImageHeight", MetaInformationEntry.Height.ToString());
-						// Check if the bitmap is a preview image.
-						if (!string.IsNullOrWhiteSpace(MetaInformationEntry.Type)) {
-							// Write the Type attribute for the Page.
-							XmlWriter.WriteAttributeString("Type", MetaInformationEntry.Type);
-						}
-						// Close the Page element.
-						XmlWriter.WriteEndElement();
-					}
-					// Stop writing the ComicInfo/Pages element.
-					XmlWriter.WriteEndElement();
-					// Write the ComicInfo/PageCount element.
-					XmlWriter.WriteElementString("PageCount", MetaInformation.Count.ToString());
-					// Stop writing the ComicInfo element.
-					XmlWriter.WriteEndElement();
-				}
-				// ==================================================
-				// Stream Output
-				// --------------------------------------------------
-				ZipOutputStream.PutNextEntry(new ZipEntry("ComicInfo.xml"));
-				// Set the position within the memory stream.
-				MemoryStream.Position = 0;
-				// Read each byte from the stream and add each to the output stream.
-				MemoryStream.CopyTo(ZipOutputStream);
-				// Close the file entry.
-				ZipOutputStream.CloseEntry();
-			}
+		/// <param name="Pages">Each page.</param>
+		public static void Write(ZipOutputStream ZipOutputStream, ISeries Series, IChapter Chapter, IEnumerable<ComicInfoPage> Pages) {
+			// Initialize a new instance of the ComicInfo class.
+			ComicInfo ComicInfo = new ComicInfo();
+			//  Write a file entry for the comic information.
+			ZipOutputStream.PutNextEntry(new ZipEntry("ComicInfo.xml"));
+			// Transcribe the series, chapter and pages information.
+			ComicInfo.Transcribe(Series, Chapter, Pages);
+			// Save the comic information.
+			ComicInfo.Save(ZipOutputStream);
+			// Close the file entry.
+			ZipOutputStream.CloseEntry();
 		}
 		#endregion
 	}

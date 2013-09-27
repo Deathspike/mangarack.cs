@@ -55,7 +55,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Concrete\Meta.cs" />
     <Compile Include="Extension\ExtensionForBitmap.cs" />
     <Compile Include="Extension\ExtensionForByteArray.cs" />
     <Compile Include="Extension\ExtensionForChapter.cs" />
@@ -67,6 +66,10 @@
     <Compile Include="Utilities.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MangaRack.Core\MangaRack.Core.csproj">
+      <Project>{51033eec-5c23-4060-a1a3-dcb6d682ded9}</Project>
+      <Name>MangaRack.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MangaRack.Provider.Batoto\MangaRack.Provider.Batoto.csproj">
       <Project>{e2be84d8-12ce-4627-9685-f533906a5928}</Project>
       <Name>MangaRack.Provider.Batoto</Name>

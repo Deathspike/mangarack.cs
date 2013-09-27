@@ -10,6 +10,7 @@
 
 // Merging
 [assembly: System.Reflection.Obfuscation(Feature = "merge with HtmlAgilityPack-PCL.dll", Exclude = false)]
+[assembly: System.Reflection.Obfuscation(Feature = "merge with MangaRack.Core.dll", Exclude = false)]
 [assembly: System.Reflection.Obfuscation(Feature = "merge with MangaRack.Provider.dll", Exclude = false)]
 [assembly: System.Reflection.Obfuscation(Feature = "merge with MangaRack.Provider.Batoto.dll", Exclude = false)]
 [assembly: System.Reflection.Obfuscation(Feature = "merge with MangaRack.Provider.KissManga.dll", Exclude = false)]
