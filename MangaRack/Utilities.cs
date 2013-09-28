@@ -101,12 +101,45 @@ namespace MangaRack {
 		public static bool Write(IList<ComicInfoPage> MetaInformation, ZipOutputStream ZipOutputStream, byte[] Image) {
 			// Create a bitmap from the byte array.
 			using (Bitmap Bitmap = Image.ToBitmap()) {
-				// Check if the bitmap is valid.
-				if (Bitmap != null) {
+				// Initialize the image height.
+				int? ImageHeight = null;
+				// Initialize the image width.
+				int? ImageWidth = null;
+				// Initialize the page valid status.
+				bool IsValid = true;
+				// Check if the bitmap is invalid.
+				if (Bitmap == null) {
+					// Set the page valid status to false.
+					IsValid = false;
+					// Initialize a new instance of the Bitmap class.
+					using (Bitmap BrokenBitmap = new Bitmap(128, 32)) {
+						// Initialize a new instance of the Graphics class.
+						using (Graphics Graphics = Graphics.FromImage(BrokenBitmap)) {
+							// Initialize a new instance of the RectangleF class.
+							RectangleF RectangleF = new RectangleF(0, 0, BrokenBitmap.Width, BrokenBitmap.Height);
+							// Initialize a new instance of the Font class.
+							Font Font = new Font("Tahoma", 10);
+							// Initialize a new instance of the StringFormat class.
+							StringFormat StringFormat = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
+							// Fill the rectangle with a white brush.
+							Graphics.FillRectangle(Brushes.White, RectangleF);
+							// Write the broken page information with a black brush.
+							Graphics.DrawString(string.Format("Broken page #{0}", MetaInformation.Count.ToString("000")), Font, Brushes.Black, RectangleF, StringFormat);
+						}
+						// Set the image.
+						Image = BrokenBitmap.ToByteArray("png");
+						// Set the image height.
+						ImageHeight = BrokenBitmap.Height;
+						// Set the image width.
+						ImageWidth = BrokenBitmap.Width;
+					}
+				}
+				// Check if the image is valid.
+				if (Image != null) {
 					// Initialize the file name.
-					string FileName = string.Format("{0}.{1}", MetaInformation.Count.ToString("000"), Image.DetectImageFormat());
+					string Key = string.Format("{0}.{1}", MetaInformation.Count.ToString("000"), Image.DetectImageFormat());
 					// Write a file for the bitmap.
-					ZipOutputStream.PutNextEntry(new ZipEntry(FileName));
+					ZipOutputStream.PutNextEntry(new ZipEntry(Key));
 					// Write the image.
 					ZipOutputStream.Write(Image, 0, Image.Length);
 					// Close the file entry.
@@ -114,19 +147,17 @@ namespace MangaRack {
 					// Add meta-information ...
 					MetaInformation.Add(new ComicInfoPage {
 						// ... with the image height ...
-						ImageHeight = Bitmap.Height,
-						// ... with the file name ...
-						Key = FileName,
-						// ... with the file size ...
+						ImageHeight = ImageHeight ?? Bitmap.Height,
+						// ... with the key ...
+						Key = Key,
+						// ... with the image size ...
 						ImageSize = Image.Length,
 						// ... with the image width.
-						ImageWidth = Bitmap.Width
+						ImageWidth = ImageWidth ?? Bitmap.Width
 					});
-					// Return true.
-					return true;
 				}
-				// Return false.
-				return false;
+				// Return whether the page is valid.
+				return IsValid;
 			}
 		}
 
