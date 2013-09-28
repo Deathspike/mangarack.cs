@@ -181,6 +181,8 @@ namespace MangaRack {
 							string FilePath = Path.Combine(Title, FileName);
 							// Check if the file should be downloaded.
 							if (Options.DisableDuplicationPrevention || !File.Exists(FilePath)) {
+								// Initialize a new instance of the BrokenPages class.
+								List<string> BrokenPages = new List<string>();
 								// Initialize a new instance of the List class.
 								List<ComicInfoPage> MetaInformation = new List<ComicInfoPage>();
 								// Initialize the temporary file path.
@@ -210,6 +212,8 @@ namespace MangaRack {
 												if (!Utilities.Write(MetaInformation, ZipOutputStream, Utilities.Image(Options, Provider, Page.Image))) {
 													// Write the message.
 													Console.WriteLine("Broken page #{0} in {1}", PageNumber.ToString("000"), FileName);
+													// Add the broken page.
+													BrokenPages.Add(string.Format("{0}: {1}", PageNumber.ToString("000"), Page.UniqueIdentifier));
 												}
 												// Increment the page number.
 												PageNumber++;
@@ -231,6 +235,11 @@ namespace MangaRack {
 								File.Copy(TempFilePath, FilePath, true);
 								// Delete the temporary file.
 								File.Delete(TempFilePath);
+								// Check if a page is broken.
+								if (BrokenPages.Count != 0) {
+									// Write the broken page information.
+									File.WriteAllLines(string.Format("{0}.txt", FilePath), BrokenPages);
+								}
 								// Check if a page has been processed.
 								if (MetaInformation.Count != 0) {
 									// Initialize the elapsed time.
