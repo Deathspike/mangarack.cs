@@ -134,8 +134,8 @@ namespace MangaRack {
 						ImageWidth = BrokenBitmap.Width;
 					}
 				}
-				// Check if the image is valid.
-				if (Image != null) {
+				// Save the image.
+				if (true) {
 					// Initialize the file name.
 					string Key = string.Format("{0}.{1}", MetaInformation.Count.ToString("000"), Image.DetectImageFormat());
 					// Write a file for the bitmap.
