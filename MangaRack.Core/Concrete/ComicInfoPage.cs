@@ -11,6 +11,7 @@ namespace MangaRack.Core {
 	/// </summary>
 	[XmlRoot("Page")]
 	public sealed class ComicInfoPage {
+		#region Properties
 		/// <summary>
 		/// Contains the key.
 		/// </summary>
@@ -46,5 +47,6 @@ namespace MangaRack.Core {
 		/// </summary>
 		[XmlAttribute]
 		public string Type { get; set; }
+		#endregion
 	}
 }
