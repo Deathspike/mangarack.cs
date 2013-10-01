@@ -39,9 +39,9 @@ namespace MangaRack.Provider.Batoto {
 				// Find each image element ...
 				Http.Get(HtmlEntity.DeEntitize(HtmlDocument.DocumentNode.Descendants("img")
 					// ... find the comic image ...
-					.First(x => HtmlEntity.DeEntitize(x.GetAttributeValue("alt", string.Empty)).EndsWith("Batoto!"))
+					.First(x => HtmlEntity.DeEntitize(x.GetAttributeValue("alt", string.Empty)).Trim().EndsWith("Batoto!"))
 					// ... and download the source image.
-					.GetAttributeValue("src", string.Empty)), (ImageResponse) => {
+					.GetAttributeValue("src", string.Empty)).Trim(), (ImageResponse) => {
 						// Set the image.
 						Image = ImageResponse.AsBinary();
 						// Invoke the callback.

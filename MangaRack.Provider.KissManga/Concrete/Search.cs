@@ -50,9 +50,9 @@ namespace MangaRack.Provider.KissManga {
 				// Find each anchor element ...
 				Results = HtmlDocument.DocumentNode.Descendants("a")
 					// ... with a references indicating a series ...
-					.Where(x => Regex.Match(HtmlEntity.DeEntitize(x.GetAttributeValue("href", string.Empty)), "^(?!http).*/manga/([^/]+?)/?$", RegexOptions.IgnoreCase).Success)
+					.Where(x => Regex.Match(HtmlEntity.DeEntitize(x.GetAttributeValue("href", string.Empty)).Trim(), "^(?!http).*/manga/([^/]+?)/?$", RegexOptions.IgnoreCase).Success)
 					// ... select the results ...
-					.Select(x => new Series(Provider.Domain + HtmlEntity.DeEntitize(x.Attributes["href"].Value), HtmlEntity.DeEntitize(x.InnerText).Trim()) as ISeries)
+					.Select(x => new Series(Provider.Domain + HtmlEntity.DeEntitize(x.Attributes["href"].Value).Trim(), HtmlEntity.DeEntitize(x.InnerText).Trim()) as ISeries)
 					// ... and create a list.
 					.ToList();
 				// Invoke the callback.
