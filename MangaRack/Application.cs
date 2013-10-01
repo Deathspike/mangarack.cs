@@ -4,7 +4,6 @@
 // this file, you can obtain one at http://mozilla.org/MPL/2.0/.
 // ======================================================================
 using CommandLine;
-using ICSharpCode.SharpZipLib.Zip;
 using MangaRack.Core;
 using MangaRack.Provider;
 using MangaRack.Provider.Batoto;
@@ -175,77 +174,16 @@ namespace MangaRack {
 					foreach (IChapter Chapter in Series.Chapters.Filter(Options)) {
 						// Use the chapter and dispose of it when done.
 						using (Chapter) {
-							// Initialize the file name.
-							string FileName = string.Format(Chapter.Volume == -1 ? "{0} #{2}.{3}" : "{0} V{1} #{2}.{3}", Title, Chapter.Volume.ToString("00"), Chapter.Number.ToString("000.####"), Options.FileExtension.InvalidatePath());
 							// Initialize the file path.
-							string FilePath = Path.Combine(Title, FileName);
-							// Check if the file should be downloaded.
+							string FilePath = Path.Combine(Title, string.Format(Chapter.Volume == -1 ? "{0} #{2}.{3}" : "{0} V{1} #{2}.{3}", Title, Chapter.Volume.ToString("00"), Chapter.Number.ToString("000.####"), Options.FileExtension.InvalidatePath()));
+							// Check if the file should be synchronized.
 							if (Options.DisableDuplicationPrevention || !File.Exists(FilePath)) {
-								// Initialize a new instance of the BrokenPages class.
-								List<string> BrokenPages = new List<string>();
-								// Initialize a new instance of the List class.
-								List<ComicInfoPage> MetaInformation = new List<ComicInfoPage>();
-								// Initialize the temporary file path.
-								string TempFilePath = Path.GetTempFileName();
-								// Initialize the time.
-								long Time = DateTime.Now.Ticks;
-								// Initialize a new instance of the FileStream class.
-								using (FileStream FileStream = File.Open(TempFilePath, FileMode.Create)) {
-									// Set the temporary file path.
-									TempFilePath = FileStream.Name;
-									// Write the message.
-									Console.WriteLine("Fetching {0}", FileName);
-									// Initialize a new instance of the ZipOutputStream class.
-									using (ZipOutputStream ZipOutputStream = new ZipOutputStream(FileStream)) {
-										// Initialize the page number.
-										int PageNumber = 1;
-										// Check if the preview image is valid, write it to the stream and add meta-information to the collection.
-										if (Series.PreviewImage != null && Utilities.Write(MetaInformation, ZipOutputStream, Series.PreviewImage)) {
-											// Set the image type for the meta-information.
-											MetaInformation[0].Type = "FrontCover";
-										}
-										// Iterate through each page.
-										foreach (IPage Page in Chapter.Populate().Pages.Select(x => x.Populate())) {
-											// Use the page and dispose of it when done.
-											using (Page) {
-												// Write the processed image to the stream and add meta-information to the collection.
-												if (!Utilities.Write(MetaInformation, ZipOutputStream, Utilities.Image(Options, Provider, Page.Image))) {
-													// Write the message.
-													Console.WriteLine("Broken page #{0} in {1}", PageNumber.ToString("000"), FileName);
-													// Add the broken page.
-													BrokenPages.Add(string.Format("{0}: {1}", PageNumber.ToString("000"), Page.UniqueIdentifier));
-												}
-												// Increment the page number.
-												PageNumber++;
-											}
-										}
-										// Check if meta-information is not disabled.
-										if (!Options.DisableMetaInformation) {
-											// Write the meta-information to the stream.
-											Utilities.Write(ZipOutputStream, Series, Chapter, MetaInformation);
-										}
-									}
-								}
-								// Check if the series directory does not exist.
-								if (!Directory.Exists(Title)) {
-									// Create the directory for the series.
-									Directory.CreateDirectory(Title);
-								}
-								// Move the temporary file to the file path.
-								File.Copy(TempFilePath, FilePath, true);
-								// Delete the temporary file.
-								File.Delete(TempFilePath);
-								// Check if a page is broken.
-								if (BrokenPages.Count != 0) {
-									// Write the broken page information.
-									File.WriteAllLines(string.Format("{0}.txt", FilePath), BrokenPages);
-								}
-								// Check if a page has been processed.
-								if (MetaInformation.Count != 0) {
-									// Initialize the elapsed time.
-									TimeSpan Elapsed = new TimeSpan(DateTime.Now.Ticks - Time);
-									// Write the message.
-									Console.WriteLine("Finished {0} ({1}:{2}, {3}s/Page)", FileName, Elapsed.Minutes.ToString("00"), Elapsed.Seconds.ToString("00"), (Elapsed.TotalSeconds / MetaInformation.Count).ToString("0.0"));
+								// Initialize a new instance of the Publisher class.
+								using (Publisher Publisher = new Publisher(FilePath, Options, Provider))
+								// Initialize a new instance of the Synchronizer class.
+								using (Synchronizer Synchronizer = new Synchronizer(Publisher, Series, Chapter.Populate())) {
+									// Populate synchronously.
+									Synchronizer.Populate();
 								}
 							}
 						}

@@ -1,0 +1,274 @@
+﻿// ======================================================================
+// This source code form is subject to the terms of the Mozilla Public
+// License, version 2.0. If a copy of the MPL was not distributed with 
+// this file, you can obtain one at http://mozilla.org/MPL/2.0/.
+// ======================================================================
+using ICSharpCode.SharpZipLib.Zip;
+using MangaRack.Core;
+using MangaRack.Provider;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+
+namespace MangaRack {
+	/// <summary>
+	/// Represents a publisher.
+	/// </summary>
+	sealed class Publisher : IDisposable, IPublisher {
+		/// <summary>
+		/// Contains the begin time.
+		/// </summary>
+		private long _BeginTime;
+
+		/// <summary>
+		/// Contains the file path.
+		/// </summary>
+		private string _FilePath;
+
+		/// <summary>
+		/// Contains the file stream.
+		/// </summary>
+		private FileStream _FileStream;
+
+		/// <summary>
+		/// Contains the last page number.
+		/// </summary>
+		private int _LastPageNumber;
+
+		/// <summary>
+		/// Contains a collection of options.
+		/// </summary>
+		private Options _Options;
+
+		/// <summary>
+		/// Contains the provider.
+		/// </summary>
+		private IProvider _Provider;
+
+		/// <summary>
+		/// Containst the compressed output stream.
+		/// </summary>
+		private ZipOutputStream _ZipOutputStream;
+
+		#region Constructor
+		/// <summary>
+		/// Initialize a new instance of the Publisher class.
+		/// </summary>
+		/// <param name="FilePath">The file path.</param>
+		/// <param name="Options">The collection of options.</param>
+		/// <param name="Provider">The provider.</param>
+		public Publisher(string FilePath, Options Options, IProvider Provider) {
+			// Write the message.
+			Console.WriteLine("Fetching {0}", Path.GetFileName(FilePath));
+			// Initialize properties.
+			if (true) {
+				// Set the begin time.
+				_BeginTime = DateTime.Now.Ticks;
+				// Set the file path.
+				_FilePath = FilePath;
+				// Set the file stream.
+				_FileStream = File.Open(Path.GetTempFileName(), FileMode.Create);
+				// Set the collection of options.
+				_Options = Options;
+				// Set the provider.
+				_Provider = Provider;
+				// Set the compressed output stream.
+				_ZipOutputStream = new ZipOutputStream(_FileStream);
+			}
+		}
+		#endregion
+
+		#region IDisposable
+		/// <summary>
+		/// Dispose of the object.
+		/// </summary>
+		public void Dispose() {
+			// Dispose of the compressed output stream.
+			_ZipOutputStream.Dispose();
+			// Dispose of the file stream.
+			_FileStream.Dispose();
+			// Check if the file does exist.
+			if (File.Exists(_FileStream.Name)) {
+				// Check if the series directory does not exist.
+				if (!Directory.Exists(Path.GetDirectoryName(_FilePath))) {
+					// Create the directory for the series.
+					Directory.CreateDirectory(Path.GetDirectoryName(_FilePath));
+				}
+				// Move the temporary file to the file path.
+				File.Copy(_FileStream.Name, _FilePath, true);
+				// Delete the temporary file.
+				File.Delete(_FileStream.Name);
+				// Calculate the elapsed time.
+				if (true) {
+					// Initialize the elapsed time.
+					TimeSpan Elapsed = new TimeSpan(DateTime.Now.Ticks - _BeginTime);
+					// Write the message.
+					Console.WriteLine("Finished {0} ({1}:{2}, {3}s/Page)", Path.GetFileName(_FilePath), Elapsed.Minutes.ToString("00"), Elapsed.Seconds.ToString("00"), (Elapsed.TotalSeconds / (_LastPageNumber == 0 ? 1 : _LastPageNumber)).ToString("0.0"));
+				}
+			}
+		}
+		#endregion
+
+		#region IPublisher
+		/// <summary>
+		/// Publish an image.
+		/// </summary>
+		/// <param name="Image">The image.</param>
+		/// <param name="PreviewImage">Indicates whether this is a preview image.</param>
+		/// <param name="Number">The number, when not a preview image.</param>
+		public ComicInfoPage Publish(byte[] Image, bool PreviewImage, int Number) {
+			// Create a bitmap from the byte array.
+			Bitmap Bitmap = Image.ToBitmap();
+			// Attempt the following code.
+			try {
+				// Initialize the image height.
+				int? ImageHeight = null;
+				// Initialize the image width.
+				int? ImageWidth = null;
+				// Initialize the page valid status.
+				bool IsValid = true;
+				// Check if the bitmap is invalid.
+				if (Bitmap == null) {
+					// Write the message.
+					Console.WriteLine("Broken page #{0} in {1}", Number.ToString("000"), Path.GetFileName(_FilePath));
+					// Set the page valid status to false.
+					IsValid = false;
+					// Initialize a new instance of the Bitmap class.
+					using (Bitmap BrokenBitmap = new Bitmap(128, 32)) {
+						// Initialize a new instance of the Graphics class.
+						using (Graphics Graphics = Graphics.FromImage(BrokenBitmap)) {
+							// Initialize a new instance of the RectangleF class.
+							RectangleF RectangleF = new RectangleF(0, 0, BrokenBitmap.Width, BrokenBitmap.Height);
+							// Initialize a new instance of the Font class.
+							Font Font = new Font("Tahoma", 10);
+							// Initialize a new instance of the StringFormat class.
+							StringFormat StringFormat = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
+							// Fill the rectangle with a white brush.
+							Graphics.FillRectangle(Brushes.White, RectangleF);
+							// Write the broken page information with a black brush.
+							Graphics.DrawString(string.Format("Broken page #{0}", Number.ToString("000")), Font, Brushes.Black, RectangleF, StringFormat);
+						}
+						// Set the image.
+						Image = BrokenBitmap.ToByteArray("png");
+						// Set the image height.
+						ImageHeight = BrokenBitmap.Height;
+						// Set the image width.
+						ImageWidth = BrokenBitmap.Width;
+					}
+				} else if (!PreviewImage) {
+					// Indicating whether saving is required.
+					bool RequiresSave = false;
+					// Check if animation framing is not disabled.
+					if (!_Options.DisableAnimationFraming) {
+						// Frame to the last available frame.
+						Bitmap Result = Bitmap.Frame();
+						// Check if the result is modified.
+						if (Bitmap != Result) {
+							// Set the bitmap.
+							Bitmap = Result;
+							// Set the required save state.
+							RequiresSave = true;
+						}
+					}
+					// Check if footer incision is not disabled.
+					if (!_Options.DisableFooterIncision && string.Equals(_Provider.UniqueIdentifier, "MangaFox")) {
+						// Crop the image to remove a textual addition.
+						Bitmap Result = Bitmap.Crop();
+						// Check if the result is modified.
+						if (Bitmap != Result) {
+							// Set the bitmap.
+							Bitmap = Result;
+							// Set the required save state.
+							RequiresSave = true;
+						}
+					}
+					// Check if image processing is not disabled.
+					if (!_Options.DisableImageProcessing) {
+						// Linear correction in RGB colour space.
+						Bitmap = Bitmap.Colour();
+						// Adjust contrast in RGB colour space.
+						Bitmap = Bitmap.Contrast();
+						// Sharpen using a gaussian sharpen filter.
+						Bitmap = Bitmap.Sharpen();
+						// Set the required save state.
+						RequiresSave = true;
+					}
+					// Check if saving is required.
+					if (RequiresSave) {
+						// Convert RGB colour space to grayscale when applicable.
+						Bitmap = !_Options.DisableGrayscaleSizeComparisonAndSave ? Bitmap.Grayscale() : Bitmap;
+						// Create a byte array from the bitmapy.
+						Image = Bitmap.ToByteArray(Image.DetectImageFormat());
+					} else if (!_Options.DisableGrayscaleSizeComparisonAndSave && Image.DetectImageFormat().Equals("png")) {
+						// Create a byte array from the bitmapy.
+						byte[] CompareImage = (Bitmap = Bitmap.Grayscale()).ToByteArray(Image.DetectImageFormat());
+						// Check if the image to compare has a smaller file size.
+						if (CompareImage.Length < Image.Length) {
+							// Set the image.
+							Image = CompareImage;
+						}
+					}
+				}
+				// Save the image.
+				if (true) {
+					// Initialize the file name.
+					string Key = string.Format("{0}.{1}", Number.ToString("000"), Image.DetectImageFormat());
+					// Set the last page number.
+					_LastPageNumber = Number;
+					// Write a file for the bitmap.
+					_ZipOutputStream.PutNextEntry(new ZipEntry(Key));
+					// Write the image.
+					_ZipOutputStream.Write(Image, 0, Image.Length);
+					// Close the file entry.
+					_ZipOutputStream.CloseEntry();
+					// Return comic page information ...
+					return new ComicInfoPage {
+						// ... with the image height ...
+						ImageHeight = ImageHeight ?? Bitmap.Height,
+						// ... with the key ...
+						Key = Key,
+						// ... with the image size ...
+						ImageSize = Image.Length,
+						// ... with the image width ...
+						ImageWidth = ImageWidth ?? Bitmap.Width,
+						// ... with the type.
+						Type = IsValid ? (PreviewImage ? "FrontCover" : null) : "Deleted"
+					};
+				}
+			} finally {
+				// Check if the bitmap is valid.
+				if (Bitmap != null) {
+					// Dispose of the bitmap.
+					Bitmap.Dispose();
+				}
+			}
+		}
+
+		/// <summary>
+		/// Publish comic information.
+		/// </summary>
+		/// <param name="ComicInfo">The comic information.</param>
+		public void Publish(ComicInfo ComicInfo) {
+			// Check if meta-information is not disabled.
+			if (!_Options.DisableMetaInformation) {
+				//  Write a file entry for the comic information.
+				_ZipOutputStream.PutNextEntry(new ZipEntry("ComicInfo.xml"));
+				// Save the comic information.
+				ComicInfo.Save(_ZipOutputStream);
+				// Close the file entry.
+				_ZipOutputStream.CloseEntry();
+			}
+		}
+
+		/// <summary>
+		/// Publish broken page information.
+		/// </summary>
+		/// <param name="BrokenPages">The broken pages.</param>
+		public void Publish(IEnumerable<string> BrokenPages) {
+			// Write broken page information.
+			File.WriteAllLines(string.Format("{0}.txt", _FilePath), BrokenPages);
+		}
+		#endregion
+	}
+}
