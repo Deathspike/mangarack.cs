@@ -57,7 +57,7 @@ namespace MangaRack.Provider.Batoto {
 					// Check if a link allowing switching to traditional reading mode is available.
 					if ((HtmlNode = HtmlDocument.DocumentNode.Descendants("a").FirstOrDefault(x => HtmlEntity.DeEntitize(x.GetAttributeValue("href", string.Empty)).Equals("?supress_webtoon=t"))) != null) {
 						// Set the address.
-						Address = Address + HtmlEntity.DeEntitize(HtmlNode.Attributes["href"].Value);
+						Address = Address + HtmlEntity.DeEntitize(HtmlNode.Attributes["href"].Value).Trim();
 						// Invoke the next handler.
 						Next();
 						// Stop the function.
@@ -66,15 +66,15 @@ namespace MangaRack.Provider.Batoto {
 					// Find each select element ...
 					Pages = HtmlDocument.DocumentNode.Descendants("select")
 						// ... with the page selection name ...
-						.Where(x => HtmlEntity.DeEntitize(x.GetAttributeValue("name", string.Empty)).Equals("page_select"))
+						.Where(x => HtmlEntity.DeEntitize(x.GetAttributeValue("name", string.Empty)).Trim().Equals("page_select"))
 						// ... select each option element ...
 						.Select(x => x.Descendants("option"))
 						// ... select the first set of elements ...
 						.First()
 						// ... with a value pointing to a read page ...
-						.Where(x => HtmlEntity.DeEntitize(x.GetAttributeValue("value", string.Empty)).Contains("/read/"))
+						.Where(x => HtmlEntity.DeEntitize(x.GetAttributeValue("value", string.Empty)).Trim().Contains("/read/"))
 						// ... select each page ...
-						.Select(x => new Page(HtmlEntity.DeEntitize(x.GetAttributeValue("value", string.Empty))) as IPage)
+						.Select(x => new Page(HtmlEntity.DeEntitize(x.GetAttributeValue("value", string.Empty)).Trim()) as IPage)
 						// ... and create a list.
 						.ToList();
 					// Invoke the callback.

@@ -46,9 +46,9 @@ namespace MangaRack.Provider.MangaFox {
 				// Find each anchor element ...
 				Results = HtmlDocument.DocumentNode.Descendants("a")
 					// ... with a references indicating a series ...
-					.Where(x => Regex.Match(HtmlEntity.DeEntitize(x.GetAttributeValue("href", string.Empty)), "/manga/([^/]+?)/?$", RegexOptions.IgnoreCase).Success)
+					.Where(x => Regex.Match(HtmlEntity.DeEntitize(x.GetAttributeValue("href", string.Empty)).Trim(), "/manga/([^/]+?)/?$", RegexOptions.IgnoreCase).Success)
 					// ... select the results ...
-					.Select(x => new Series(HtmlEntity.DeEntitize(x.Attributes["href"].Value), HtmlEntity.DeEntitize(x.InnerText).Trim()) as ISeries)
+					.Select(x => new Series(HtmlEntity.DeEntitize(x.Attributes["href"].Value).Trim(), HtmlEntity.DeEntitize(x.InnerText).Trim()) as ISeries)
 					// ... and create a list.
 					.ToList();
 				// Invoke the callback.
