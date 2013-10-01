@@ -54,6 +54,7 @@
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Concrete\StreamDataSource.cs" />
     <Compile Include="Extension\ExtensionForBitmap.cs" />
     <Compile Include="Extension\ExtensionForByteArray.cs" />
     <Compile Include="Extension\ExtensionForChapter.cs" />

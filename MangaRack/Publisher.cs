@@ -47,9 +47,9 @@ namespace MangaRack {
 		private IProvider _Provider;
 
 		/// <summary>
-		/// Containst the compressed output stream.
+		/// Containst the compressed file.
 		/// </summary>
-		private ZipOutputStream _ZipOutputStream;
+		private ZipFile _ZipFile;
 
 		#region Constructor
 		/// <summary>
@@ -73,8 +73,8 @@ namespace MangaRack {
 				_Options = Options;
 				// Set the provider.
 				_Provider = Provider;
-				// Set the compressed output stream.
-				_ZipOutputStream = new ZipOutputStream(_FileStream);
+				// Set the compressed file.
+				_ZipFile = ZipFile.Create(_FileStream);
 			}
 		}
 		#endregion
@@ -84,8 +84,6 @@ namespace MangaRack {
 		/// Dispose of the object.
 		/// </summary>
 		public void Dispose() {
-			// Dispose of the compressed output stream.
-			_ZipOutputStream.Dispose();
 			// Dispose of the file stream.
 			_FileStream.Dispose();
 			// Check if the file does exist.
@@ -216,12 +214,12 @@ namespace MangaRack {
 					string Key = string.Format("{0}.{1}", Number.ToString("000"), Image.DetectImageFormat());
 					// Set the last page number.
 					_LastPageNumber = Number;
-					// Write a file for the bitmap.
-					_ZipOutputStream.PutNextEntry(new ZipEntry(Key));
-					// Write the image.
-					_ZipOutputStream.Write(Image, 0, Image.Length);
-					// Close the file entry.
-					_ZipOutputStream.CloseEntry();
+					// Begin updating the compressed file.
+					_ZipFile.BeginUpdate();
+					// Add the file.
+					_ZipFile.Add(new StreamDataSource(Image), Key);
+					// End updating the compressed file.
+					_ZipFile.CommitUpdate();
 					// Return comic page information ...
 					return new ComicInfoPage {
 						// ... with the image height ...
@@ -252,12 +250,19 @@ namespace MangaRack {
 		public void Publish(ComicInfo ComicInfo) {
 			// Check if meta-information is not disabled.
 			if (!_Options.DisableMetaInformation) {
-				//  Write a file entry for the comic information.
-				_ZipOutputStream.PutNextEntry(new ZipEntry("ComicInfo.xml"));
-				// Save the comic information.
-				ComicInfo.Save(_ZipOutputStream);
-				// Close the file entry.
-				_ZipOutputStream.CloseEntry();
+				// Initialize a new instance of the MemoryStream class.
+				using (MemoryStream MemoryStream = new MemoryStream()) {
+					// Save the comic information.
+					ComicInfo.Save(MemoryStream);
+					// Rewind the stream.
+					MemoryStream.Position = 0;
+					// Begin updating the compressed file.
+					_ZipFile.BeginUpdate();
+					// Add the file.
+					_ZipFile.Add(new StreamDataSource(MemoryStream), "ComicInfo.xml");
+					// End updating the compressed file.
+					_ZipFile.CommitUpdate();
+				}
 			}
 		}
 
