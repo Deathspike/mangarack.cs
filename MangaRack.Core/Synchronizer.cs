@@ -59,6 +59,8 @@ namespace MangaRack.Core {
 			} else {
 				// Initialize a new instance of the BrokenPages class.
 				List<string> BrokenPages = new List<string>();
+				// Initialize the comic page information.
+				ComicInfoPage ComicInfoPage;
 				// Initialize the next handler.
 				Action Next = null;
 				// Initialize the number.
@@ -77,11 +79,14 @@ namespace MangaRack.Core {
 					// Use the page and dispose of it when done.
 					using (Page) {
 						// Publish the page.
-						MetaPages.Add(_Publisher.Publish(Page.Image, false, Number));
-						// Check if the page is a broken page.
-						if (string.Equals(MetaPages[MetaPages.Count - 1].Type, "Deleted")) {
-							// Add the broken page.
-							BrokenPages.Add(string.Format("{0}: {1}", Number.ToString("000"), Page.UniqueIdentifier));
+						if ((ComicInfoPage = _Publisher.Publish(Page.Image, false, Number)) != null) {
+							// Add the page.
+							MetaPages.Add(ComicInfoPage);
+							// Check if the page is a broken page.
+							if (string.Equals(ComicInfoPage.Type, "Deleted")) {
+								// Add the broken page.
+								BrokenPages.Add(string.Format("{0}: {1}", Number.ToString("000"), Page.UniqueIdentifier));
+							}
 						}
 					}
 					// Advance the enumerator to the next element.

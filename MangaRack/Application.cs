@@ -179,11 +179,12 @@ namespace MangaRack {
 							// Check if the file should be synchronized.
 							if (Options.DisableDuplicationPrevention || !File.Exists(FilePath)) {
 								// Initialize a new instance of the Publisher class.
-								using (Publisher Publisher = new Publisher(FilePath, Options, Provider))
-								// Initialize a new instance of the Synchronizer class.
-								using (Synchronizer Synchronizer = new Synchronizer(Publisher, Series, Chapter.Populate())) {
-									// Populate synchronously.
-									Synchronizer.Populate();
+								using (Publisher Publisher = new Publisher(FilePath, Options, Provider)) {
+									// Initialize a new instance of the Synchronizer class.
+									using (Synchronizer Synchronizer = new Synchronizer(Publisher, Series, Chapter.Populate())) {
+										// Populate synchronously.
+										Synchronizer.Populate();
+									}
 								}
 							}
 						}
