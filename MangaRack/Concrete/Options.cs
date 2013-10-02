@@ -81,6 +81,12 @@ namespace MangaRack {
 		public bool DisableMetaInformation { get; set; }
 
 		/// <summary>
+		/// Indicates whether repair and error tracking is disabled.
+		/// </summary>
+		[Option('r', "repair", HelpText = "Disable repair and error tracking.")]
+		public bool DisableRepairAndErrorTracking { get; set; }
+
+		/// <summary>
 		/// Indicates whether total elapsed time notification is disabled.
 		/// </summary>
 		[Option('t', "total", HelpText = "Disable total elapsed time notification.")]

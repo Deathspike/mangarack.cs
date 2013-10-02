@@ -38,6 +38,7 @@ MangaRack is a console application. A number of options and filters are availabl
 	-i, --image          Disable image processing.
 	-k, --keep-alive     Disable keep-alive behavior.
 	-m, --meta           Disable embedded meta information.
+	-r, --repair         Disable repair and error tracking.
 	-t, --total          Disable total elapsed time notification.
 	-w, --worker         Disable worker threads.
 	-e, --extension      The file extension for each output file. (Default: cbz)
@@ -72,6 +73,10 @@ The toggle to disable keep-alive behavior. This is the process of pausing the co
 #### --meta (-m)
 
 The toggle to disable embedded meta-information. This is the process of creating and embedding a `ComicInfo.xml` file to each synchronized archive. The feature was added to give applications capable of handling meta-information (such as ComicRack) detailed information about the series and chapter.
+
+#### --repair (-r)
+
+The toggle to disable repair and error tracking. This is the process of generating an additional error file when encountering a broken page and repairing archives with broken pages. The feature was added to allow repairing of comic archives without requiring full re-synchronization or manual management.
 
 #### --total (-t)
 
