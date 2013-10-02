@@ -187,7 +187,7 @@ namespace MangaRack {
 										Synchronizer.Populate();
 									}
 								}
-							} else if (File.Exists(string.Format("{0}.txt", FilePath))) {
+							} else if (!Options.DisableRepairAndErrorTracking && File.Exists(string.Format("{0}.txt", FilePath))) {
 								// Initialize the comic information.
 								ComicInfo ComicInfo = null;
 								// Initialize whether there are broken pages.

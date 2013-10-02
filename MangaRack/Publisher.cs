@@ -293,7 +293,7 @@ namespace MangaRack {
 		/// </summary>
 		/// <param name="ComicInfo">The comic information.</param>
 		public void Publish(ComicInfo ComicInfo) {
-			// Check if meta-information is not disabled or the publisher is repairing.
+			// Check if meta-information is not disabled or check if repairing.
 			if (_IsRepairing || !_Options.DisableMetaInformation) {
 				// Initialize a new instance of the MemoryStream class.
 				using (MemoryStream MemoryStream = new MemoryStream()) {
@@ -316,10 +316,13 @@ namespace MangaRack {
 		/// </summary>
 		/// <param name="BrokenPages">Each broken page.</param>
 		public void Publish(IEnumerable<string> BrokenPages) {
-			// Set whether there are broken pages.
-			HasBrokenPages = true;
-			// Write broken page information.
-			File.WriteAllLines(string.Format("{0}.txt", _FilePath), BrokenPages);
+			// Check if repair and error tracking is not disabled
+			if (!_Options.DisableRepairAndErrorTracking) {
+				// Set whether there are broken pages.
+				HasBrokenPages = true;
+				// Write broken page information.
+				File.WriteAllLines(string.Format("{0}.txt", _FilePath), BrokenPages);
+			}
 		}
 		#endregion
 	}
