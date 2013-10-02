@@ -4,6 +4,7 @@
 // this file, you can obtain one at http://mozilla.org/MPL/2.0/.
 // ======================================================================
 using CommandLine;
+using ICSharpCode.SharpZipLib.Zip;
 using MangaRack.Core;
 using MangaRack.Provider;
 using MangaRack.Provider.Batoto;
@@ -181,10 +182,52 @@ namespace MangaRack {
 								// Initialize a new instance of the Publisher class.
 								using (Publisher Publisher = new Publisher(FilePath, Options, Provider)) {
 									// Initialize a new instance of the Synchronizer class.
-									using (Synchronizer Synchronizer = new Synchronizer(Publisher, Series, Chapter.Populate())) {
+									using (Synchronize Synchronizer = new Synchronize(Publisher, Series, Chapter.Populate())) {
 										// Populate synchronously.
 										Synchronizer.Populate();
 									}
+								}
+							} else if (File.Exists(string.Format("{0}.txt", FilePath))) {
+								// Initialize the comic information.
+								ComicInfo ComicInfo = null;
+								// Initialize whether there are broken pages.
+								bool HasBrokenPages = false;
+								// Initialize whether repairing has failed.
+								bool HasFailed = false;
+								// Initialize a new instance of the ZipFile class.
+								using (ZipFile ZipFile = new ZipFile(FilePath)) {
+									// Find the comic information.
+									ZipEntry ZipEntry = ZipFile.GetEntry("ComicInfo.xml");
+									// Check if comic information is available.
+									if (ZipEntry == null) {
+										// Stop the function.
+										return;
+									} else {
+										// Load the comic information.
+										ComicInfo = ComicInfo.Load(ZipFile.GetInputStream(ZipEntry));
+									}
+								}
+								// Initialize a new instance of the Publisher class.
+								using (Publisher Publisher = new Publisher(FilePath, Options, Provider, true)) {
+									// Initialize a new instance of the Repair class.
+									using (Repair Repair = new Repair(Publisher, Series, Chapter.Populate(), ComicInfo, File.ReadAllLines(string.Format("{0}.txt", FilePath)))) {
+										// Populate synchronously.
+										Repair.Populate();
+										// Set whether there are broken pages.
+										HasBrokenPages = Publisher.HasBrokenPages;
+										// Set whether repairing has failed.
+										HasFailed = Publisher.HasFailed = Repair.HasFailed;
+									}
+								}
+								// Check if there are no broken pages.
+								if (!HasBrokenPages) {
+									// Delete the error file.
+									File.Delete(string.Format("{0}.txt", FilePath));
+								}
+								// Check if repairing has failed.
+								if (HasFailed) {
+									// Run in single processing mode for the unique identifier.
+									Single(Options, UniqueIdentifier);
 								}
 							}
 						}

@@ -47,8 +47,9 @@
     <Compile Include="Concrete\ComicInfoPage.cs" />
     <Compile Include="Concrete\ComicInfoPageCollection.cs" />
     <Compile Include="Concrete\ComicInfoSplitter.cs" />
+    <Compile Include="Publisher\Repair.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Synchronizer.cs" />
+    <Compile Include="Publisher\Synchronize.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

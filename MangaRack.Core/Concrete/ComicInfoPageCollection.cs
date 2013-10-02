@@ -5,6 +5,7 @@
 // ======================================================================
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
@@ -71,7 +72,7 @@ namespace MangaRack.Core {
 				// Initialize a new instance of the XmlSerializer class.
 				XmlSerializer XmlSerializer = new XmlSerializer(typeof(ComicInfoPage));
 				// Iterate through each page.
-				foreach (ComicInfoPage ComicInfoPage in this) {
+				foreach (ComicInfoPage ComicInfoPage in this.OrderBy(x => x.Image)) {
 					// Add the serialized page.
 					XmlSerializer.Serialize(XmlWriter, ComicInfoPage);
 				}
