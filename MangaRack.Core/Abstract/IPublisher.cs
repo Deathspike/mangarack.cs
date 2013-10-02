@@ -28,7 +28,7 @@ namespace MangaRack.Core {
 		/// <summary>
 		/// Publish broken page information.
 		/// </summary>
-		/// <param name="BrokenPages">The broken pages.</param>
+		/// <param name="BrokenPages">Each broken page.</param>
 		void Publish(IEnumerable<string> BrokenPages);
 		#endregion
 	}

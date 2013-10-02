@@ -9,9 +9,9 @@ using System.Collections.Generic;
 
 namespace MangaRack.Core {
 	/// <summary>
-	/// Represents a synchronizer publisher.
+	/// Represents a synchronize publisher.
 	/// </summary>
-	public sealed class Synchronizer : IAsync<Synchronizer> {
+	public sealed class Synchronize : IAsync<Synchronize> {
 		/// <summary>
 		/// Contains the chapter.
 		/// </summary>
@@ -29,12 +29,12 @@ namespace MangaRack.Core {
 
 		#region Constructor
 		/// <summary>
-		/// Initialize a new instance of the Synchronizer class.
+		/// Initialize a new instance of the Synchronize class.
 		/// </summary>
 		/// <param name="Publisher">The publisher.</param>
 		/// <param name="Series">The series.</param>
 		/// <param name="Chapter">The chapter.</param>
-		public Synchronizer(IPublisher Publisher, ISeries Series, IChapter Chapter) {
+		public Synchronize(IPublisher Publisher, ISeries Series, IChapter Chapter) {
 			// Set the chapter.
 			_Chapter = Chapter;
 			// Set the publisher.
@@ -49,7 +49,7 @@ namespace MangaRack.Core {
 		/// Populate asynchronously.
 		/// </summary>
 		/// <param name="Done">The callback.</param>
-		public void Populate(Action<Synchronizer> Done) {
+		public void Populate(Action<Synchronize> Done) {
 			// Initialize the page enumerator.
 			IEnumerator<IPage> Pages = _Chapter.Pages.GetEnumerator();
 			// Advance the enumerator to the next element.

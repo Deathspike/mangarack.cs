@@ -32,9 +32,14 @@ namespace MangaRack {
 		private FileStream _FileStream;
 
 		/// <summary>
-		/// Contains the last page number.
+		/// Indicates whether the publisher is repairing.
 		/// </summary>
-		private int _LastPageNumber;
+		private bool _IsRepairing;
+
+		/// <summary>
+		/// Contains the number of pages.
+		/// </summary>
+		private int _NumberOfPages;
 
 		/// <summary>
 		/// Contains a collection of options.
@@ -58,9 +63,22 @@ namespace MangaRack {
 		/// <param name="FilePath">The file path.</param>
 		/// <param name="Options">The collection of options.</param>
 		/// <param name="Provider">The provider.</param>
-		public Publisher(string FilePath, Options Options, IProvider Provider) {
+		public Publisher(string FilePath, Options Options, IProvider Provider)
+			: this(FilePath, Options, Provider, false) {
+			// Stop the function.
+			return;
+		}
+
+		/// <summary>
+		/// Initialize a new instance of the Publisher class.
+		/// </summary>
+		/// <param name="FilePath">The file path.</param>
+		/// <param name="Options">The collection of options.</param>
+		/// <param name="Provider">The provider.</param>
+		/// <param name="IsRepairing">Indicates whether the publisher is repairing.</param>
+		public Publisher(string FilePath, Options Options, IProvider Provider, bool IsRepairing) {
 			// Write the message.
-			Console.WriteLine("Fetching {0}", Path.GetFileName(FilePath));
+			Console.WriteLine("{0} {1}", IsRepairing ? "Checking" : "Fetching", Path.GetFileName(FilePath));
 			// Initialize properties.
 			if (true) {
 				// Set the begin time.
@@ -68,15 +86,29 @@ namespace MangaRack {
 				// Set the file path.
 				_FilePath = FilePath;
 				// Set the file stream.
-				_FileStream = File.Open(Path.GetTempFileName(), FileMode.Create);
+				_FileStream = File.Open(IsRepairing ? FilePath : Path.GetTempFileName(), FileMode.OpenOrCreate);
+				// Set whether the publisher is repairing.
+				_IsRepairing = IsRepairing;
 				// Set the collection of options.
 				_Options = Options;
 				// Set the provider.
 				_Provider = Provider;
 				// Set the compressed file.
-				_ZipFile = ZipFile.Create(_FileStream);
+				_ZipFile = IsRepairing ? new ZipFile(_FileStream) : ZipFile.Create(_FileStream);
 			}
 		}
+		#endregion
+
+		#region Properties
+		/// <summary>
+		/// Indicates whether there are broken pages.
+		/// </summary>
+		public bool HasBrokenPages { get; set; }
+
+		/// <summary>
+		/// Indicates whether repairing has failed.
+		/// </summary>
+		public bool HasFailed { get; set; }
 		#endregion
 
 		#region IDisposable
@@ -88,21 +120,30 @@ namespace MangaRack {
 			_FileStream.Dispose();
 			// Check if the file does exist.
 			if (File.Exists(_FileStream.Name)) {
-				// Check if the series directory does not exist.
-				if (!Directory.Exists(Path.GetDirectoryName(_FilePath))) {
-					// Create the directory for the series.
-					Directory.CreateDirectory(Path.GetDirectoryName(_FilePath));
+				// Check if the publisher is not repairing.
+				if (!_IsRepairing) {
+					// Check if the series directory does not exist.
+					if (!Directory.Exists(Path.GetDirectoryName(_FilePath))) {
+						// Create the directory for the series.
+						Directory.CreateDirectory(Path.GetDirectoryName(_FilePath));
+					}
+					// Move the temporary file to the file path.
+					File.Copy(_FileStream.Name, _FilePath, true);
+					// Delete the temporary file.
+					File.Delete(_FileStream.Name);
+				} else if (HasFailed) {
+					// Delete the file.
+					File.Delete(_FilePath);
 				}
-				// Move the temporary file to the file path.
-				File.Copy(_FileStream.Name, _FilePath, true);
-				// Delete the temporary file.
-				File.Delete(_FileStream.Name);
-				// Calculate the elapsed time.
-				if (true) {
+				// Check if repairing has failed.
+				if (HasFailed) {
+					// Write the message.
+					Console.WriteLine("{0} {1}", "Squashed", Path.GetFileName(_FilePath));
+				} else {
 					// Initialize the elapsed time.
 					TimeSpan Elapsed = new TimeSpan(DateTime.Now.Ticks - _BeginTime);
 					// Write the message.
-					Console.WriteLine("Finished {0} ({1}:{2}, {3}s/Page)", Path.GetFileName(_FilePath), Elapsed.Minutes.ToString("00"), Elapsed.Seconds.ToString("00"), (Elapsed.TotalSeconds / (_LastPageNumber == 0 ? 1 : _LastPageNumber)).ToString("0.0"));
+					Console.WriteLine("Finished {0} ({1}:{2}, {3}s/Page)", Path.GetFileName(_FilePath), Elapsed.Minutes.ToString("00"), Elapsed.Seconds.ToString("00"), (Elapsed.TotalSeconds / (_NumberOfPages == 0 ? 1 : _NumberOfPages)).ToString("0.0"));
 				}
 			}
 		}
@@ -129,7 +170,7 @@ namespace MangaRack {
 				// Check if the bitmap is invalid.
 				if (Bitmap == null) {
 					// Write the message.
-					Console.WriteLine("Broken page #{0} in {1}", Number.ToString("000"), Path.GetFileName(_FilePath));
+					Console.WriteLine("Shredded {0}:#{1}", Path.GetFileName(_FilePath), Number.ToString("000"));
 					// Set the page valid status to false.
 					IsValid = false;
 					// Initialize a new instance of the Bitmap class.
@@ -212,24 +253,28 @@ namespace MangaRack {
 				if (true) {
 					// Initialize the file name.
 					string Key = string.Format("{0}.{1}", Number.ToString("000"), Image.DetectImageFormat());
-					// Set the last page number.
-					_LastPageNumber = Number;
+					// Increment the number of pages.
+					_NumberOfPages++;
 					// Begin updating the compressed file.
 					_ZipFile.BeginUpdate();
+					// Attempt to delete files matching the file name and extension.
+					_ZipFile.TryDelete(Number.ToString("000"), "bmp", "gif", "jpg", "png");
 					// Add the file.
 					_ZipFile.Add(new StreamDataSource(Image), Key);
 					// End updating the compressed file.
 					_ZipFile.CommitUpdate();
 					// Return comic page information ...
 					return new ComicInfoPage {
+						// ... with the image ...
+						Image = Number,
 						// ... with the image height ...
 						ImageHeight = ImageHeight ?? Bitmap.Height,
-						// ... with the key ...
-						Key = Key,
 						// ... with the image size ...
 						ImageSize = Image.Length,
 						// ... with the image width ...
 						ImageWidth = ImageWidth ?? Bitmap.Width,
+						// ... with the key ...
+						Key = Key,
 						// ... with the type.
 						Type = IsValid ? (PreviewImage ? "FrontCover" : null) : "Deleted"
 					};
@@ -248,8 +293,8 @@ namespace MangaRack {
 		/// </summary>
 		/// <param name="ComicInfo">The comic information.</param>
 		public void Publish(ComicInfo ComicInfo) {
-			// Check if meta-information is not disabled.
-			if (!_Options.DisableMetaInformation) {
+			// Check if meta-information is not disabled or the publisher is repairing.
+			if (_IsRepairing || !_Options.DisableMetaInformation) {
 				// Initialize a new instance of the MemoryStream class.
 				using (MemoryStream MemoryStream = new MemoryStream()) {
 					// Save the comic information.
@@ -269,8 +314,10 @@ namespace MangaRack {
 		/// <summary>
 		/// Publish broken page information.
 		/// </summary>
-		/// <param name="BrokenPages">The broken pages.</param>
+		/// <param name="BrokenPages">Each broken page.</param>
 		public void Publish(IEnumerable<string> BrokenPages) {
+			// Set whether there are broken pages.
+			HasBrokenPages = true;
 			// Write broken page information.
 			File.WriteAllLines(string.Format("{0}.txt", _FilePath), BrokenPages);
 		}
