@@ -224,12 +224,14 @@ namespace MangaRack {
 					}
 					// Check if image processing is not disabled.
 					if (!_Options.DisableImageProcessing) {
-						// Linear correction in RGB colour space.
-						Bitmap = Bitmap.Colour();
-						// Adjust contrast in RGB colour space.
-						Bitmap = Bitmap.Contrast();
 						// Sharpen using a gaussian sharpen filter.
 						Bitmap = Bitmap.Sharpen();
+						// Reduce noise using conservative smoothing.
+						Bitmap = Bitmap.Noise();
+						// Adjust contrast in RGB colour space.
+						Bitmap = Bitmap.Contrast();
+						// Linear correction in RGB colour space.
+						Bitmap = Bitmap.Colour();
 						// Set the required save state.
 						RequiresSave = true;
 					}

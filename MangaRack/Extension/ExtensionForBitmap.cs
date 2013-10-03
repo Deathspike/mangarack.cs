@@ -209,6 +209,21 @@ namespace MangaRack {
 		}
 
 		/// <summary>
+		/// Reduce noise using conservative smoothing.
+		/// </summary>
+		public static Bitmap Noise(this Bitmap Bitmap) {
+			// Convert grayscale to RGB colour space.
+			if ((Bitmap = Bitmap.Channel()) != null) {
+				// Initialize a new instance of the ConservativeSmoothing class.
+				var ConservativeSmoothing = new ConservativeSmoothing();
+				// Reduce noise while preserving detail.
+				ConservativeSmoothing.ApplyInPlace(Bitmap);
+			}
+			// Return the bitmap.
+			return Bitmap;
+		}
+
+		/// <summary>
 		/// Sharpen using a gaussian sharpen filter.
 		/// </summary>
 		public static Bitmap Sharpen(this Bitmap Bitmap) {
