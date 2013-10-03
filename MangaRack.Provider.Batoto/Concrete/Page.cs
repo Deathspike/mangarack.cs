@@ -34,19 +34,27 @@ namespace MangaRack.Provider.Batoto {
 			Http.Get(UniqueIdentifier + "?supress_webtoon=t", (HtmlResponse) => {
 				// Initialize a new instance of the HtmlDocument class.
 				HtmlDocument HtmlDocument = new HtmlDocument();
+				// Initialize a new instance of the HtmlNode class.
+				HtmlNode HtmlNode;
 				// Load the document.
 				HtmlDocument.LoadHtml(HtmlResponse.AsString());
-				// Find each image element ...
-				Http.Get(HtmlEntity.DeEntitize(HtmlDocument.DocumentNode.Descendants("img")
-					// ... find the comic image ...
-					.First(x => HtmlEntity.DeEntitize(x.GetAttributeValue("alt", string.Empty)).Trim().EndsWith("Batoto!"))
-					// ... and download the source image.
-					.GetAttributeValue("src", string.Empty)).Trim(), (ImageResponse) => {
+				// Find each image ...
+				if ((HtmlNode = HtmlDocument.DocumentNode.Descendants("img")
+					// ... whith an attribute indicating the main image ...
+					.Where(x => HtmlEntity.DeEntitize(x.GetAttributeValue("alt", string.Empty)).Trim().EndsWith("Batoto!"))
+					// ... use the first or default.
+					.FirstOrDefault()) != null) {
+					// Request the image.
+					Http.Get(HtmlEntity.DeEntitize(HtmlNode.GetAttributeValue("src", string.Empty)).Trim(), (ImageResponse) => {
 						// Set the image.
 						Image = ImageResponse.AsBinary();
 						// Invoke the callback.
 						Done(this);
 					});
+				} else {
+					// Invoke the callback.
+					Done(this);
+				}
 			});
 		}
 		#endregion

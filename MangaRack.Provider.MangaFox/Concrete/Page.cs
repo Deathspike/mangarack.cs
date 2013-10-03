@@ -35,16 +35,18 @@ namespace MangaRack.Provider.MangaFox {
 			Http.Get(UniqueIdentifier, (HtmlResponse) => {
 				// Initialize a new instance of the HtmlDocument class.
 				HtmlDocument HtmlDocument = new HtmlDocument();
+				// Initialize a new instance of the HtmlNode class.
+				HtmlNode HtmlNode;
 				// Load the document.
 				HtmlDocument.LoadHtml(HtmlResponse.AsString());
-				// Find each image element ...
-				Http.Get(HtmlEntity.DeEntitize(HtmlDocument.DocumentNode.Descendants("img")
+				// Find each image ...
+				if ((HtmlNode = HtmlDocument.DocumentNode.Descendants("img")
 					// ... whith an identifier indicating the main image ...
 					.Where(x => HtmlEntity.DeEntitize(x.GetAttributeValue("id", string.Empty)).Trim().Equals("image"))
-					// ... use the first ...
-					.First()
-					// ... and get the main image.
-					.GetAttributeValue("src", string.Empty)), (ImageResponse) => {
+					// ... use the first or default.
+					.FirstOrDefault()) != null) {
+					// Request the image.
+					Http.Get(HtmlEntity.DeEntitize(HtmlNode.GetAttributeValue("src", string.Empty)).Trim(), (ImageResponse) => {
 						// Check if the status code is invalid.
 						if (ImageResponse != null && ImageResponse.StatusCode != HttpStatusCode.OK) {
 							// Request an alternative resource using a GET.
@@ -61,6 +63,10 @@ namespace MangaRack.Provider.MangaFox {
 							Done(this);
 						}
 					});
+				} else {
+					// Invoke the callback.
+					Done(this);
+				}
 			});
 		}
 		#endregion

@@ -85,11 +85,11 @@ namespace MangaRack.Core {
 				bool HasComicInfo = false;
 				// Initialize a new instance of the BrokenPages class.
 				List<string> NewBrokenPages = new List<string>();
-				// Initialize the comic page information.
+				// Initialize the new comic page information.
 				ComicInfoPage NewComicInfoPage = null;
 				// Initialize the broken page enumerator.
 				IEnumerator<string> OldBrokenPages = _BrokenPages.GetEnumerator();
-				// Initialize the comic page information.
+				// Initialize the old comic page information.
 				ComicInfoPage OldComicInfoPage = null;
 				// Initialize the next handler.
 				Action Next = null;
