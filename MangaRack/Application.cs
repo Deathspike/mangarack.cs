@@ -168,66 +168,72 @@ namespace MangaRack {
 			// Check if the provider is valid.
 			if (Provider != null) {
 				// Initialize the series.
-				using (ISeries Series = Provider.Open(UniqueIdentifier).Populate()) {
-					// Initialize the series title.
-					string Title = Series.Title.InvalidatePath();
-					// Iterate through each chapter using the chapter and volume filters.
-					foreach (IChapter Chapter in Series.Chapters.Filter(Options)) {
-						// Use the chapter and dispose of it when done.
-						using (Chapter) {
+				using (ISeries Series = Provider.Open(UniqueIdentifier)) {
+					// Populate the series.
+					using (Series.Populate()) {
+						// Initialize the series title.
+						string Title = Series.Title.InvalidatePath();
+						// Iterate through each chapter using the chapter and volume filters.
+						foreach (IChapter Chapter in Series.Chapters.Filter(Options)) {
 							// Initialize the file path.
 							string FilePath = Path.Combine(Title, string.Format(Chapter.Volume == -1 ? "{0} #{2}.{3}" : "{0} V{1} #{2}.{3}", Title, Chapter.Volume.ToString("00"), Chapter.Number.ToString("000.####"), Options.FileExtension.InvalidatePath()));
 							// Check if the file should be synchronized.
 							if (Options.DisableDuplicationPrevention || !File.Exists(FilePath)) {
-								// Initialize a new instance of the Publisher class.
-								using (Publisher Publisher = new Publisher(FilePath, Options, Provider)) {
-									// Initialize a new instance of the Synchronizer class.
-									using (Synchronize Synchronizer = new Synchronize(Publisher, Series, Chapter.Populate())) {
-										// Populate synchronously.
-										Synchronizer.Populate();
+								// Populate the chapter.
+								using (Chapter.Populate()) {
+									// Initialize a new instance of the Publisher class.
+									using (Publisher Publisher = new Publisher(FilePath, Options, Provider)) {
+										// Initialize a new instance of the Synchronizer class.
+										using (Synchronize Synchronizer = new Synchronize(Publisher, Series, Chapter)) {
+											// Populate synchronously.
+											Synchronizer.Populate();
+										}
 									}
 								}
 							} else if (!Options.DisableRepairAndErrorTracking && File.Exists(string.Format("{0}.txt", FilePath))) {
-								// Initialize the comic information.
-								ComicInfo ComicInfo = null;
-								// Initialize whether there are broken pages.
-								bool HasBrokenPages = false;
-								// Initialize whether repairing has failed.
-								bool HasFailed = false;
-								// Initialize a new instance of the ZipFile class.
-								using (ZipFile ZipFile = new ZipFile(FilePath)) {
-									// Find the comic information.
-									ZipEntry ZipEntry = ZipFile.GetEntry("ComicInfo.xml");
-									// Check if comic information is available.
-									if (ZipEntry == null) {
-										// Stop the function.
-										return;
-									} else {
-										// Load the comic information.
-										ComicInfo = ComicInfo.Load(ZipFile.GetInputStream(ZipEntry));
+								// Populate the chapter.
+								using (Chapter.Populate()) {
+									// Initialize the comic information.
+									ComicInfo ComicInfo = null;
+									// Initialize whether there are broken pages.
+									bool HasBrokenPages = false;
+									// Initialize whether repairing has failed.
+									bool HasFailed = false;
+									// Initialize a new instance of the ZipFile class.
+									using (ZipFile ZipFile = new ZipFile(FilePath)) {
+										// Find the comic information.
+										ZipEntry ZipEntry = ZipFile.GetEntry("ComicInfo.xml");
+										// Check if comic information is available.
+										if (ZipEntry == null) {
+											// Stop the function.
+											return;
+										} else {
+											// Load the comic information.
+											ComicInfo = ComicInfo.Load(ZipFile.GetInputStream(ZipEntry));
+										}
 									}
-								}
-								// Initialize a new instance of the Publisher class.
-								using (Publisher Publisher = new Publisher(FilePath, Options, Provider, true)) {
-									// Initialize a new instance of the Repair class.
-									using (Repair Repair = new Repair(Publisher, Series, Chapter.Populate(), ComicInfo, File.ReadAllLines(string.Format("{0}.txt", FilePath)))) {
-										// Populate synchronously.
-										Repair.Populate();
-										// Set whether there are broken pages.
-										HasBrokenPages = Publisher.HasBrokenPages;
-										// Set whether repairing has failed.
-										HasFailed = Publisher.HasFailed = Repair.HasFailed;
+									// Initialize a new instance of the Publisher class.
+									using (Publisher Publisher = new Publisher(FilePath, Options, Provider, true)) {
+										// Initialize a new instance of the Repair class.
+										using (Repair Repair = new Repair(Publisher, Series, Chapter, ComicInfo, File.ReadAllLines(string.Format("{0}.txt", FilePath)))) {
+											// Populate synchronously.
+											Repair.Populate();
+											// Set whether there are broken pages.
+											HasBrokenPages = Publisher.HasBrokenPages;
+											// Set whether repairing has failed.
+											HasFailed = Publisher.HasFailed = Repair.HasFailed;
+										}
 									}
-								}
-								// Check if there are no broken pages.
-								if (!HasBrokenPages) {
-									// Delete the error file.
-									File.Delete(string.Format("{0}.txt", FilePath));
-								}
-								// Check if repairing has failed.
-								if (HasFailed) {
-									// Run in single processing mode for the unique identifier.
-									Single(Options, UniqueIdentifier);
+									// Check if there are no broken pages.
+									if (!HasBrokenPages) {
+										// Delete the error file.
+										File.Delete(string.Format("{0}.txt", FilePath));
+									}
+									// Check if repairing has failed.
+									if (HasFailed) {
+										// Run in single processing mode for the unique identifier.
+										Single(Options, UniqueIdentifier);
+									}
 								}
 							}
 						}
