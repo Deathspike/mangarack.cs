@@ -16,7 +16,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace MangaRack {
 	/// <summary>
@@ -87,7 +86,7 @@ namespace MangaRack {
 				// Check if worker items are available.
 				if (WorkerItems.Count != 0) {
 					// Iterate through each worker item.
-					Parallel.For(0, WorkerItems.Count, new ParallelOptions { MaxDegreeOfParallelism = Options.MaximumParallelWorkerThreads }, i => {
+					UnsafeParallel.For(0, WorkerItems.Count, Options.MaximumParallelWorkerThreads, i => {
 						// Run in single processing mode.
 						Single(WorkerItems[i].Key, WorkerItems[i].Value);
 					});
@@ -133,7 +132,7 @@ namespace MangaRack {
 					// Check if worker threads are not disabled.
 					if (!Options.DisableWorkerThreads) {
 						// Iterate through each unique identifier.
-						Parallel.For(0, Options.UniqueIdentifiers.Count, new ParallelOptions { MaxDegreeOfParallelism = Options.MaximumParallelWorkerThreads }, i => {
+						UnsafeParallel.For(0, Options.UniqueIdentifiers.Count, Options.MaximumParallelWorkerThreads, i => {
 							// Run in single processing mode for the unique identifier.
 							Single(Options, Options.UniqueIdentifiers[i]);
 						});

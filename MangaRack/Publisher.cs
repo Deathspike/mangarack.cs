@@ -262,7 +262,7 @@ namespace MangaRack {
 					// Attempt to delete files matching the file name and extension.
 					_ZipFile.TryDelete(Number.ToString("000"), "bmp", "gif", "jpg", "png");
 					// Add the file.
-					_ZipFile.Add(new StreamDataSource(Image), Key);
+					_ZipFile.Add(new DataSource(Image), Key);
 					// End updating the compressed file.
 					_ZipFile.CommitUpdate();
 					// Return comic page information ...
@@ -306,7 +306,7 @@ namespace MangaRack {
 					// Begin updating the compressed file.
 					_ZipFile.BeginUpdate();
 					// Add the file.
-					_ZipFile.Add(new StreamDataSource(MemoryStream), "ComicInfo.xml");
+					_ZipFile.Add(new DataSource(MemoryStream), "ComicInfo.xml");
 					// End updating the compressed file.
 					_ZipFile.CommitUpdate();
 				}
