@@ -5,6 +5,7 @@
 // ======================================================================
 using CommandLine;
 using CommandLine.Text;
+using System;
 using System.Collections.Generic;
 
 namespace MangaRack {
@@ -19,6 +20,8 @@ namespace MangaRack {
 		public Options() {
 			// Set the file extension for each output file.
 			FileExtension = "cbz";
+			// Set the maximum degree of parallelism.
+			MaximumParallelWorkerThreads = Environment.ProcessorCount;
 		}
 		#endregion
 
@@ -115,6 +118,12 @@ namespace MangaRack {
 		/// </summary>
 		[Option('v', "volume", HelpText = "The volume filter.")]
 		public double FilterOnVolume { get; set; }
+
+		/// <summary>
+		/// Contains the maximum parallel worker threads.
+		/// </summary>
+		[Option('p', "parallel", HelpText = "The maximum parallel worker threads. (Default: # cores)")]
+		public int MaximumParallelWorkerThreads { get; set; }
 
 		/// <summary>
 		/// Contains each unique identifier.
