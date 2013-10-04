@@ -44,6 +44,7 @@ MangaRack is a console application. A number of options and filters are availabl
 	-e, --extension      The file extension for each output file. (Default: cbz)
 	-c, --chapter        The chapter filter.
 	-v, --volume         The volume filter.
+	-p, --parallel       The maximum parallel worker threads. (Default: # cores)
 	--help               Display this help screen.
 
 #### --animation (-a)
@@ -97,3 +98,7 @@ The chapter filter. This filter influences which chapters are subject to synchro
 #### --volume (-v)
 
 The volume filter. This filter influences which volumes are subject to synchronization. A positive number indicates that all volumes above the provided number are to be synchronized, while a negative number indicates that all volumes below the provided absolute number are to be synchronized.
+
+#### --parallel (-p)
+
+The maximum parallel worker threads. This specified amount is used when worker threads have not been disabled to set the maximum degree of parallelism. By default, this value equals the amount of available cores in the system. This feature was added to provide control over the maximum amount of resource utilization.
