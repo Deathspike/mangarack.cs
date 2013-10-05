@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRack", "MangaRack\Mang
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRack.Core", "MangaRack.Core\MangaRack.Core.csproj", "{51033EEC-5C23-4060-A1A3-DCB6D682DED9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRack.ViewModel", "MangaRack.ViewModel\MangaRack.ViewModel.csproj", "{527AA96C-6B4C-4D2B-B95B-E2D758F94604}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +45,10 @@ Global
 		{51033EEC-5C23-4060-A1A3-DCB6D682DED9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51033EEC-5C23-4060-A1A3-DCB6D682DED9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{51033EEC-5C23-4060-A1A3-DCB6D682DED9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{527AA96C-6B4C-4D2B-B95B-E2D758F94604}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{527AA96C-6B4C-4D2B-B95B-E2D758F94604}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{527AA96C-6B4C-4D2B-B95B-E2D758F94604}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{527AA96C-6B4C-4D2B-B95B-E2D758F94604}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

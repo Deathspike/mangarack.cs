@@ -44,11 +44,11 @@ namespace MangaRack.Provider.KissManga {
 			// Get the document.
 			Http.Get(UniqueIdentifier, (Response) => {
 				// Find the images ...
-				Pages = Regex.Matches(Response.AsString(), @"lstImages\.push\((.*)\)").Cast<Match>()
+				Children = Regex.Matches(Response.AsString(), @"lstImages\.push\((.*)\)").Cast<Match>()
 					// ... select each page.
 					.Select(x => new Page(HtmlEntity.DeEntitize(x.Groups[1].Value).Trim('"')) as IPage)
-					// ... and create a list.
-					.ToList();
+					// ... and create an array.
+					.ToArray();
 				// Invoke the callback.
 				Done(this);
 			});
@@ -57,14 +57,14 @@ namespace MangaRack.Provider.KissManga {
 
 		#region IChapter
 		/// <summary>
+		/// Contains each child.
+		/// </summary>
+		public IEnumerable<IPage> Children { get; private set; }
+
+		/// <summary>
 		/// Contains the number.
 		/// </summary>
 		public double Number { get; private set; }
-
-		/// <summary>
-		/// Contains each page.
-		/// </summary>
-		public IEnumerable<IPage> Pages { get; private set; }
 
 		/// <summary>
 		/// Contains the title.
@@ -87,15 +87,15 @@ namespace MangaRack.Provider.KissManga {
 		/// Dispose of the object.
 		/// </summary>
 		public void Dispose() {
-			// Check if the pages are valid.
-			if (Pages != null) {
-				// Iterate through each page.
-				foreach (Page Page in Pages) {
+			// Check if the children are valid.
+			if (Children != null) {
+				// Iterate through each child.
+				foreach (IPage Child in Children) {
 					// Dispose of the object.
-					Page.Dispose();
+					Child.Dispose();
 				}
-				// Remove the pages.
-				Pages = null;
+				// Remove the children.
+				Children = null;
 			}
 		}
 		#endregion

@@ -22,9 +22,9 @@ namespace MangaRack.Provider {
 		IEnumerable<string> Authors { get; }
 
 		/// <summary>
-		/// Contains each chapter.
+		/// Contains each child.
 		/// </summary>
-		IEnumerable<IChapter> Chapters { get; }
+		IEnumerable<IChapter> Children { get; }
 
 		/// <summary>
 		/// Contains each genre.

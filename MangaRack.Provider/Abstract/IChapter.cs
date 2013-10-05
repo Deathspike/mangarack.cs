@@ -12,14 +12,14 @@ namespace MangaRack.Provider {
 	public interface IChapter : IAsync<IChapter> {
 		#region Properties
 		/// <summary>
+		/// Contains each child.
+		/// </summary>
+		IEnumerable<IPage> Children { get; }
+
+		/// <summary>
 		/// Contains the number.
 		/// </summary>
 		double Number { get; }
-
-		/// <summary>
-		/// Contains each page.
-		/// </summary>
-		IEnumerable<IPage> Pages { get; }
 
 		/// <summary>
 		/// Contains the title.

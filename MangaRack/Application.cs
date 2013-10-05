@@ -178,7 +178,7 @@ namespace MangaRack {
 						// Initialize the series title.
 						string Title = Series.Title.InvalidatePath();
 						// Iterate through each chapter using the chapter and volume filters.
-						foreach (IChapter Chapter in Series.Chapters.Filter(Options)) {
+						foreach (IChapter Chapter in Series.Children.Filter(Options)) {
 							// Initialize the file path.
 							string FilePath = Path.Combine(Title, string.Format(Chapter.Volume == -1 ? "{0} #{2}.{3}" : "{0} V{1} #{2}.{3}", Title, Chapter.Volume.ToString("00"), Chapter.Number.ToString("000.####"), Options.FileExtension.InvalidatePath()));
 							// Check if the file should be synchronized.

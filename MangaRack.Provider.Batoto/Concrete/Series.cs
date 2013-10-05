@@ -30,8 +30,8 @@ namespace MangaRack.Provider.Batoto {
 					.SelectMany(x => x.ParentNode.LastElement().Descendants("a")
 						// ... select the text ...
 						.Select(y => HtmlEntity.DeEntitize(y.InnerText).Trim()))
-					// ... and create a list.
-					.ToList();
+					// ... and create an array.
+					.ToArray();
 			}
 		}
 
@@ -48,20 +48,20 @@ namespace MangaRack.Provider.Batoto {
 					.SelectMany(x => x.ParentNode.LastElement().Descendants("a")
 						// ... and select the text ...
 						.Select(y => HtmlEntity.DeEntitize(y.InnerText).Trim()))
-					// ... and create a list.
-					.ToList();
+					// ... and create an array.
+					.ToArray();
 			}
 		}
 
 		/// <summary>
-		/// Populate each chapter.
+		/// Populate each child.
 		/// </summary>
-		private HtmlDocument _Chapters {
+		private HtmlDocument _Children {
 			set {
 				// Initialize the processed number and volume.
 				double ProcessedNumber, ProcessedVolume;
 				// Find each anchor element ...
-				Chapters = value.DocumentNode.Descendants("a")
+				Children = value.DocumentNode.Descendants("a")
 					// ... with the English language ...
 					.Where(x => x.ParentNode != null && x.ParentNode.ParentNode != null && HtmlEntity.DeEntitize(x.ParentNode.ParentNode.GetAttributeValue("class", string.Empty)).Trim().Split(' ').Contains("lang_English"))
 					// ... with a references indicating a chapter ...
@@ -74,8 +74,8 @@ namespace MangaRack.Provider.Batoto {
 					.Select(x => new Chapter(double.TryParse(x.Match.Groups["Number"].Value.AlphabeticToNumeric(), out ProcessedNumber) ? ProcessedNumber + (string.IsNullOrEmpty(x.Match.Groups["Part"].Value) ? 0 : double.Parse(x.Match.Groups["Part"].Value) / 10) : -1, x.Match.Groups["Title"].Value.Trim(), HtmlEntity.DeEntitize(x.Chapter.GetAttributeValue("href", string.Empty)).Trim(), double.TryParse(x.Match.Groups["Volume"].Value, out ProcessedVolume) ? ProcessedVolume : -1) as IChapter)
 					// ... reverse the order ...
 					.Reverse()
-					// ... and create a list.
-					.ToList();
+					// ... and create an array.
+					.ToArray();
 			}
 		}
 
@@ -92,8 +92,8 @@ namespace MangaRack.Provider.Batoto {
 					.SelectMany(x => x.ParentNode.LastElement().Descendants("span")
 						// ... and select the text ...
 						.Select(y => HtmlEntity.DeEntitize(y.InnerText).Trim()))
-					// ... and create a list.
-					.ToList();
+					// ... and create an array.
+					.ToArray();
 			}
 		}
 
@@ -195,15 +195,15 @@ namespace MangaRack.Provider.Batoto {
 		/// Dispose of the object.
 		/// </summary>
 		public void Dispose() {
-			// Check if the chapters are valid.
-			if (Chapters != null) {
-				// Iterate through each chapter.
-				foreach (IChapter Chapter in Chapters) {
+			// Check if the children are valid.
+			if (Children != null) {
+				// Iterate through each child.
+				foreach (IChapter Child in Children) {
 					// Dispose of the object.
-					Chapter.Dispose();
+					Child.Dispose();
 				}
-				// Remove the results.
-				Chapters = null;
+				// Remove the children.
+				Children = null;
 			}
 			// Check if the results are valid.
 			if (PreviewImage != null) {
@@ -225,9 +225,9 @@ namespace MangaRack.Provider.Batoto {
 		public IEnumerable<string> Authors { get; private set; }
 
 		/// <summary>
-		/// Contains each chapter.
+		/// Contains each child.
 		/// </summary>
-		public IEnumerable<IChapter> Chapters { get; private set; }
+		public IEnumerable<IChapter> Children { get; private set; }
 
 		/// <summary>
 		/// Contains each genre.
