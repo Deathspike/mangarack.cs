@@ -16,7 +16,7 @@ namespace MangaRack.Provider.KissManga {
 		/// </summary>
 		internal static string Domain {
 			get {
-				// Get the value.
+				// Return the value.
 				return "http://kissmanga.com";
 			}
 		}

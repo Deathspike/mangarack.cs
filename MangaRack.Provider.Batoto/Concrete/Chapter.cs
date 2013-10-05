@@ -64,7 +64,7 @@ namespace MangaRack.Provider.Batoto {
 						return;
 					}
 					// Find each select element ...
-					Pages = HtmlDocument.DocumentNode.Descendants("select")
+					Children = HtmlDocument.DocumentNode.Descendants("select")
 						// ... with the page selection name ...
 						.Where(x => HtmlEntity.DeEntitize(x.GetAttributeValue("name", string.Empty)).Trim().Equals("page_select"))
 						// ... select each option element ...
@@ -75,8 +75,8 @@ namespace MangaRack.Provider.Batoto {
 						.Where(x => HtmlEntity.DeEntitize(x.GetAttributeValue("value", string.Empty)).Trim().Contains("/read/"))
 						// ... select each page ...
 						.Select(x => new Page(HtmlEntity.DeEntitize(x.GetAttributeValue("value", string.Empty)).Trim()) as IPage)
-						// ... and create a list.
-						.ToList();
+						// ... and create an array.
+						.ToArray();
 					// Invoke the callback.
 					Done(this);
 				});
@@ -88,14 +88,14 @@ namespace MangaRack.Provider.Batoto {
 
 		#region IChapter
 		/// <summary>
+		/// Contains each child.
+		/// </summary>
+		public IEnumerable<IPage> Children { get; private set; }
+
+		/// <summary>
 		/// Contains the number.
 		/// </summary>
 		public double Number { get; private set; }
-
-		/// <summary>
-		/// Contains each page.
-		/// </summary>
-		public IEnumerable<IPage> Pages { get; private set; }
 
 		/// <summary>
 		/// Contains the title.
@@ -118,15 +118,15 @@ namespace MangaRack.Provider.Batoto {
 		/// Dispose of the object.
 		/// </summary>
 		public void Dispose() {
-			// Check if the pages are valid.
-			if (Pages != null) {
-				// Iterate through each page.
-				foreach (Page Page in Pages) {
+			// Check if the children are valid.
+			if (Children != null) {
+				// Iterate through each child.
+				foreach (IPage Child in Children) {
 					// Dispose of the object.
-					Page.Dispose();
+					Child.Dispose();
 				}
-				// Remove the pages.
-				Pages = null;
+				// Remove the children.
+				Children = null;
 			}
 		}
 		#endregion
