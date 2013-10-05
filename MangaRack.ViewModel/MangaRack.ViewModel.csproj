@@ -38,11 +38,13 @@
     <!-- A reference to the entire .NET Framework is automatically included -->
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Concrete\SeriesViewModel.cs" />
+    <Compile Include="Concrete\ViewModel\ChapterViewModel.cs" />
+    <Compile Include="Concrete\ViewModel\PageViewModel.cs" />
+    <Compile Include="Concrete\ViewModel\SeriesViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Concrete\SearchViewModel.cs" />
-    <Compile Include="Concrete\Utilities\KeyValueStore.cs" />
-    <Compile Include="Concrete\Utilities\ViewModelStore.cs" />
+    <Compile Include="Concrete\ViewModel\SearchViewModel.cs" />
+    <Compile Include="Concrete\Storing\KeyValueStore.cs" />
+    <Compile Include="Concrete\Storing\ViewModelStore.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MangaRack.Provider\MangaRack.Provider.csproj">

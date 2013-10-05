@@ -13,33 +13,27 @@ namespace MangaRack.ViewModel {
 	public abstract class ViewModelStore : KeyValueStore, INotifyPropertyChanged {
 		#region Properties
 		/// <summary>
-		/// Contains the changed event dispatcher.
+		/// Raise a changed event.
 		/// </summary>
-		public Action<string> Dispatcher {
+		public Action<string> Changed {
 			get {
 				// Retrieve the value.
-				return Get<Action<string>>(() => Dispatcher, Changed);
+				return Get<Action<string>>(() => Changed, (Key) => {
+					// Check if the property changed has subscribers.
+					if (PropertyChanged != null) {
+						// Invoke the property changed.
+						PropertyChanged(this, new PropertyChangedEventArgs(Key));
+					}
+				});
 			}
 			set {
 				// Set the value.
-				Set(() => Dispatcher, value);
+				Set(() => Changed, value);
 			}
 		}
 		#endregion
 
 		#region KeyValueStore
-		/// <summary>
-		/// Raise a changed event.
-		/// </summary>
-		/// <param name="Key">The key.</param>
-		public void Changed(string Key) {
-			// Check if the property changed has subscribers.
-			if (PropertyChanged != null) {
-				// Invoke the property changed.
-				PropertyChanged(this, new PropertyChangedEventArgs(Key));
-			}
-		}
-
 		/// <summary>
 		/// Remove a value.
 		/// </summary>
@@ -47,8 +41,8 @@ namespace MangaRack.ViewModel {
 		public override bool Remove(string Key) {
 			// Remove a value and check if it succeeded.
 			if (base.Remove(Key)) {
-				// Dispatch the event.
-				Dispatcher(Key);
+				// Raise a changed event.
+				Changed(Key);
 				// Return true.
 				return true;
 			}
@@ -64,8 +58,8 @@ namespace MangaRack.ViewModel {
 		public override bool Set(string Key, object Value) {
 			// Check if the value is changing.
 			if (base.Set(Key, Value)) {
-				// Dispatch the event.
-				Dispatcher(Key);
+				// Raise a changed event.
+				Changed(Key);
 				// Return true.
 				return true;
 			} else {

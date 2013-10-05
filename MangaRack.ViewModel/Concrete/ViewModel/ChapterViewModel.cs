@@ -5,24 +5,40 @@
 // ======================================================================
 using MangaRack.Provider;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MangaRack.ViewModel {
 	/// <summary>
-	/// Represents the series view model.
+	/// Represents the chapter view model.
 	/// </summary>
-	public sealed class SeriesViewModel : ViewModelStore {
+	public sealed class ChapterViewModel : ViewModelStore {
 		#region Constructor
 		/// <summary>
-		/// Initialize a new instance of the SeriesViewModel class.
+		/// Initialize a new instance of the ChapterViewModel class.
 		/// </summary>
 		/// <param name="Source">The source.</param>
-		public SeriesViewModel(ISeries Source) {
+		public ChapterViewModel(IChapter Source) {
 			// Set the source.
 			this.Source = Source;
 		}
 		#endregion
 
 		#region Properties
+		/// <summary>
+		/// Contains each child.
+		/// </summary>
+		public IEnumerable<PageViewModel> Children {
+			get {
+				// Retrieve the value.
+				return Get<IEnumerable<PageViewModel>>(() => Children);
+			}
+			private set {
+				// Set the value.
+				Set(() => Children, value);
+			}
+		}
+
 		/// <summary>
 		/// Indicates whether the view model is populating.
 		/// </summary>
@@ -50,8 +66,8 @@ namespace MangaRack.ViewModel {
 						IsPopulating = true;
 						// Populate asynchronously.
 						Source.Populate(() => {
-							// Set the results.
-							// Results = Source.Results.Select(x => new SeriesViewModel(x)).ToArray();
+							// Set the children.
+							Children = Source.Children.Select(x => new PageViewModel(x)).ToArray();
 							// Set whether the view model is populating.
 							IsPopulating = false;
 						});
@@ -63,10 +79,10 @@ namespace MangaRack.ViewModel {
 		/// <summary>
 		/// Contains the source.
 		/// </summary>
-		public ISeries Source {
+		public IChapter Source {
 			get {
 				// Retrieve the value.
-				return Get<ISeries>(() => Source);
+				return Get<IChapter>(() => Source);
 			}
 			private set {
 				// Set the value.

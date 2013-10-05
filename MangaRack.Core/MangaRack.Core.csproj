@@ -43,10 +43,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Abstract\IPublisher.cs" />
-    <Compile Include="Concrete\ComicInfo.cs" />
-    <Compile Include="Concrete\ComicInfoPage.cs" />
-    <Compile Include="Concrete\ComicInfoPageCollection.cs" />
-    <Compile Include="Concrete\ComicInfoSplitter.cs" />
+    <Compile Include="Concrete\Xml\ComicInfo.cs" />
+    <Compile Include="Concrete\Xml\ComicInfoPage.cs" />
+    <Compile Include="Concrete\Xml\ComicInfoPageCollection.cs" />
+    <Compile Include="Concrete\Xml\ComicInfoSplitter.cs" />
     <Compile Include="Concrete\Publisher\Repair.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Concrete\Publisher\Synchronize.cs" />
