@@ -9,7 +9,7 @@ namespace MangaRack.Provider {
 	/// <summary>
 	/// Represents a page.
 	/// </summary>
-    class Page : IPage {
+	sealed class Page : IPage {
 		/// <summary>
 		/// Contains the page.
 		/// </summary>
@@ -56,7 +56,7 @@ namespace MangaRack.Provider {
 		/// </summary>
 		public byte[] Image {
 			get {
-				// Get the image.
+				// Return the image.
 				return _Page.Image;
 			}
 		}
@@ -66,7 +66,7 @@ namespace MangaRack.Provider {
 		/// </summary>
 		public string UniqueIdentifier {
 			get {
-				// Get the unique identifier.
+				// Return the unique identifier.
 				return _Page.UniqueIdentifier;
 			}
 		}

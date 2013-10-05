@@ -15,19 +15,14 @@ namespace MangaRack.Provider.MangaFox {
 	/// Represents a MangaFox search.
 	/// </summary>
 	sealed class Search : ISearch {
-		/// <summary>
-		/// Contains the input.
-		/// </summary>
-		private readonly string _Input;
-
 		#region Constructor
 		/// <summary>
 		/// Initialize a new instance of the Search class.
 		/// </summary>
 		/// <param name="Input">The input.</param>
 		public Search(string Input) {
-			// Set the unique identifier.
-			_Input = Input;
+			// Set the input.
+			this.Input = Input;
 		}
 		#endregion
 
@@ -38,19 +33,19 @@ namespace MangaRack.Provider.MangaFox {
 		/// <param name="Done">The callback.</param>
 		public void Populate(Action<ISearch> Done) {
 			// Get the document.
-			Http.Get("http://mangafox.me/search.php?advopts=1&name=" + Uri.EscapeDataString(_Input), (Response) => {
+			Http.Get("http://mangafox.me/search.php?advopts=1&name=" + Uri.EscapeDataString(Input), (Response) => {
 				// Initialize a new instance of the HtmlDocument class.
 				HtmlDocument HtmlDocument = new HtmlDocument();
 				// Load the document.
 				HtmlDocument.LoadHtml(Response.AsString());
 				// Find each anchor element ...
-				Results = HtmlDocument.DocumentNode.Descendants("a")
+				Children = HtmlDocument.DocumentNode.Descendants("a")
 					// ... with a references indicating a series ...
 					.Where(x => Regex.Match(HtmlEntity.DeEntitize(x.GetAttributeValue("href", string.Empty)).Trim(), "/manga/([^/]+?)/?$", RegexOptions.IgnoreCase).Success)
 					// ... select the results ...
 					.Select(x => new Series(HtmlEntity.DeEntitize(x.Attributes["href"].Value).Trim(), HtmlEntity.DeEntitize(x.InnerText).Trim()) as ISeries)
-					// ... and create a list.
-					.ToList();
+					// ... and create an array.
+					.ToArray();
 				// Invoke the callback.
 				Done(this);
 			});
@@ -62,24 +57,29 @@ namespace MangaRack.Provider.MangaFox {
 		/// Dispose of the object.
 		/// </summary>
 		public void Dispose() {
-			// Check if the results are valid.
-			if (Results != null) {
-				// Iterate through each result.
-				foreach (ISeries Result in Results) {
+			// Check if the children are valid.
+			if (Children != null) {
+				// Iterate through each child.
+				foreach (ISeries Child in Children) {
 					// Dispose of the object.
-					Result.Dispose();
+					Child.Dispose();
 				}
-				// Remove the results.
-				Results = null;
+				// Remove the children.
+				Children = null;
 			}
 		}
 		#endregion
 
 		#region ISearch
 		/// <summary>
-		/// Contains the results.
+		/// Contains each child.
 		/// </summary>
-		public IEnumerable<ISeries> Results { get; private set; }
+		public IEnumerable<ISeries> Children { get; private set; }
+
+		/// <summary>
+		/// Contains the input.
+		/// </summary>
+		public string Input { get; private set; }
 		#endregion
 	}
 }

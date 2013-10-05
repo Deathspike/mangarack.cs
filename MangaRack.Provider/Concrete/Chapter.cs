@@ -11,21 +11,21 @@ namespace MangaRack.Provider {
 	/// <summary>
 	/// Represents a chapter.
 	/// </summary>
-	class Chapter : IChapter {
+	sealed class Chapter : IChapter {
 		/// <summary>
 		/// Contains the chapter.
 		/// </summary>
 		private readonly IChapter _Chapter;
 
 		/// <summary>
+		/// Contains each child.
+		/// </summary>
+		private IEnumerable<IPage> _Children;
+
+		/// <summary>
 		/// Contains the number.
 		/// </summary>
 		private double _Number;
-
-		/// <summary>
-		/// Contains each page.
-		/// </summary>
-		private IEnumerable<IPage> _Pages;
 
 		#region Constructor
 		/// <summary>
@@ -48,8 +48,8 @@ namespace MangaRack.Provider {
 		public void Populate(Action<IChapter> Done) {
 			// Populate asynchronously.
 			_Chapter.Populate(() => {
-				// Set each page.
-				_Pages = _Chapter.Pages.Select(x => new Page(x) as IPage).ToList();
+				// Set each child.
+				_Children = _Chapter.Children.Select(x => new Page(x) as IPage).ToArray();
 				// Invoke the callback.
 				Done(this);
 			});
@@ -58,11 +58,21 @@ namespace MangaRack.Provider {
 
 		#region IChapter
 		/// <summary>
+		/// Contains each child.
+		/// </summary>
+		public IEnumerable<IPage> Children {
+			get {
+				// Return each child.
+				return _Children;
+			}
+		}
+
+		/// <summary>
 		/// Contains the number.
 		/// </summary>
 		public double Number {
 			get {
-				// Get the number.
+				// Return the number.
 				return _Number;
 			}
 			set {
@@ -72,21 +82,11 @@ namespace MangaRack.Provider {
 		}
 
 		/// <summary>
-		/// Contains each page.
-		/// </summary>
-		public IEnumerable<IPage> Pages {
-			get {
-				// Get each page.
-				return _Pages;
-			}
-		}
-
-		/// <summary>
 		/// Contains the title.
 		/// </summary>
 		public string Title {
 			get {
-				// Get the title.
+				// Return the title.
 				return _Chapter.Title;
 			}
 		}
@@ -96,7 +96,7 @@ namespace MangaRack.Provider {
 		/// </summary>
 		public string UniqueIdentifier {
 			get {
-				// Get the unique identifier.
+				// Return the unique identifier.
 				return _Chapter.UniqueIdentifier;
 			}
 		}
@@ -106,7 +106,7 @@ namespace MangaRack.Provider {
 		/// </summary>
 		public double Volume {
 			get {
-				// Get the volume.
+				// Return the volume.
 				return _Chapter.Volume;
 			}
 		}

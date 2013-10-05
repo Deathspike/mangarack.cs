@@ -11,11 +11,11 @@ namespace MangaRack.Provider {
 	/// <summary>
 	/// Represents a provider.
 	/// </summary>
-	class Series : ISeries {
+	sealed class Series : ISeries {
 		/// <summary>
-		/// Contains each chapter.
+		/// Contains each child.
 		/// </summary>
-		private IEnumerable<IChapter> _Chapters;
+		private IEnumerable<IChapter> _Children;
 
 		/// <summary>
 		/// Represents a series.
@@ -41,10 +41,10 @@ namespace MangaRack.Provider {
 		public void Populate(Action<ISeries> Done) {
 			// Populate asynchronously.
 			_Series.Populate(() => {
-				// Set each chapter.
-				_Chapters = _Series.Chapters.Select(x => new Chapter(x) as IChapter).ToList();
-				// Iterate through each chapter.
-				foreach (Chapter Source in _Chapters) {
+				// Set each child.
+				_Children = _Series.Children.Select(x => new Chapter(x) as IChapter).ToArray();
+				// Iterate through each child.
+				foreach (Chapter Source in _Children) {
 					// Check if the source number is invalid.
 					if (Source.Number == -1) {
 						// Initialize the differential.
@@ -52,7 +52,7 @@ namespace MangaRack.Provider {
 						// Initialize the origin.
 						Chapter Origin = null;
 						// Iterate through each candidate chapter.
-						foreach (Chapter Candidate in Chapters) {
+						foreach (Chapter Candidate in _Children) {
 							// Check if the candidate is valid and matches the source volume.
 							if (Candidate != Source && Candidate.Number != -1 && Candidate.Volume == Source.Volume) {
 								// Check if the origin is valid.
@@ -106,7 +106,7 @@ namespace MangaRack.Provider {
 		/// </summary>
 		public IEnumerable<string> Artists {
 			get {
-				// Get each artist.
+				// Return each artist.
 				return _Series.Artists;
 			}
 		}
@@ -116,18 +116,18 @@ namespace MangaRack.Provider {
 		/// </summary>
 		public IEnumerable<string> Authors {
 			get {
-				// Get each author.
+				// Return each author.
 				return _Series.Authors;
 			}
 		}
 
 		/// <summary>
-		/// Contains each chapter.
+		/// Contains each child.
 		/// </summary>
-		public IEnumerable<IChapter> Chapters {
+		public IEnumerable<IChapter> Children {
 			get {
-				// Get each chapter.
-				return _Chapters;
+				// Return each child.
+				return _Children;
 			}
 		}
 
@@ -136,7 +136,7 @@ namespace MangaRack.Provider {
 		/// </summary>
 		public IEnumerable<string> Genres {
 			get {
-				// Get each genre.
+				// Return each genre.
 				return _Series.Genres;
 			}
 		}
@@ -146,7 +146,7 @@ namespace MangaRack.Provider {
 		/// </summary>
 		public byte[] PreviewImage {
 			get {
-				// Get the preview image.
+				// Return the preview image.
 				return _Series.PreviewImage;
 			}
 		}
@@ -156,7 +156,7 @@ namespace MangaRack.Provider {
 		/// </summary>
 		public string UniqueIdentifier {
 			get {
-				// Get the unique identifier.
+				// Return the unique identifier.
 				return _Series.UniqueIdentifier;
 			}
 		}
@@ -166,7 +166,7 @@ namespace MangaRack.Provider {
 		/// </summary>
 		public string Summary {
 			get {
-				// Get the summary.
+				// Return the summary.
 				return _Series.Summary;
 			}
 		}
@@ -176,7 +176,7 @@ namespace MangaRack.Provider {
 		/// </summary>
 		public string Title {
 			get {
-				// Get the title.
+				// Return the title.
 				return _Series.Title;
 			}
 		}
