@@ -4,6 +4,8 @@
 // this file, you can obtain one at http://mozilla.org/MPL/2.0/.
 // ======================================================================
 using System;
+using System.Collections.Concurrent;
+using System.Linq;
 using System.Threading;
 
 namespace MangaRack {
@@ -37,6 +39,8 @@ namespace MangaRack {
 			ManualResetEventSlim[] ManualResetEventSlim = new ManualResetEventSlim[ThreadCount];
 			// Initialize the thread array.
 			Thread[] Thread = new Thread[ThreadCount];
+			// Initialize the queue.
+			ConcurrentQueue<int> Queue = new ConcurrentQueue<int>(Enumerable.Range(FromInclusive, ToExclusive));
 			// Iterate through each thread.
 			for (int x = 0; x < ThreadCount; x++) {
 				// Initialize the context safe offset.
@@ -47,9 +51,11 @@ namespace MangaRack {
 				(Thread[x] = new Thread(() => {
 					// Attempt the following code.
 					try {
-						// Iterate through each block.
-						for (int i = FromInclusive + Offset; i < ToExclusive; i += ThreadCount) {
-							// Invoke the delegate.
+						// Initialize the integer.
+						int i;
+						// Dequeue an item from the queue.
+						while (Queue.TryDequeue(out i)) {
+							// Run the delegate.
 							Body(i);
 						}
 						// Set the reset event.
