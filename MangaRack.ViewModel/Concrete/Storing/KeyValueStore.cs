@@ -21,14 +21,10 @@ namespace MangaRack.ViewModel {
 		/// <summary>
 		/// Convert the expression to a key.
 		/// </summary>
-		/// <param name="Expression">The expression representing the key.</param>
-		private string _ExpressionToKey(Expression<Func<object>> Expression) {
-			// Retrieve the LambdaExpression.
-			LambdaExpression LambdaExpression = Expression as LambdaExpression;
-			// Retrieve the MemberExpression.
-			MemberExpression MemberExpression = (LambdaExpression.Body is UnaryExpression ? (LambdaExpression.Body as UnaryExpression).Operand : LambdaExpression.Body) as MemberExpression;
-			// Return the name.
-			return MemberExpression.Member.Name;
+		/// <param name="Expression">The expression.</param>
+		private string _Key(Expression<Func<object>> Expression) {
+			// Return the key.
+			return ((MemberExpression)Expression.Body).Member.Name;
 		}
 		#endregion
 
@@ -37,7 +33,7 @@ namespace MangaRack.ViewModel {
 		/// Initialize a new instance of the KeyValueStore class.
 		/// </summary>
 		public KeyValueStore() {
-			// Initialize a new instance of the KeyValueStore class.
+			// Initialize a new instance of the Dictionary class.
 			_KeyValueStore = new Dictionary<string, object>();
 		}
 		#endregion
@@ -49,7 +45,7 @@ namespace MangaRack.ViewModel {
 		/// <param name="Expression">The expression.</param>
 		public bool Contains(Expression<Func<object>> Expression) {
 			// Check if the key-value store contains the key.
-			return Contains(_ExpressionToKey(Expression));
+			return Contains(_Key(Expression));
 		}
 
 		/// <summary>
@@ -66,8 +62,8 @@ namespace MangaRack.ViewModel {
 		/// </summary>
 		/// <param name="Expression">The expression.</param>
 		public T Get<T>(Expression<Func<object>> Expression) {
-			// Get a value.
-			return (T) Get(_ExpressionToKey(Expression));
+			// Return a value.
+			return (T) Get(_Key(Expression));
 		}
 
 		/// <summary>
@@ -76,8 +72,8 @@ namespace MangaRack.ViewModel {
 		/// <param name="Expression">The expression.</param>
 		/// <param name="Default">The default value.</param>
 		public T Get<T>(Expression<Func<object>> Expression, T Default) {
-			// Get a value.
-			return (T) Get(_ExpressionToKey(Expression), Default);
+			// Return a value.
+			return (T) Get(_Key(Expression), Default);
 		}
 
 		/// <summary>
@@ -85,7 +81,7 @@ namespace MangaRack.ViewModel {
 		/// </summary>
 		/// <param name="Key">The key.</param>
 		public T Get<T>(string Key) {
-			// Get a value.
+			// Return a value.
 			return (T) Get(Key);
 		}
 
@@ -95,7 +91,7 @@ namespace MangaRack.ViewModel {
 		/// <param name="Key">The key.</param>
 		/// <param name="Default">The default value.</param>
 		public T Get<T>(string Key, T Default) {
-			// Get a value.
+			// Return a value.
 			return (T) Get(Key, (object) Default);
 		}
 		
@@ -104,8 +100,8 @@ namespace MangaRack.ViewModel {
 		/// </summary>
 		/// <param name="Expression">The expression.</param>
 		public object Get(Expression<Func<object>> Expression) {
-			// Get a value.
-			return Get(_ExpressionToKey(Expression), null);
+			// Return a value.
+			return Get(_Key(Expression), null);
 		}
 
 		/// <summary>
@@ -114,8 +110,8 @@ namespace MangaRack.ViewModel {
 		/// <param name="Expression">The expression.</param>
 		/// <param name="Default">The default value.</param>
 		public object Get(Expression<Func<object>> Expression, object Default) {
-			// Get a value.
-			return Get(_ExpressionToKey(Expression), Default);
+			// Return a value.
+			return Get(_Key(Expression), Default);
 		}
 
 		/// <summary>
@@ -123,7 +119,7 @@ namespace MangaRack.ViewModel {
 		/// </summary>
 		/// <param name="Key">The key.</param>
 		public object Get(string Key) {
-			// Get a value.
+			// Return a value.
 			return Get(Key, null);
 		}
 
@@ -133,7 +129,7 @@ namespace MangaRack.ViewModel {
 		/// <param name="Key">The key.</param>
 		/// <param name="Default">The default value.</param>
 		public object Get(string Key, object Default) {
-			// Get a value.
+			// Return a value.
 			return Contains(Key) ? _KeyValueStore[Key] : Default;
 		}
 
@@ -143,7 +139,7 @@ namespace MangaRack.ViewModel {
 		/// <param name="Expression">The expression.</param>
 		public bool Remove(Expression<Func<object>> Expression) {
 			// Remove a value.
-			return Remove(_ExpressionToKey(Expression));
+			return Remove(_Key(Expression));
 		}
 
 		/// <summary>
@@ -169,7 +165,7 @@ namespace MangaRack.ViewModel {
 		/// <param name="Value">The value.</param>
 		public bool Set(Expression<Func<object>> Expression, object Value) {
 			// Set a value.
-			return Set(_ExpressionToKey(Expression), Value);
+			return Set(_Key(Expression), Value);
 		}
 
 		/// <summary>
