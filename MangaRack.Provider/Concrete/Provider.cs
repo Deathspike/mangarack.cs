@@ -8,7 +8,7 @@ namespace MangaRack.Provider {
 	/// <summary>
 	/// Represents a provider.
 	/// </summary>
-	class Provider : IProvider {
+	sealed class Provider : IProvider {
 		/// <summary>
 		/// Contains the provider.
 		/// </summary>

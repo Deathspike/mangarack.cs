@@ -12,9 +12,14 @@ namespace MangaRack.Provider {
 	public interface ISearch : IAsync<ISearch> {
 		#region Properties
 		/// <summary>
-		/// Contains the results.
+		/// Contains each child.
 		/// </summary>
-		IEnumerable<ISeries> Results { get; }
+		IEnumerable<ISeries> Children { get; }
+
+		/// <summary>
+		/// Contains the input.
+		/// </summary>
+		string Input { get; }
 		#endregion
 	}
 }

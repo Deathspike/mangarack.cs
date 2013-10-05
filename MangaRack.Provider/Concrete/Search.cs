@@ -11,7 +11,7 @@ namespace MangaRack.Provider {
 	/// <summary>
 	/// Represents a search.
 	/// </summary>
-	class Search : ISearch {
+	sealed class Search : ISearch {
 		/// <summary>
 		/// Contains the search.
 		/// </summary>
@@ -36,8 +36,8 @@ namespace MangaRack.Provider {
 		public void Populate(Action<ISearch> Done) {
 			// Populate asynchronously.
 			_Search.Populate(() => {
-				// Set the results.
-				Results = _Search.Results.Select(x => new Series(x) as ISeries).ToList();
+				// Set each child.
+				Children = _Search.Children.Select(x => new Series(x) as ISeries).ToArray();
 				// Invoke the callback.
 				Done(this);
 			});
@@ -56,9 +56,19 @@ namespace MangaRack.Provider {
 
 		#region ISearch
 		/// <summary>
-		/// Contains the results.
+		/// Contains each child.
 		/// </summary>
-		public IEnumerable<ISeries> Results { get; private set; }
+		public IEnumerable<ISeries> Children { get; private set; }
+
+		/// <summary>
+		/// Contains the input.
+		/// </summary>
+		public string Input {
+			get {
+				// Return the input.
+				return _Search.Input;
+			}
+		}
 		#endregion
 	}
 }
