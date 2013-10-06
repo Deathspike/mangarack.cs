@@ -60,7 +60,6 @@
     <Compile Include="Extension\ExtensionForBitmap.cs" />
     <Compile Include="Extension\ExtensionForByteArray.cs" />
     <Compile Include="Extension\ExtensionForChapter.cs" />
-    <Compile Include="Extension\ExtensionForStreamReader.cs" />
     <Compile Include="Extension\ExtensionForString.cs" />
     <Compile Include="Concrete\Options.cs" />
     <Compile Include="Application.cs" />

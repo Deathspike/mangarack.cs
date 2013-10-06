@@ -62,8 +62,10 @@ namespace MangaRack {
 				using (FileStream FileStream = File.Open(FileName, FileMode.Open, FileAccess.Read, FileShare.Read)) {
 					// Initialize a new instance of the StreamReader class.
 					using (StreamReader StreamReader = new StreamReader(FileStream, Encoding.UTF8)) {
+						// Initialize the line.
+						string Line;
 						// Read all lines from the file stream.
-						foreach (string Line in StreamReader.ReadLines()) {
+						while ((Line = StreamReader.ReadLine()) != null) {
 							// Initialize a new instance of the Options class.
 							Options LineOptions = new Options();
 							// Parse each command line argument into the options instance and check if an unique identifier is available.
