@@ -4,7 +4,7 @@
 // this file, you can obtain one at http://mozilla.org/MPL/2.0/.
 // ======================================================================
 using System;
-using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
@@ -36,25 +36,35 @@ namespace MangaRack {
 			// Initialize the exception.
 			Exception Exception = null;
 			// Initialize the reset event array.
-			ManualResetEventSlim[] ManualResetEventSlim = new ManualResetEventSlim[ThreadCount];
+			ManualResetEvent[] ManualResetEventSlim = new ManualResetEvent[ThreadCount];
 			// Initialize the thread array.
 			Thread[] Thread = new Thread[ThreadCount];
 			// Initialize the queue.
-			ConcurrentQueue<int> Queue = new ConcurrentQueue<int>(Enumerable.Range(FromInclusive, ToExclusive));
+			Queue<int> Queue = new Queue<int>(Enumerable.Range(FromInclusive, ToExclusive));
 			// Iterate through each thread.
 			for (int x = 0; x < ThreadCount; x++) {
 				// Initialize the context safe offset.
 				int Offset = x;
-				// Initialize a new instance of the ManualResetEventSlim class.
-				ManualResetEventSlim[x] = new ManualResetEventSlim(false);
+				// Initialize a new instance of the ManualResetEvent class.
+				ManualResetEventSlim[x] = new ManualResetEvent(false);
 				// Initialize a new instance of the Thread class.
 				(Thread[x] = new Thread(() => {
 					// Attempt the following code.
 					try {
 						// Initialize the integer.
 						int i;
-						// Dequeue an item from the queue.
-						while (Queue.TryDequeue(out i)) {
+						// Iterate while an integer is available.
+						while (true) {
+							// Lock the queue.
+							lock (Queue) {
+								// Check if the queue is empty.
+								if (Queue.Count == 0) {
+									// Break the loop.
+									break;
+								}
+								// Dequeue an integer.
+								i = Queue.Dequeue();
+							}
 							// Run the delegate.
 							Body(i);
 						}
@@ -80,7 +90,7 @@ namespace MangaRack {
 			// Iterate through each reset event.
 			for (int x = 0; x < ThreadCount; x++) {
 				// Wait on the reset event.
-				ManualResetEventSlim[x].Wait();
+				ManualResetEventSlim[x].WaitOne();
 			}
 			// Check if the exception has been set.
 			if (Exception != null) {
