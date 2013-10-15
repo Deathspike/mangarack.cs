@@ -20,7 +20,7 @@ MangaRack is a console application. A number of options and filters are availabl
 
 ### Basic Usage
 
-	1. Download the MangaRack archive from the Build directory.
+	1. Download the 'MangaRack for NET' archive from the Build directory.
 	2. Extract the contents of the archive to a directory in which to synchronize.
 	3. Open the text file and add unique identifiers of manga series to synchronize.
 	4. Run MangaRack and wait for the synchronization to be completed.
