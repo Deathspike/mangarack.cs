@@ -1,7 +1,7 @@
-*/Debug
-*/Release
-*/bin
-*/obj
+*\Debug
+*\Release
+*\bin
+*\obj
 
 *.config
 *.exe

@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 
 namespace MangaRack {
 	/// <summary>
@@ -223,7 +224,7 @@ namespace MangaRack {
 						}
 					}
 					// Check if image processing is not disabled.
-					if (!_Options.DisableImageProcessing) {
+					if (!_Options.DisableImageProcessing && Environment.OSVersion.Platform != PlatformID.MacOSX && Environment.OSVersion.Platform != PlatformID.Unix) {
 						// Sharpen using a gaussian sharpen filter.
 						Bitmap = Bitmap.Sharpen();
 						// Reduce noise using conservative smoothing.
@@ -323,7 +324,7 @@ namespace MangaRack {
 				// Set whether there are broken pages.
 				HasBrokenPages = true;
 				// Write broken page information.
-				File.WriteAllLines(string.Format("{0}.txt", _FilePath), BrokenPages);
+				File.WriteAllLines(string.Format("{0}.txt", _FilePath), BrokenPages.ToArray());
 			}
 		}
 		#endregion
