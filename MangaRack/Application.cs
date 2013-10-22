@@ -93,6 +93,8 @@ namespace MangaRack {
 						Single(WorkerItems[i].Key, WorkerItems[i].Value);
 					});
 				}
+			} else {
+				Console.WriteLine("Could not open {0}", FileName);
 			}
 		}
 
