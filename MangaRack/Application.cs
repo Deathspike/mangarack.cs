@@ -50,10 +50,8 @@ namespace MangaRack {
 		/// </summary>
 		/// <param name="Options">The options.</param>
 		public static void Batch(Options Options) {
-			// Initialize the application name.
-			string ApplicationName = Assembly.GetExecutingAssembly().GetName().Name;
 			// Initialize the file name.
-			string FileName = string.Format("{0}.txt", ApplicationName);
+			string FileName = Options.SourceFile;
 			// Check if the file does exist.
 			if (File.Exists(FileName)) {
 				// Initialize a new instance of the List class.
