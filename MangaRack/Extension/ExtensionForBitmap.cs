@@ -143,10 +143,10 @@ namespace MangaRack {
 				}
 				// Check if an incision line is available.
 				if (Incision != -1) {
-					// Initialize a new instance of the Crop class.
-					Crop Crop = new Crop(new Rectangle(0, 0, Bitmap.Width, Bitmap.Height - Incision));
-					// Apply the filter to the image.
-					Bitmap Result = Crop.Apply(Bitmap);
+					// Initialize the rectangle.
+					Rectangle Rectangle = new Rectangle(0, 0, Bitmap.Width, Bitmap.Height - Incision);
+					// Initialize the result.
+					Bitmap Result = Bitmap.Clone(Rectangle, Bitmap.PixelFormat);
 					// Dispose of the image.
 					Bitmap.Dispose();
 					// Return the result.
