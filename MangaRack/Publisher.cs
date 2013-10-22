@@ -223,8 +223,12 @@ namespace MangaRack {
 							RequiresSave = true;
 						}
 					}
-					// Check if image processing is not disabled.
-					if (!_Options.DisableImageProcessing && Environment.OSVersion.Platform != PlatformID.MacOSX && Environment.OSVersion.Platform != PlatformID.Unix) {
+					// Check if image processing is not disabled ...
+					if (!_Options.DisableImageProcessing &&
+						// ... and this is not a Mac OS X computer ...
+						PlatformID.MacOSX != Environment.OSVersion.Platform &&
+						// ... and this is not a Linux computer.
+						PlatformID.Unix != Environment.OSVersion.Platform) {
 						// Sharpen using a gaussian sharpen filter.
 						Bitmap = Bitmap.Sharpen();
 						// Reduce noise using conservative smoothing.
