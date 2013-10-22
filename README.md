@@ -20,13 +20,26 @@ MangaRack is a console application. A number of options and filters are availabl
 
 ### Basic Usage
 
-	1. Download the 'MangaRack for NET' archive from the Build directory.
-	2. Extract the contents of the archive to a directory in which to synchronize.
-	3. Open the text file and add unique identifiers of manga series to synchronize.
-	4. Run MangaRack and wait for the synchronization to be completed.
-	5. (Optionally) Import the directory in ComicRack and synchronize to a reading device.
-	6. Have fun reading!
+#### Microsoft Windows
 
+	1. Ensure Microsoft .NET Framework 4 is installed (http://www.microsoft.com/en-us/download/details.aspx?id=17851).
+	2. Download the 'MangaRack for NET' archive from the Build directory.
+	3. Extract the contents of the archive to a directory in which to synchronize.
+	4. Open the text file and add unique identifiers of manga series to synchronize.
+	5. Run MangaRack and wait for the synchronization to be completed.
+	6. (Optionally) Import the directory in ComicRack and synchronize to a reading device.
+	7. Have fun reading!
+
+#### Other
+
+	1. Ensure Mono 2.10.8+ is installed. Debian/Ubuntu requires `sudo apt-get install mono-runtime mono-gmcs libgdiplus libmono-system-data2.0-cil`
+	2. Download the 'MangaRack for Mono' archive from the Build directory.
+	3. Extract the contents of the archive to a directory in which to synchronize.
+	4. Open the text file and add unique identifiers of manga series to synchronize.
+	5. Run MangaRack and wait for the synchronization to be completed.
+	6. (Optionally) Import the directory in ComicRack and synchronize to a reading device.
+	7. Have fun reading!
+	
 ### Advanced Usage
 
 	Usage: mangarack [options] [uniqueIdentifier, ...]
