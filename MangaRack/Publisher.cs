@@ -223,37 +223,46 @@ namespace MangaRack {
 							RequiresSave = true;
 						}
 					}
-					// Check if image processing is not disabled ...
-					if (!_Options.DisableImageProcessing &&
-						// ... and this is not a Mac OS X computer ...
-						PlatformID.MacOSX != Environment.OSVersion.Platform &&
-						// ... and this is not a Linux computer.
-						PlatformID.Unix != Environment.OSVersion.Platform) {
-						// Sharpen using a gaussian sharpen filter.
-						Bitmap = Bitmap.Sharpen();
-						// Reduce noise using conservative smoothing.
-						Bitmap = Bitmap.Noise();
-						// Adjust contrast in RGB colour space.
-						Bitmap = Bitmap.Contrast();
-						// Linear correction in RGB colour space.
-						Bitmap = Bitmap.Colour();
-						// Set the required save state.
-						RequiresSave = true;
+					// Check if this is a platform compatible with image manipulation.
+					if (PlatformID.MacOSX != Environment.OSVersion.Platform && PlatformID.Unix != Environment.OSVersion.Platform) {
+						// Check if image processing is not disabled
+						if (!_Options.DisableImageProcessing) {
+							// Sharpen using a gaussian sharpen filter.
+							Bitmap = Bitmap.Sharpen();
+							// Reduce noise using conservative smoothing.
+							Bitmap = Bitmap.Noise();
+							// Adjust contrast in RGB colour space.
+							Bitmap = Bitmap.Contrast();
+							// Linear correction in RGB colour space.
+							Bitmap = Bitmap.Colour();
+							// Set the required save state.
+							RequiresSave = true;
+						}
+						// Check if grayscale size comparison and save is not disabled.
+						if (!_Options.DisableGrayscaleSizeComparisonAndSave) {
+							// Determine whether the image is a PNG.
+							bool IsPNG = Image.DetectImageFormat().Equals("png");
+							// Check if this is either a PNG image or an image that requires saving.
+							if (IsPNG || RequiresSave) {
+								// Convert RGB colour space to grayscale when applicable.
+								Bitmap = Bitmap.Grayscale();
+								// Check if the image is a PNG but does not require to be saved.
+								if (IsPNG && !RequiresSave) {
+									// Create a byte array from the bitmap.
+									byte[] GrayscaleImage = Bitmap.ToByteArray(Image.DetectImageFormat());
+									// Check if the grayscale image has a smaller file size.
+									if (GrayscaleImage.Length < Image.Length) {
+										// Set the grayscale image.
+										Image = GrayscaleImage;
+									}
+								}
+							}
+						}
 					}
 					// Check if saving is required.
 					if (RequiresSave) {
-						// Convert RGB colour space to grayscale when applicable.
-						Bitmap = !_Options.DisableGrayscaleSizeComparisonAndSave ? Bitmap.Grayscale() : Bitmap;
 						// Create a byte array from the bitmapy.
 						Image = Bitmap.ToByteArray(Image.DetectImageFormat());
-					} else if (!_Options.DisableGrayscaleSizeComparisonAndSave && Image.DetectImageFormat().Equals("png")) {
-						// Create a byte array from the bitmapy.
-						byte[] CompareImage = (Bitmap = Bitmap.Grayscale()).ToByteArray(Image.DetectImageFormat());
-						// Check if the image to compare has a smaller file size.
-						if (CompareImage.Length < Image.Length) {
-							// Set the image.
-							Image = CompareImage;
-						}
 					}
 				}
 				// Save the image.
