@@ -115,3 +115,7 @@ The volume filter. This filter influences which volumes are subject to synchroni
 #### --parallel (-p)
 
 The maximum parallel worker threads. This specified amount is used when worker threads have not been disabled to set the maximum degree of parallelism. By default, this value equals the amount of available cores in the system. This feature was added to provide control over the maximum amount of resource utilization.
+
+#### --source (-s)
+
+The batch-mode source file. This specifies the input file which is used when running in batch-mode. By default, this value equals the main assembly name with a `.txt` suffix. This is, without modifications, the  value `MangaRack.txt`. This feature was added to provide control over the batch-mode source file.

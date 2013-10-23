@@ -14,7 +14,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 
 namespace MangaRack {
@@ -50,14 +49,12 @@ namespace MangaRack {
 		/// </summary>
 		/// <param name="Options">The options.</param>
 		public static void Batch(Options Options) {
-			// Initialize the file name.
-			string FileName = Options.SourceFile;
-			// Check if the file does exist.
-			if (File.Exists(FileName)) {
+			// Check if the batch-mode source file does exist.
+			if (File.Exists(Options.SourceFile)) {
 				// Initialize a new instance of the List class.
 				List<KeyValuePair<Options, string>> WorkerItems = new List<KeyValuePair<Options, string>>();
 				// Initialize a new instance of the FileStream class.
-				using (FileStream FileStream = File.Open(FileName, FileMode.Open, FileAccess.Read, FileShare.Read)) {
+				using (FileStream FileStream = File.Open(Options.SourceFile, FileMode.Open, FileAccess.Read, FileShare.Read)) {
 					// Initialize a new instance of the StreamReader class.
 					using (StreamReader StreamReader = new StreamReader(FileStream, Encoding.UTF8)) {
 						// Initialize the line.
@@ -91,8 +88,6 @@ namespace MangaRack {
 						Single(WorkerItems[i].Key, WorkerItems[i].Value);
 					});
 				}
-			} else {
-				Console.WriteLine("Could not open {0}", FileName);
 			}
 		}
 

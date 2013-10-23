@@ -21,12 +21,10 @@ namespace MangaRack {
 		public Options() {
 			// Set the file extension for each output file.
 			FileExtension = "cbz";
-			// Initialize the application name.
-			string ApplicationName = Assembly.GetExecutingAssembly().GetName().Name;
-			// Set the fdefault source file
-			SourceFile = string.Format("{0}.txt", ApplicationName);;
 			// Set the maximum degree of parallelism.
 			MaximumParallelWorkerThreads = Environment.ProcessorCount;
+			// Set the batch-mode source file.
+			SourceFile = string.Format("{0}.txt", Assembly.GetExecutingAssembly().GetName().Name);
 		}
 		#endregion
 
@@ -131,10 +129,10 @@ namespace MangaRack {
 		public int MaximumParallelWorkerThreads { get; set; }
 
 		/// <summary>
-		/// Contains the filename that contains a list of Mangas
+		/// Contains the batch-mode source file.
 		/// </summary>
-		[Option('s', "source", HelpText = "The file that contains the list of mangas. (Default: MangaRack.txt)")]
-		public String SourceFile { get; set; }
+		[Option('s', "source", HelpText = "The batch-mode source file. (Default: MangaRack.txt)")]
+		public string SourceFile { get; set; }
 
 		/// <summary>
 		/// Contains each unique identifier.
