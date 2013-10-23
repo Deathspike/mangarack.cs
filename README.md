@@ -74,7 +74,7 @@ The toggle to disable footer incision. This is the process of detecting a textua
 
 #### --grayscale (-g)
 
-The toggle to disable grayscale size comparison and save. This is the process of detecting and correcting an incorrect page storage format. The feature was added to reduce the file size of lossless PNG grayscale pages that have been provided in a larger-than-necessary storage format.
+The toggle to disable grayscale size comparison and save. This is the process of detecting and correcting an incorrect page storage format. The feature was added to reduce the file size of lossless PNG grayscale pages that have been provided in a larger-than-necessary storage format. **This feature is not compatible with non-Windows-based operating systems.**
 
 #### --image (-i).
 
