@@ -59,7 +59,7 @@ namespace MangaRack {
 		/// <summary>
 		/// Indicates whether MF footer incision is disabled.
 		/// </summary>
-		[Option('f', "footer", HelpText = "Disable MF footer incision (requires image processing).")]
+		[Option('f', "footer", HelpText = "Disable MF footer incision.")]
 		public bool DisableFooterIncision { get; set; }
 
 		/// <summary>

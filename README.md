@@ -46,7 +46,7 @@ MangaRack is a console application. A number of options and filters are availabl
 	
 	-a, --animation      Disable animation framing.
 	-d, --duplication    Disable duplication prevention.
-	-f, --footer         Disable MF footer incision (requires image processing).
+	-f, --footer         Disable MF footer incision.
 	-g, --grayscale      Disable grayscale size comparison and save.
 	-i, --image          Disable image processing.
 	-k, --keep-alive     Disable keep-alive behavior.
