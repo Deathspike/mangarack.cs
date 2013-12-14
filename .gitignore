@@ -1,5 +1,7 @@
-*\Debug
-*\Release
+*/Debug
+*/Release
+*/Mono/Debug
+*/Mono/Release
 *\bin
 *\obj
 
