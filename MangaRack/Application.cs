@@ -170,7 +170,7 @@ namespace MangaRack {
 						// Initialize the persistence file path.
 						string PersistencePath = Path.Combine(Title, ".mangarack-persist");
 						// Check if persistent synchronization tracking is enabled and a tracking file is available.
-						if (Options.EnablePersistentSynchronization && File.Exists(PersistencePath)) {
+						if (File.Exists(PersistencePath)) {
 							// Iterate through each line in the persistence file.
 							foreach(string Line in File.ReadAllLines(PersistencePath)){
 								// Add the line to the persistence file names.
@@ -184,7 +184,7 @@ namespace MangaRack {
 							// Initialize the file path.
 							string FilePath = Path.Combine(Title, FileName);
 							// Check if persistent synchronization tracking is enabled and the file name is persisted.
-							if (Options.EnablePersistentSynchronization && Persistence.Contains(FileName)) {
+							if (Persistence.Contains(FileName)) {
 								// Continue to the next chapter.
 								continue;
 							} else {
