@@ -57,9 +57,9 @@ namespace MangaRack {
 		public bool DisableDuplicationPrevention { get; set; }
 
 		/// <summary>
-		/// Indicates whether MF footer incision is disabled.
+		/// Indicates whether footer incision is disabled.
 		/// </summary>
-		[Option('f', "footer", HelpText = "Disable MF footer incision.")]
+		[Option('f', "footer", HelpText = "Disable footer incision.")]
 		public bool DisableFooterIncision { get; set; }
 
 		/// <summary>
@@ -99,12 +99,6 @@ namespace MangaRack {
 		public bool DisableTotalElapsedTime { get; set; }
 
 		/// <summary>
-		/// Indicates whether worker threads are disabled.
-		/// </summary>
-		[Option('w', "worker", HelpText = "Disable worker threads.")]
-		public bool DisableWorkerThreads { get; set; }
-
-		/// <summary>
 		/// Contains the file extension for each output file.
 		/// </summary>
 		[Option('e', "extension", HelpText = "The file extension for each output file. (Default: cbz)")]
@@ -125,7 +119,7 @@ namespace MangaRack {
 		/// <summary>
 		/// Contains the maximum parallel worker threads.
 		/// </summary>
-		[Option('p', "parallel", HelpText = "The maximum parallel worker threads. (Default: # cores)")]
+		[Option('w', "worker", HelpText = "The maximum parallel worker threads. (Default: # cores)")]
 		public int MaximumParallelWorkerThreads { get; set; }
 
 		/// <summary>

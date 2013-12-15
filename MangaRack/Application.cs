@@ -68,7 +68,7 @@ namespace MangaRack {
 								// Iterate through each unique identifier.
 								foreach (string UniqueIdentifier in LineOptions.UniqueIdentifiers) {
 									// Check if worker threads are not disabled.
-									if (!LineOptions.DisableWorkerThreads && !Options.DisableWorkerThreads) {
+									if (LineOptions.MaximumParallelWorkerThreads > 1 && Options.MaximumParallelWorkerThreads > 1) {
 										// Add the unique identifier of the line to the worker item list.
 										WorkerItems.Add(new KeyValuePair<Options, string>(LineOptions, UniqueIdentifier));
 									} else {
@@ -127,7 +127,7 @@ namespace MangaRack {
 					Batch(Options);
 				} else {
 					// Check if worker threads are not disabled.
-					if (!Options.DisableWorkerThreads) {
+					if (Options.MaximumParallelWorkerThreads > 1) {
 						// Iterate through each unique identifier.
 						UnsafeParallel.For(0, Options.UniqueIdentifiers.Count, Options.MaximumParallelWorkerThreads, i => {
 							// Run in single processing mode for the unique identifier.

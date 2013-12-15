@@ -46,18 +46,17 @@ MangaRack is a console application. A number of options and filters are availabl
 	
 	-a, --animation      Disable animation framing.
 	-d, --duplication    Disable duplication prevention.
-	-f, --footer         Disable MF footer incision.
+	-f, --footer         Disable footer incision.
 	-g, --grayscale      Disable grayscale size comparison and save.
 	-i, --image          Disable image processing.
 	-k, --keep-alive     Disable keep-alive behavior.
 	-m, --meta           Disable embedded meta information.
 	-r, --repair         Disable repair and error tracking.
 	-t, --total          Disable total elapsed time notification.
-	-w, --worker         Disable worker threads.
 	-e, --extension      The file extension for each output file. (Default: cbz)
 	-c, --chapter        The chapter filter.
 	-v, --volume         The volume filter.
-	-p, --parallel       The maximum parallel worker threads. (Default: # cores)
+	-w, --worker         The maximum parallel worker threads. (Default: # cores)
 	-s, --source         The batch-mode source file. (Default: MangaRack.txt)
 	--help               Display this help screen.
 
@@ -97,10 +96,6 @@ The toggle to disable repair and error tracking. This is the process of generati
 
 The toggle to disable total elapsed time notification. This is the process of computing the total synchronization time and presenting it prior to exit or keep-alive behavior. The feature was added to give feedback of the overall elapsed system time of long running synchronizations.
 
-#### --worker (-w)
-
-The toggle to disable worker threads. This is the process of spawning additional threads to run synchronizations in parallel. The feature was added to improve performance of synchronization and image manipulation by allowing the networking and computation load to be distributed to each available CPU.
-
 #### --extension (-e)
 
 The file extension for each output file. Each output file is formatted with the series title, the volume number and the chapter number, followed by a file extension. The default file extension is *cbz*, which represents a Comic Book Archive. The configuration option was made available to allow writing a custom file extension without depending on an external tool.
@@ -113,7 +108,7 @@ The chapter filter. This filter influences which chapters are subject to synchro
 
 The volume filter. This filter influences which volumes are subject to synchronization. A positive number indicates that all volumes above the provided number are to be synchronized, while a negative number indicates that all volumes below the provided absolute number are to be synchronized.
 
-#### --parallel (-p)
+#### --worker (-w)
 
 The maximum parallel worker threads. This specified amount is used when worker threads have not been disabled to set the maximum degree of parallelism. By default, this value equals the amount of available cores in the system. This feature was added to provide control over the maximum amount of resource utilization.
 
