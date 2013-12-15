@@ -53,6 +53,7 @@ MangaRack is a console application. A number of options and filters are availabl
 	-m, --meta           Disable embedded meta information.
 	-r, --repair         Disable repair and error tracking.
 	-t, --total          Disable total elapsed time notification.
+	-p, --persistent     Enable persistent synchronization tracking.
 	-e, --extension      The file extension for each output file. (Default: cbz)
 	-c, --chapter        The chapter filter.
 	-v, --volume         The volume filter.
@@ -95,6 +96,10 @@ The toggle to disable repair and error tracking. This is the process of generati
 #### --total (-t)
 
 The toggle to disable total elapsed time notification. This is the process of computing the total synchronization time and presenting it prior to exit or keep-alive behavior. The feature was added to give feedback of the overall elapsed system time of long running synchronizations.
+
+#### --persistent (-p)
+
+The toggle to enable persistent synchronization tracking. This is the process of generating an additional file for each series containing the names of the previously synchronized chapters. The feature was added to allow for chapters to be archived or deleted without causing re-synchronization.
 
 #### --extension (-e)
 

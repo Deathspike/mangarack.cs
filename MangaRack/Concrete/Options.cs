@@ -99,6 +99,12 @@ namespace MangaRack {
 		public bool DisableTotalElapsedTime { get; set; }
 
 		/// <summary>
+		/// Indicates whether persistent synchronization tracking is enabled.
+		/// </summary>
+		[Option('p', "persistent", HelpText = "Enable persistent synchronization tracking.")]
+		public bool EnablePersistentSynchronization { get; set; }
+
+		/// <summary>
 		/// Contains the file extension for each output file.
 		/// </summary>
 		[Option('e', "extension", HelpText = "The file extension for each output file. (Default: cbz)")]
