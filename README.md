@@ -58,6 +58,7 @@ MangaRack is a console application. A number of options and filters are availabl
 	-c, --chapter        The chapter filter.
 	-v, --volume         The volume filter.
 	-p, --parallel       The maximum parallel worker threads. (Default: # cores)
+	-s, --source         The batch-mode source file. (Default: MangaRack.txt)
 	--help               Display this help screen.
 
 #### --animation (-a)
