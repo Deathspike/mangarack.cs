@@ -251,7 +251,7 @@ namespace MangaRack {
 							// Check if persistent synchronization tracking is enabled.
 							if (Options.EnablePersistentSynchronization) {
 								// Write each line to the persistence file path.
-								File.WriteAllLines(PersistencePath, Persistence);
+								File.WriteAllLines(PersistencePath, Persistence.ToArray());
 							}
 						}
 					}
