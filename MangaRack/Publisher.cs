@@ -334,6 +334,11 @@ namespace MangaRack {
 		public void Publish(IEnumerable<string> BrokenPages) {
 			// Check if repair and error tracking is not disabled
 			if (!_Options.DisableRepairAndErrorTracking) {
+				// Check if the series directory does not exist.
+				if (!Directory.Exists(Path.GetDirectoryName(_FilePath))) {
+					// Create the directory for the series.
+					Directory.CreateDirectory(Path.GetDirectoryName(_FilePath));
+				}
 				// Set whether there are broken pages.
 				HasBrokenPages = true;
 				// Write broken page information.
