@@ -179,6 +179,8 @@ namespace MangaRack {
 						}
 						// Iterate through each chapter using the chapter and volume filters.
 						foreach (IChapter Chapter in Series.Children.Filter(Options)) {
+							// Initialize whether sychronization has failed.
+							bool HasFailed = false;
 							// Initialize the file name.
 							string FileName = string.Format(Chapter.Volume == -1 ? "{0} #{2}.{3}" : "{0} V{1} #{2}.{3}", Title, Chapter.Volume.ToString("00"), Chapter.Number.ToString("000.####"), Options.FileExtension.InvalidatePath());
 							// Initialize the file path.
@@ -191,26 +193,26 @@ namespace MangaRack {
 								// Add the file name to the persistence file names.
 								Persistence.Add(FileName);
 							}
-							// Check if the file should be synchronized.
-							if (Options.DisableDuplicationPrevention || !File.Exists(FilePath)) {
-								// Populate the chapter.
-								using (Chapter.Populate()) {
-									// Initialize a new instance of the Publisher class.
-									using (Publisher Publisher = new Publisher(FilePath, Options, Provider)) {
-										// Initialize a new instance of the Synchronizer class.
-										using (Synchronize Synchronizer = new Synchronize(Publisher, Series, Chapter)) {
-											// Populate synchronously.
-											Synchronizer.Populate();
+							// Do the following code.
+							do {
+								// Check if the file should be synchronized.
+								if (Options.DisableDuplicationPrevention || !File.Exists(FilePath)) {
+									// Populate the chapter.
+									using (Chapter.Populate()) {
+										// Initialize a new instance of the Publisher class.
+										using (Publisher Publisher = new Publisher(FilePath, Options, Provider)) {
+											// Initialize a new instance of the Synchronizer class.
+											using (Synchronize Synchronizer = new Synchronize(Publisher, Series, Chapter)) {
+												// Populate synchronously.
+												Synchronizer.Populate();
+												// Set whether synchronization has failed.
+												HasFailed = false;
+											}
 										}
 									}
-								}
-							} else if (!Options.DisableRepairAndErrorTracking && File.Exists(string.Format("{0}.txt", FilePath))) {
-								// Populate the chapter.
-								using (Chapter.Populate()) {
-									// Initialize whether repairing has failed.
-									bool HasFailed = false;
-									// Repeat the following code while repair is failing.
-									do {
+								} else if (!Options.DisableRepairAndErrorTracking && File.Exists(string.Format("{0}.txt", FilePath))) {
+									// Populate the chapter.
+									using (Chapter.Populate()) {
 										// Initialize the comic information.
 										ComicInfo ComicInfo = null;
 										// Initialize whether there are broken pages.
@@ -236,18 +238,18 @@ namespace MangaRack {
 												Repair.Populate();
 												// Set whether there are broken pages.
 												HasBrokenPages = Publisher.HasBrokenPages;
-												// Set whether repairing has failed.
+												// Set whether synchronization has failed.
 												HasFailed = Publisher.HasFailed = Repair.HasFailed;
 											}
 										}
 										// Check if there are no broken pages.
-										if (!HasBrokenPages) {
+										if (!HasBrokenPages && File.Exists(string.Format("{0}.txt", FilePath))) {
 											// Delete the error file.
 											File.Delete(string.Format("{0}.txt", FilePath));
 										}
-									} while (HasFailed);
+									}
 								}
-							}
+							} while (HasFailed);
 							// Check if persistent synchronization tracking is enabled.
 							if (Options.EnablePersistentSynchronization) {
 								// Write each line to the persistence file path.
