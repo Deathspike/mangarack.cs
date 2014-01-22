@@ -12,8 +12,10 @@ using MangaRack.Provider.KissManga;
 using MangaRack.Provider.MangaFox;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading;
 
 namespace MangaRack {
 	/// <summary>
@@ -89,6 +91,8 @@ namespace MangaRack {
 		public static void Main(string[] Arguments) {
 			// Initialize a new instance of the Options class.
 			Options Options = new Options();
+			// Set the thread culture.
+			Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
 			// Occurs when an exception is not caught.
 			AppDomain.CurrentDomain.UnhandledException += (sender, e) => {
 				// Write the message.

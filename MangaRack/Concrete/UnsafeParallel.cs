@@ -5,6 +5,7 @@
 // ======================================================================
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 
@@ -46,13 +47,15 @@ namespace MangaRack {
 				// Initialize the context safe offset.
 				int Offset = x;
 				// Initialize a new instance of the ManualResetEvent class.
-				ManualResetEventSlim[x] = new ManualResetEvent(false);
+				ManualResetEventSlim[Offset] = new ManualResetEvent(false);
 				// Initialize a new instance of the Thread class.
-				(Thread[x] = new Thread(() => {
+				(Thread[Offset] = new Thread(() => {
 					// Attempt the following code.
 					try {
 						// Initialize the integer.
 						int i;
+						// Set the thread culture.
+						Thread[Offset].CurrentCulture = new CultureInfo("en-US");
 						// Iterate while an integer is available.
 						while (true) {
 							// Lock the queue.
