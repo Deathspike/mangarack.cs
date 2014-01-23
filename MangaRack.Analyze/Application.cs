@@ -31,12 +31,11 @@ namespace MangaRack.Analyze {
 		/// Inspect the path.
 		/// </summary>
 		/// <param name="InspectPath">The path.</param>
-		/// <param name="PerformDelete">Indicates whether delete is requested.</param>
-		public static void Inspect(string InspectPath, bool PerformDelete) {
+		public static void Inspect(string InspectPath) {
 			// Iterate through each directory.
 			foreach (string DirectoryPath in Directory.GetDirectories(InspectPath)) {
 				// Inspect the directory.
-				Inspect(DirectoryPath, PerformDelete);
+				Inspect(DirectoryPath);
 			}
 			// Iterate through each archive file.
 			foreach (string FilePath in Directory.GetFiles(InspectPath).Where(x => x.EndsWith(".cbz"))) {
@@ -81,27 +80,30 @@ namespace MangaRack.Analyze {
 				// Exit the application.
 				Environment.Exit(0);
 			};
-			// Initialize the begin time.
-			long Time = DateTime.Now.Ticks;
-			// Inspect the current directory.
-			Inspect(Directory.GetCurrentDirectory(), false);
-			// Write the message.
-			Console.WriteLine("Total Damaged: {0}", _NumberOfDamaged);
-			// Write the message.
-			Console.WriteLine("Total Missing: {0}", _NumberOfMissing);
-			// Check if the total elapsed time notification is not disabled.
+			// Parse each command line argument into the options instance.
 			if (true) {
-				// Calculate the elapsed time.
-				TimeSpan Elapsed = new TimeSpan(DateTime.Now.Ticks - Time);
+				// Initialize the begin time.
+				long Time = DateTime.Now.Ticks;
+				// Inspect the current directory.
+				Inspect(Directory.GetCurrentDirectory());
 				// Write the message.
-				Console.WriteLine("Completed ({0}:{1}:{2})!", Elapsed.Hours.ToString("00"), Elapsed.Minutes.ToString("00"), Elapsed.Seconds.ToString("00"));
-			}
-			// Check if the keep-alive behavior is not disabled.
-			if (true) {
+				Console.WriteLine("Total Damaged: {0}", _NumberOfDamaged);
 				// Write the message.
-				Console.WriteLine("Press [ENTER] to exit.");
-				// Prevent the console from closing.
-				Console.ReadLine();
+				Console.WriteLine("Total Missing: {0}", _NumberOfMissing);
+				// Check if the total elapsed time notification is not disabled.
+				if (true) {
+					// Calculate the elapsed time.
+					TimeSpan Elapsed = new TimeSpan(DateTime.Now.Ticks - Time);
+					// Write the message.
+					Console.WriteLine("Completed ({0}:{1}:{2})!", Elapsed.Hours.ToString("00"), Elapsed.Minutes.ToString("00"), Elapsed.Seconds.ToString("00"));
+				}
+				// Check if the keep-alive behavior is not disabled.
+				if (true) {
+					// Write the message.
+					Console.WriteLine("Press [ENTER] to exit.");
+					// Prevent the console from closing.
+					Console.ReadLine();
+				}
 			}
 		}
 
