@@ -60,6 +60,8 @@ namespace MangaRack.Core {
 				// Add the deserialized page.
 				Add(XmlSerializer.Deserialize(XmlReader) as ComicInfoPage);
 			}
+			// Read out of the children.
+			XmlReader.Read();
 		}
 
 		/// <summary>

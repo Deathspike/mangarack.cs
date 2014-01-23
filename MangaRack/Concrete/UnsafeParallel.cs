@@ -13,7 +13,7 @@ namespace MangaRack {
 	/// <summary>
 	/// Represents the class that provides support for terminating parallel loops.
 	/// </summary>
-	static class UnsafeParallel {
+	public static class UnsafeParallel {
 		#region Statics
 		/// <summary>
 		/// Execute a for loop in which iterations run in parallel.
