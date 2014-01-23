@@ -6,8 +6,10 @@
 using ICSharpCode.SharpZipLib.Zip;
 using MangaRack.Core;
 using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading;
 
 namespace MangaRack.Analyze {
 	/// <summary>
@@ -63,6 +65,22 @@ namespace MangaRack.Analyze {
 		/// </summary>
 		/// <param name="Arguments">Each command line argument.</param>
 		public static void Main(string[] Arguments) {
+			// Set the thread culture.
+			Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+			// Occurs when an exception is not caught.
+			AppDomain.CurrentDomain.UnhandledException += (sender, e) => {
+				// Write the message.
+				Console.WriteLine(e.ExceptionObject);
+				// Check if the keep-alive behavior is not disabled.
+				if (true) {
+					// Write the message.
+					Console.WriteLine("Press [ENTER] to exit.");
+					// Prevent the console from closing.
+					Console.ReadLine();
+				}
+				// Exit the application.
+				Environment.Exit(0);
+			};
 			// Initialize the begin time.
 			long Time = DateTime.Now.Ticks;
 			// Inspect the current directory.
@@ -92,18 +110,24 @@ namespace MangaRack.Analyze {
 		/// </summary>
 		/// <param name="FilePath">The file path.</param>
 		public static ComicInfo Read(string FilePath) {
-			// Initialize a new instance of the ZipFile class.
-			using (ZipFile ZipFile = new ZipFile(FilePath)) {
-				// Find the comic information.
-				ZipEntry ZipEntry = ZipFile.GetEntry("ComicInfo.xml");
-				// Check if comic information is available.
-				if (ZipEntry == null) {
-					// Stop the function.
-					return null;
-				} else {
-					// Load the comic information.
-					return ComicInfo.Load(ZipFile.GetInputStream(ZipEntry));
+			// Attempt the following code.
+			try {
+				// Initialize a new instance of the ZipFile class.
+				using (ZipFile ZipFile = new ZipFile(FilePath)) {
+					// Find the comic information.
+					ZipEntry ZipEntry = ZipFile.GetEntry("ComicInfo.xml");
+					// Check if comic information is available.
+					if (ZipEntry == null) {
+						// Stop the function.
+						return null;
+					} else {
+						// Load the comic information.
+						return ComicInfo.Load(ZipFile.GetInputStream(ZipEntry));
+					}
 				}
+			} catch {
+				// Return null.
+				return null;
 			}
 		}
 		#endregion
