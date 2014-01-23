@@ -45,12 +45,14 @@ namespace MangaRack.Provider.MangaFox {
 					.Where(x => HtmlEntity.DeEntitize(x.GetAttributeValue("id", string.Empty)).Trim().Equals("image"))
 					// ... use the first or default.
 					.FirstOrDefault()) != null) {
+					// Initialize the address.
+					string Address = HtmlEntity.DeEntitize(HtmlNode.GetAttributeValue("src", string.Empty)).Trim();
 					// Request the image.
-					Http.Get(HtmlEntity.DeEntitize(HtmlNode.GetAttributeValue("src", string.Empty)).Trim(), (ImageResponse) => {
-						// Check if the status code is invalid.
-						if (ImageResponse != null && ImageResponse.StatusCode != HttpStatusCode.OK) {
-							// Request an alternative resource using a GET.
-							Http.Get(ImageResponse.ResponseUri.AbsoluteUri.Replace("http://z.", "http://l."), (AlternativeImageResponse) => {
+					Http.Get(Address, (ImageResponse) => {
+						// Check if the image response is invalid.
+						if (ImageResponse == null || ImageResponse.StatusCode != HttpStatusCode.OK) {
+							// Request an alternative image.
+							Http.Get(Address.Replace("http://z.", "http://l."), (AlternativeImageResponse) => {
 								// Set the image.
 								Image = AlternativeImageResponse.AsBinary();
 								// Invoke the callback.
