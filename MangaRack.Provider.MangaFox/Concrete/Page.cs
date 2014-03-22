@@ -7,6 +7,7 @@ using HtmlAgilityPack;
 using System;
 using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 using TinyHttp;
 
 namespace MangaRack.Provider.MangaFox {
@@ -42,7 +43,7 @@ namespace MangaRack.Provider.MangaFox {
 				// Find each image ...
 				if ((HtmlNode = HtmlDocument.DocumentNode.Descendants("img")
 					// ... whith an identifier indicating the main image ...
-					.Where(x => HtmlEntity.DeEntitize(x.GetAttributeValue("id", string.Empty)).Trim().Equals("image"))
+					.Where(x => Regex.Match(@"^http(s)?://([a-zA-Z0-9]+)\.mfcdn\.net/", HtmlEntity.DeEntitize(x.GetAttributeValue("src", string.Empty))) != null)
 					// ... use the first or default.
 					.FirstOrDefault()) != null) {
 					// Initialize the address.
