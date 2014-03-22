@@ -57,7 +57,7 @@ namespace MangaRack.Provider.MangaFox {
 					// ... with a possible value ...
 					.Where(x => !HtmlEntity.DeEntitize(x.GetAttributeValue("value", string.Empty)).Trim().Equals("0"))
 					// ... select each page ...
-					.Select(x => new Page(string.Join("/", UniqueIdentifier.Split('/').TakeWhile(y => !y.EndsWith(".html")).ToArray()) + "/" + HtmlEntity.DeEntitize(x.GetAttributeValue("value", string.Empty)).Trim() + ".html") as IPage)
+					.Select(x => new Page(string.Join("/", UniqueIdentifier.Split('/').TakeWhile(y => !y.EndsWith(".html")).ToArray()).TrimEnd('/') + "/" + HtmlEntity.DeEntitize(x.GetAttributeValue("value", string.Empty)).Trim() + ".html") as IPage)
 					// ... and create an array.
 					.ToArray();
 				// Invoke the callback.
