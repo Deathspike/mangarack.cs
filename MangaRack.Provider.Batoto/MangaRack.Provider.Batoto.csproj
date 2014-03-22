@@ -24,20 +24,20 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\Build\Debug\</OutputPath>
+    <OutputPath>..\Build\.NET\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\Build\Debug\MangaRack.Provider.Batoto.xml</DocumentationFile>
+    <DocumentationFile>..\Build\.NET\Debug\MangaRack.Provider.Batoto.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\Build\Release\</OutputPath>
+    <OutputPath>..\Build\.NET\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\Build\Release\MangaRack.Provider.Batoto.xml</DocumentationFile>
+    <DocumentationFile>..\Build\.NET\Release\MangaRack.Provider.Batoto.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Batoto.cs" />

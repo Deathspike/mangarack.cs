@@ -1,3 +1,0 @@
-cd Build\Release
-call "%ProgramFiles(x86)%\Microsoft\ILMerge\ILMerge.exe" /allowDup /out:../../MangaRack.exe MangaRack.exe AForge.dll AForge.Imaging.dll AForge.Math.dll CommandLine.dll HtmlAgilityPack.dll ICSharpCode.SharpZipLib.dll MangaRack.Core.dll MangaRack.Provider.dll MangaRack.Provider.Batoto.dll MangaRack.Provider.KissManga.dll MangaRack.Provider.MangaFox.dll TinyHttp.dll
-call "%ProgramFiles(x86)%\Microsoft\ILMerge\ILMerge.exe" /allowDup /out:../../MangaRack.Analyze.exe MangaRack.Analyze.exe ICSharpCode.SharpZipLib.dll MangaRack.Core.dll

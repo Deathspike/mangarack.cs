@@ -17,20 +17,20 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\Build\Debug\</OutputPath>
+    <OutputPath>..\..\Build\Mono\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\Build\Debug\MangaRack.Provider.KissManga.xml</DocumentationFile>
+    <DocumentationFile>..\..\Build\Mono\Debug\MangaRack.Provider.KissManga.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\Build\Release\</OutputPath>
+    <OutputPath>..\..\Build\Mono\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\Build\Release\MangaRack.Provider.KissManga.xml</DocumentationFile>
+    <DocumentationFile>..\..\Build\Mono\Release\MangaRack.Provider.KissManga.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="HtmlAgilityPack, Version=1.4.6.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">

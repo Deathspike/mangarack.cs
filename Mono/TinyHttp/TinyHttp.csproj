@@ -17,20 +17,20 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\Build\Debug\</OutputPath>
+    <OutputPath>..\..\Build\Mono\Debug\</OutputPath>
     <DefineConstants>TRACE;DEBUG;NETCF_1_0;NETCF_2_0;PCL</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\Build\Debug\TinyHttp.xml</DocumentationFile>
+    <DocumentationFile>..\..\Build\Mono\Debug\TinyHttp.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\Build\Release\</OutputPath>
+    <OutputPath>..\..\Build\Mono\Release\</OutputPath>
     <DefineConstants>TRACE;NETCF_1_0;NETCF_2_0;PCL</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\Build\Release\TinyHttp.xml</DocumentationFile>
+    <DocumentationFile>..\..\Build\Mono\Release\TinyHttp.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
