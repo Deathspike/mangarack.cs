@@ -40,14 +40,18 @@ namespace MangaRack.Provider.MangaFox {
 				HtmlNode HtmlNode;
 				// Load the document.
 				HtmlDocument.LoadHtml(HtmlResponse.AsString());
-				// Find each image ...
-				if ((HtmlNode = HtmlDocument.DocumentNode.Descendants("img")
-					// ... whith an identifier indicating the main image ...
-					.Where(x => Regex.Match(@"^http(s)?://([a-zA-Z0-9]+)\.mfcdn\.net/", HtmlEntity.DeEntitize(x.GetAttributeValue("src", string.Empty))) != null)
+				// Find the each meta ...
+				if ((HtmlNode = HtmlDocument.DocumentNode.Descendants("meta")
+					// ... with a property indicating the image thumbnail ...
+					.Where(x => HtmlEntity.DeEntitize(x.GetAttributeValue("property", string.Empty)).Equals("og:image"))
 					// ... use the first or default.
 					.FirstOrDefault()) != null) {
-					// Initialize the address.
-					string Address = HtmlEntity.DeEntitize(HtmlNode.GetAttributeValue("src", string.Empty)).Trim();
+					// Initialize the address ...
+					string Address = HtmlEntity.DeEntitize(HtmlNode.GetAttributeValue("content", string.Empty)).Trim()
+						// ... replace the thumbnail address for the page address ...
+						.Replace("thumbnails/mini.", "compressed/")
+						// ... replace the back-up server for the main server.
+						.Replace("http://l.", "http://l.");
 					// Request the image.
 					Http.Get(Address, (ImageResponse) => {
 						// Check if the image response is invalid.
