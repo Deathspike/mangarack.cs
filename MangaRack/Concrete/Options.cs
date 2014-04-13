@@ -99,6 +99,12 @@ namespace MangaRack {
 		public bool DisableTotalElapsedTime { get; set; }
 
 		/// <summary>
+		/// Indicates whether embedded meta-information is overwritten.
+		/// </summary>
+		[Option('o', "overwrite", HelpText = "Enable embedded meta information overwriting.")]
+		public bool EnableOverwriteMetaInformation { get; set; }
+
+		/// <summary>
 		/// Indicates whether persistent synchronization tracking is enabled.
 		/// </summary>
 		[Option('p', "persistent", HelpText = "Enable persistent synchronization tracking.")]

@@ -60,6 +60,11 @@ namespace MangaRack {
 					Options LineOptions = new Options();
 					// Parse each command line argument into the options instance and check if an unique identifier is available.
 					if (Parser.Default.ParseArguments(Line.Split(' '), LineOptions) && LineOptions.UniqueIdentifiers.Count != 0) {
+						// Check if meta-information overwriting is enabled.
+						if (Options.EnableOverwriteMetaInformation) {
+							// Enable meta-information overwriting.
+							LineOptions.EnableOverwriteMetaInformation = true;
+						}
 						// Iterate through each unique identifier.
 						foreach (string UniqueIdentifier in LineOptions.UniqueIdentifiers) {
 							// Check if worker threads are not disabled.
@@ -176,7 +181,7 @@ namespace MangaRack {
 						// Check if persistent synchronization tracking is enabled and a tracking file is available.
 						if (File.Exists(PersistencePath)) {
 							// Iterate through each line in the persistence file.
-							foreach(string Line in File.ReadAllLines(PersistencePath)){
+							foreach (string Line in File.ReadAllLines(PersistencePath)) {
 								// Add the line to the persistence file names.
 								Persistence.Add(Line);
 							}
@@ -214,42 +219,99 @@ namespace MangaRack {
 											}
 										}
 									}
-								} else if (!Options.DisableRepairAndErrorTracking && File.Exists(string.Format("{0}.txt", FilePath))) {
-									// Populate the chapter.
-									using (Chapter.Populate()) {
+								} else {
+									// Check if a meta-information overwrite should be performed.
+									if (Options.EnableOverwriteMetaInformation) {
 										// Initialize the comic information.
-										ComicInfo ComicInfo = null;
-										// Initialize whether there are broken pages.
-										bool HasBrokenPages = false;
+										ComicInfo ComicInfo = new ComicInfo(), PreviousComicInfo = null;
 										// Initialize a new instance of the ZipFile class.
 										using (ZipFile ZipFile = new ZipFile(FilePath)) {
 											// Find the comic information.
 											ZipEntry ZipEntry = ZipFile.GetEntry("ComicInfo.xml");
 											// Check if comic information is available.
-											if (ZipEntry == null) {
-												// Stop the function.
-												return;
-											} else {
+											if (ZipEntry != null) {
 												// Load the comic information.
-												ComicInfo = ComicInfo.Load(ZipFile.GetInputStream(ZipEntry));
+												PreviousComicInfo = ComicInfo.Load(ZipFile.GetInputStream(ZipEntry));
+												// Transcribe the series, chapter and pages information.
+												ComicInfo.Transcribe(Series, Chapter, PreviousComicInfo.Pages);
+												// Check if a genre differs ...
+												if (ComicInfo.Genre.Any(x => !PreviousComicInfo.Genre.Contains(x)) ||
+													// ... or the manga specification differs ...
+													ComicInfo.Manga != PreviousComicInfo.Manga ||
+													// ... or the number differs ...
+													ComicInfo.Number != PreviousComicInfo.Number ||
+													// ... or if the page count differs ...
+													ComicInfo.PageCount != PreviousComicInfo.PageCount ||
+													// ... or if a penciller difffers ...
+													ComicInfo.Penciller.Any(x => !PreviousComicInfo.Penciller.Contains(x)) ||
+													// ... or if the series differs ...
+													ComicInfo.Series != PreviousComicInfo.Series ||
+													// ... or if the summary differs ...
+													ComicInfo.Summary != PreviousComicInfo.Summary ||
+													// ... or if the title differs ...
+													ComicInfo.Title != PreviousComicInfo.Title ||
+													// ... or if the volume differs ...
+													ComicInfo.Volume != PreviousComicInfo.Volume ||
+													// ... or if the volume status differs ...
+													ComicInfo.VolumeSpecified != PreviousComicInfo.VolumeSpecified ||
+													// ... or if a writer differs.
+													ComicInfo.Writer.Any(x => !PreviousComicInfo.Writer.Contains(x))) {
+													// Initialize a new instance of the MemoryStream class.
+													using (MemoryStream MemoryStream = new MemoryStream()) {
+														// Save the comic information.
+														ComicInfo.Save(MemoryStream);
+														// Rewind the stream.
+														MemoryStream.Position = 0;
+														// Begin updating the compressed file.
+														ZipFile.BeginUpdate();
+														// Add the file.
+														ZipFile.Add(new DataSource(MemoryStream), "ComicInfo.xml");
+														// End updating the compressed file.
+														ZipFile.CommitUpdate();
+														Console.WriteLine("Modified {0}", FileName);
+													}
+												}
 											}
 										}
-										// Initialize a new instance of the Publisher class.
-										using (Publisher Publisher = new Publisher(FilePath, Options, Provider, true)) {
-											// Initialize a new instance of the Repair class.
-											using (Repair Repair = new Repair(Publisher, Series, Chapter, ComicInfo, File.ReadAllLines(string.Format("{0}.txt", FilePath)))) {
-												// Populate synchronously.
-												Repair.Populate();
-												// Set whether there are broken pages.
-												HasBrokenPages = Publisher.HasBrokenPages;
-												// Set whether synchronization has failed.
-												HasFailed = Publisher.HasFailed = Repair.HasFailed;
+									}
+									// Check if a repair should be performed.
+									if (!Options.DisableRepairAndErrorTracking && File.Exists(string.Format("{0}.txt", FilePath))) {
+										// Populate the chapter.
+										using (Chapter.Populate()) {
+											// Initialize the comic information.
+											ComicInfo ComicInfo = null;
+											// Initialize whether there are broken pages.
+											bool HasBrokenPages = false;
+											// Initialize a new instance of the ZipFile class.
+											using (ZipFile ZipFile = new ZipFile(FilePath)) {
+												// Find the comic information.
+												ZipEntry ZipEntry = ZipFile.GetEntry("ComicInfo.xml");
+												// Check if comic information is available.
+												if (ZipEntry == null) {
+													// Stop the function.
+													return;
+												} else {
+													// Load the comic information.
+													ComicInfo = ComicInfo.Load(ZipFile.GetInputStream(ZipEntry));
+												}
 											}
-										}
-										// Check if there are no broken pages.
-										if (!HasBrokenPages && File.Exists(string.Format("{0}.txt", FilePath))) {
-											// Delete the error file.
-											File.Delete(string.Format("{0}.txt", FilePath));
+											// Initialize a new instance of the Publisher class.
+											using (Publisher Publisher = new Publisher(FilePath, Options, Provider, true)) {
+												// Initialize a new instance of the Repair class.
+												using (Repair Repair = new Repair(Publisher, Series, Chapter, ComicInfo, File.ReadAllLines(string.Format("{0}.txt", FilePath)))) {
+													// Populate synchronously.
+													Repair.Populate();
+													// Set whether there are broken pages.
+													HasBrokenPages = Publisher.HasBrokenPages;
+													// Set whether synchronization has failed.
+													HasFailed = Publisher.HasFailed = Repair.HasFailed;
+												}
+											}
+											// Check if there are no broken pages.
+											if (!HasBrokenPages && File.Exists(string.Format("{0}.txt", FilePath))) {
+												// Delete the error file.
+												File.Delete(string.Format("{0}.txt", FilePath));
+											}
 										}
 									}
 								}
