@@ -15,6 +15,16 @@ namespace MangaRack.Core {
 	/// </summary>
 	[XmlRoot("ComicInfo")]
 	public sealed class ComicInfo {
+		#region Constructor
+		/// <summary>
+		/// Initialize a new instance of the ComicInfo class.
+		/// </summary>
+		public ComicInfo() {
+			// Set the volume.
+			Volume = -1;
+		}
+		#endregion
+
 		#region Methods
 		/// <summary>
 		/// Transcribe the series, chapter and pages information.

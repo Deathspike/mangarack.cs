@@ -268,6 +268,7 @@ namespace MangaRack {
 														ZipFile.Add(new DataSource(MemoryStream), "ComicInfo.xml");
 														// End updating the compressed file.
 														ZipFile.CommitUpdate();
+														// Write a message.
 														Console.WriteLine("Modified {0}", FileName);
 													}
 												}
