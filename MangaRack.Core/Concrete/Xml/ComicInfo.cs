@@ -20,8 +20,14 @@ namespace MangaRack.Core {
 		/// Initialize a new instance of the ComicInfo class.
 		/// </summary>
 		public ComicInfo() {
+			// Set each genre.
+			Genre = new ComicInfoSplitter();
+			// Set each penciller.
+			Penciller = new ComicInfoSplitter();
 			// Set the volume.
 			Volume = -1;
+			// Set each writer.
+			Writer = new ComicInfoSplitter();
 		}
 		#endregion
 
@@ -135,17 +141,6 @@ namespace MangaRack.Core {
 		/// </summary>
 		[XmlElement]
 		public double Volume { get; set; }
-
-		/// <summary>
-		/// Determines whether the volume is specified.
-		/// </summary>
-		[XmlIgnore]
-		public bool VolumeSpecified {
-			get {
-				// Determine whether the volume is specified.
-				return Volume != -1;
-			}
-		}
 
 		/// <summary>
 		/// Contains each writer.

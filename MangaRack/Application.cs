@@ -252,8 +252,6 @@ namespace MangaRack {
 													ComicInfo.Title != PreviousComicInfo.Title ||
 													// ... or if the volume differs ...
 													ComicInfo.Volume != PreviousComicInfo.Volume ||
-													// ... or if the volume status differs ...
-													ComicInfo.VolumeSpecified != PreviousComicInfo.VolumeSpecified ||
 													// ... or if a writer differs.
 													ComicInfo.Writer.Any(x => !PreviousComicInfo.Writer.Contains(x))) {
 													// Initialize a new instance of the MemoryStream class.
