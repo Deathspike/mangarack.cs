@@ -49,7 +49,7 @@ namespace MangaRack {
 		/// Run in batch processing mode.
 		/// </summary>
 		/// <param name="options">The options.</param>
-		public static void Batch(Options options) {
+		public static bool Batch(Options options) {
 			// Check if the batch-mode source file does exist.
 			if (File.Exists(options.SourceFile)) {
 				// Initialize a new instance of the List class.
@@ -85,8 +85,12 @@ namespace MangaRack {
 						// Run in single processing mode.
 						Single(workerItems[i].Key, workerItems[i].Value);
 					});
+					// Return true.
+					return true;
 				}
 			}
+			// Return false.
+			return false;
 		}
 
 		/// <summary>
@@ -124,7 +128,10 @@ namespace MangaRack {
 				// Check if no unique identifier is available.
 				if (options.UniqueIdentifiers.Count == 0) {
 					// Run in batch processing mode.
-					Batch(options);
+					if (!Batch(options)) {
+						// Write the message.
+						Console.WriteLine("No valid source file was found.");
+					}
 				} else {
 					// Check if worker threads are not disabled.
 					if (options.MaximumParallelWorkerThreads > 1) {
