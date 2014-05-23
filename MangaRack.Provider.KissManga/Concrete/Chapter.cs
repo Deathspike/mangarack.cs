@@ -19,19 +19,19 @@ namespace MangaRack.Provider.KissManga {
 		/// <summary>
 		/// Initialize a new instance of the Chapter class.
 		/// </summary>
-		/// <param name="Number">The number.</param>
-		/// <param name="Title">The title.</param>
-		/// <param name="UniqueIdentifier">The unique identifier.</param>
-		/// <param name="Volume">The volume.</param>
-		public Chapter(double Number, string Title, string UniqueIdentifier, double Volume) {
+		/// <param name="number">The number.</param>
+		/// <param name="title">The title.</param>
+		/// <param name="uniqueIdentifier">The unique identifier.</param>
+		/// <param name="volume">The volume.</param>
+		public Chapter(double number, string title, string uniqueIdentifier, double volume) {
 			// Set the number.
-			this.Number = Number;
+			Number = number;
 			// Set the title.
-			this.Title = Title;
+			Title = title;
 			// Set the unique identifier.
-			this.UniqueIdentifier = UniqueIdentifier;
+			UniqueIdentifier = uniqueIdentifier;
 			// Set the volume.
-			this.Volume = Volume;
+			Volume = volume;
 		}
 		#endregion
 
@@ -39,18 +39,18 @@ namespace MangaRack.Provider.KissManga {
 		/// <summary>
 		/// Populate asynchronously.
 		/// </summary>
-		/// <param name="Done">The callback.</param>
-		public void Populate(Action<IChapter> Done) {
+		/// <param name="done">The callback.</param>
+		public void Populate(Action<IChapter> done) {
 			// Get the document.
-			Http.Get(UniqueIdentifier, (Response) => {
+			Http.Get(UniqueIdentifier, response => {
 				// Find the images ...
-				Children = Regex.Matches(Response.AsString(), @"lstImages\.push\((.*)\)").Cast<Match>()
+				Children = Regex.Matches(response.AsString(), @"lstImages\.push\((.*)\)").Cast<Match>()
 					// ... select each page.
 					.Select(x => new Page(HtmlEntity.DeEntitize(x.Groups[1].Value).Trim('"')) as IPage)
 					// ... and create an array.
 					.ToArray();
 				// Invoke the callback.
-				Done(this);
+				done(this);
 			});
 		}
 		#endregion
@@ -90,9 +90,9 @@ namespace MangaRack.Provider.KissManga {
 			// Check if the children are valid.
 			if (Children != null) {
 				// Iterate through each child.
-				foreach (IPage Child in Children) {
+				foreach (var child in Children) {
 					// Dispose of the object.
-					Child.Dispose();
+					child.Dispose();
 				}
 				// Remove the children.
 				Children = null;

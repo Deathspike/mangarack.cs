@@ -16,48 +16,48 @@ namespace MangaRack.Core {
 		/// <summary>
 		/// Contains each broken page.
 		/// </summary>
-		private IEnumerable<string> _BrokenPages;
+		private IEnumerable<string> _brokenPages;
 
 		/// <summary>
 		/// Contains the chapter.
 		/// </summary>
-		private IChapter _Chapter;
+		private IChapter _chapter;
 
 		/// <summary>
 		/// Contains the comic information.
 		/// </summary>
-		private ComicInfo _ComicInfo;
+		private ComicInfo _comicInfo;
 
 		/// <summary>
 		/// Contains the publisher.
 		/// </summary>
-		private IPublisher _Publisher;
+		private IPublisher _publisher;
 
 		/// <summary>
 		/// Contains the series.
 		/// </summary>
-		private ISeries _Series;
+		private ISeries _series;
 
 		#region Constructor
 		/// <summary>
 		/// Initialize a new instance of the Repair class.
 		/// </summary>
-		/// <param name="Publisher">The publisher.</param>
-		/// <param name="Series">The series.</param>
-		/// <param name="Chapter">The chapter.</param>
-		/// <param name="ComicInfo">The comic information.</param>
-		/// <param name="BrokenPages">Each broken page.</param>
-		public Repair(IPublisher Publisher, ISeries Series, IChapter Chapter, ComicInfo ComicInfo, IEnumerable<string> BrokenPages) {
+		/// <param name="publisher">The publisher.</param>
+		/// <param name="series">The series.</param>
+		/// <param name="chapter">The chapter.</param>
+		/// <param name="comicInfo">The comic information.</param>
+		/// <param name="brokenPages">Each broken page.</param>
+		public Repair(IPublisher publisher, ISeries series, IChapter chapter, ComicInfo comicInfo, IEnumerable<string> brokenPages) {
 			// Set the broken pages.
-			_BrokenPages = BrokenPages;
+			_brokenPages = brokenPages;
 			// Set the chapter.
-			_Chapter = Chapter;
+			_chapter = chapter;
 			// Set the comic information.
-			_ComicInfo = ComicInfo;
+			_comicInfo = comicInfo;
 			// Set the publisher.
-			_Publisher = Publisher;
+			_publisher = publisher;
 			// Set the series.
-			_Series = Series;
+			_series = series;
 		}
 		#endregion
 
@@ -72,65 +72,65 @@ namespace MangaRack.Core {
 		/// <summary>
 		/// Populate asynchronously.
 		/// </summary>
-		/// <param name="Done">The callback.</param>
-		public void Populate(Action<Repair> Done) {
+		/// <param name="done">The callback.</param>
+		public void Populate(Action<Repair> done) {
 			// Initialize the page enumerator.
-			IEnumerator<IPage> Pages = _Chapter.Children.GetEnumerator();
+			var pages = _chapter.Children.GetEnumerator();
 			// Advance the enumerator to the next element.
-			if (!Pages.MoveNext()) {
+			if (!pages.MoveNext()) {
 				// Invoke the callback.
-				Done(this);
+				done(this);
 			} else {
 				// Initialize whether comic information is available.
-				bool HasComicInfo = false;
-				// Initialize a new instance of the BrokenPages class.
-				List<string> NewBrokenPages = new List<string>();
-				// Initialize the new comic page information.
-				ComicInfoPage NewComicInfoPage = null;
-				// Initialize the broken page enumerator.
-				IEnumerator<string> OldBrokenPages = _BrokenPages.GetEnumerator();
-				// Initialize the old comic page information.
-				ComicInfoPage OldComicInfoPage = null;
+				var hasComicInfo = false;
 				// Initialize the next handler.
-				Action Next = null;
+				var next = null as Action;
+				// Initialize a new instance of the BrokenPages class.
+				var newBrokenPages = new List<string>();
+				// Initialize the new comic page information.
+				var newComicInfoPage = (ComicInfoPage)null;
+				// Initialize the broken page enumerator.
+				var oldBrokenPages = _brokenPages.GetEnumerator();
+				// Initialize the old comic page information.
+				var oldComicInfoPage = null as ComicInfoPage;
 				// Run asynchronously.
-				(Next = () => {
+				(next = () => {
 					// Advance the enumerator to the next element.
-					while (OldBrokenPages.MoveNext()) {
+					while (oldBrokenPages.MoveNext()) {
 						// Initialize the separator.
-						int Separator = OldBrokenPages.Current.IndexOf(':');
+						var separator = oldBrokenPages.Current.IndexOf(':');
 						// Check if the separator is valid.
-						if (Separator != -1) {
+						if (separator != -1) {
 							// Initialize the number.
-							int Number;
+							int number;
 							// Check if the number is invalid.
-							if (int.TryParse(OldBrokenPages.Current.Substring(0, Separator), out Number) && (_ComicInfo == null || (OldComicInfoPage =_ComicInfo.Pages.FirstOrDefault(x => x.Image == Number)) != null)) {
+							if (int.TryParse(oldBrokenPages.Current.Substring(0, separator), out number) && (_comicInfo == null || (oldComicInfoPage =_comicInfo.Pages.FirstOrDefault(x => x.Image == number)) != null)) {
 								// Initialize the target unique identifier.
-								string UniqueIdentifier = OldBrokenPages.Current.Substring(Separator + 1).Trim();
+								var uniqueIdentifier = oldBrokenPages.Current.Substring(separator + 1).Trim();
 								// Advance the enumerator to the next element.
-								while (Pages.MoveNext()) {
+								while (pages.MoveNext()) {
 									// Check if the unique identifier is valid.
-									if (string.Equals(Pages.Current.UniqueIdentifier, UniqueIdentifier)) {
+									if (string.Equals(pages.Current.UniqueIdentifier, uniqueIdentifier)) {
 										// Populate asynchronously.
-										Pages.Current.Populate((Page) => {
+										pages.Current.Populate(page => {
 											// Publish the page.
-											if ((NewComicInfoPage = _Publisher.Publish(Page.Image, false, Number)) != null) {
+											if ((newComicInfoPage = _publisher.Publish(page.Image, false, number)) != null) {
 												// Check if the page is a broken page.
-												if (string.Equals(NewComicInfoPage.Type, "Deleted")) {
+												if (string.Equals(newComicInfoPage.Type, "Deleted")) {
 													// Add the broken page.
-													NewBrokenPages.Add(string.Format("{0}: {1}", Number.ToString("000"), Page.UniqueIdentifier));
+													newBrokenPages.Add(string.Format("{0}: {1}", number.ToString("000"), page.UniqueIdentifier));
 												}
 												// Check if comic information is available.
-												if (_ComicInfo != null) {
+												if (_comicInfo != null) {
 													// Set whether comic information is available.
-													HasComicInfo = true;
+													hasComicInfo = true;
 													// Remove the old comic page information.
-													_ComicInfo.Pages.Remove(OldComicInfoPage);
+													_comicInfo.Pages.Remove(oldComicInfoPage);
 													// Add the new comic page information.
-													_ComicInfo.Pages.Add(NewComicInfoPage);
+													_comicInfo.Pages.Add(newComicInfoPage);
 												}
 												// Invoke the next handler.
-												Next();
+												next();
 											}
 										});
 										// Stop the function.
@@ -145,18 +145,18 @@ namespace MangaRack.Core {
 					// Check if repairing has not failed.
 					if (!HasFailed) {
 						// Check if a broken page is available.
-						if (NewBrokenPages.Count != 0) {
+						if (newBrokenPages.Count != 0) {
 							// Publish broken page information.
-							_Publisher.Publish(NewBrokenPages);
+							_publisher.Publish(newBrokenPages);
 						}
 						// Check whether comic information is available.
-						if (HasComicInfo) {
+						if (hasComicInfo) {
 							// Publish comic information.
-							_Publisher.Publish(_ComicInfo);
+							_publisher.Publish(_comicInfo);
 						}
 					}
 					// Invoke the callback.
-					Done(this);
+					done(this);
 				})();
 			}
 		}

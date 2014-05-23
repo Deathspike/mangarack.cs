@@ -14,8 +14,8 @@ namespace MangaRack.Provider {
 		/// <summary>
 		/// Populate asynchronously.
 		/// </summary>
-		/// <param name="Done">The callback.</param>
-		void Populate(Action<T> Done);
+		/// <param name="done">The callback.</param>
+		void Populate(Action<T> done);
 		#endregion
 	}
 }

@@ -14,20 +14,20 @@ namespace MangaRack.Provider.Batoto {
 		/// <summary>
 		/// Retrieve the last element.
 		/// </summary>
-		/// <param name="Node">The node.</param>
-		public static HtmlNode LastElement(this HtmlNode Node) {
+		/// <param name="node">The node.</param>
+		public static HtmlNode LastElement(this HtmlNode node) {
 			// Initialize the result.
-			HtmlNode Result = null;
+			var result = null as HtmlNode;
 			// Iterate through each child node.
-			foreach (HtmlNode ChildNode in Node.ChildNodes) {
+			foreach (var childNode in node.ChildNodes) {
 				// Check if this is an element.
-				if (ChildNode.NodeType == HtmlNodeType.Element) {
+				if (childNode.NodeType == HtmlNodeType.Element) {
 					// Set the result.
-					Result = ChildNode;
+					result = childNode;
 				}
 			}
 			// Return the result.
-			return Result;
+			return result;
 		}
 		#endregion
 	}

@@ -14,18 +14,18 @@ namespace MangaRack {
 		/// <summary>
 		/// Attempt to delete files matching the file name and extension.
 		/// </summary>
-		/// <param name="ZipFile">The zip file.</param>
-		/// <param name="FileName">The file name.</param>
-		/// <param name="Extensions">Each extension.</param>
-		public static void TryDelete(this ZipFile ZipFile, string FileName, params string[] Extensions) {
+		/// <param name="zipFile">The zip file.</param>
+		/// <param name="fileName">The file name.</param>
+		/// <param name="extensions">Each extension.</param>
+		public static void TryDelete(this ZipFile zipFile, string fileName, params string[] extensions) {
 			// Iterate through each extension.
-			foreach (string Extension in Extensions) {
+			foreach (var extension in extensions) {
 				// Find the zip file entry.
-				ZipEntry ZipEntry = ZipFile.GetEntry(string.Format("{0}.{1}", FileName, Extension));
+				var zipEntry = zipFile.GetEntry(string.Format("{0}.{1}", fileName, extension));
 				// Check if the zip file entry is valid.
-				if (ZipEntry != null) {
+				if (zipEntry != null) {
 					// Delete the zip file entry.
-					ZipFile.Delete(ZipEntry);
+					zipFile.Delete(zipEntry);
 				}
 			}
 		}

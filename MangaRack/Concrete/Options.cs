@@ -35,11 +35,11 @@ namespace MangaRack {
 		[HelpOption]
 		public override string ToString() {
 			// Create a new instance of the HelpText class using common values.
-			HelpText Text = HelpText.AutoBuild(this);
+			var text = HelpText.AutoBuild(this);
 			// Add a text line before options usage strings.
-			Text.AddPreOptionsLine("\r\n  Usage: mangarack [options] [uniqueIdentifier, ...]");
+			text.AddPreOptionsLine("\r\n  Usage: mangarack [options] [uniqueIdentifier, ...]");
 			// Return the text.
-			return Text.ToString();
+			return text.ToString();
 		}
 		#endregion
 

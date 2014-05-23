@@ -15,10 +15,10 @@ namespace MangaRack.ViewModel {
 		/// <summary>
 		/// Initialize a new instance of the PageViewModel class.
 		/// </summary>
-		/// <param name="Source">The source.</param>
-		public PageViewModel(IPage Source) {
+		/// <param name="source">The source.</param>
+		public PageViewModel(IPage source) {
 			// Set the source.
-			this.Source = Source;
+			Source = source;
 		}
 		#endregion
 

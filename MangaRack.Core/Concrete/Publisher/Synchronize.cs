@@ -15,32 +15,32 @@ namespace MangaRack.Core {
 		/// <summary>
 		/// Contains the chapter.
 		/// </summary>
-		private IChapter _Chapter;
+		private IChapter _chapter;
 
 		/// <summary>
 		/// Contains the publisher.
 		/// </summary>
-		private IPublisher _Publisher;
+		private IPublisher _publisher;
 
 		/// <summary>
 		/// Contains the series.
 		/// </summary>
-		private ISeries _Series;
+		private ISeries _series;
 
 		#region Constructor
 		/// <summary>
 		/// Initialize a new instance of the Synchronize class.
 		/// </summary>
-		/// <param name="Publisher">The publisher.</param>
-		/// <param name="Series">The series.</param>
-		/// <param name="Chapter">The chapter.</param>
-		public Synchronize(IPublisher Publisher, ISeries Series, IChapter Chapter) {
+		/// <param name="publisher">The publisher.</param>
+		/// <param name="series">The series.</param>
+		/// <param name="chapter">The chapter.</param>
+		public Synchronize(IPublisher publisher, ISeries series, IChapter chapter) {
 			// Set the chapter.
-			_Chapter = Chapter;
+			_chapter = chapter;
 			// Set the publisher.
-			_Publisher = Publisher;
+			_publisher = publisher;
 			// Set the series.
-			_Series = Series;
+			_series = series;
 		}
 		#endregion
 
@@ -48,68 +48,68 @@ namespace MangaRack.Core {
 		/// <summary>
 		/// Populate asynchronously.
 		/// </summary>
-		/// <param name="Done">The callback.</param>
-		public void Populate(Action<Synchronize> Done) {
+		/// <param name="done">The callback.</param>
+		public void Populate(Action<Synchronize> done) {
 			// Initialize the page enumerator.
-			IEnumerator<IPage> Pages = _Chapter.Children.GetEnumerator();
+			var pages = _chapter.Children.GetEnumerator();
 			// Advance the enumerator to the next element.
-			if (!Pages.MoveNext()) {
+			if (!pages.MoveNext()) {
 				// Invoke the callback.
-				Done(this);
+				done(this);
 			} else {
 				// Initialize a new instance of the BrokenPages class.
-				List<string> BrokenPages = new List<string>();
+				var brokenPages = new List<string>();
 				// Initialize the comic page information.
-				ComicInfoPage ComicInfoPage;
+				var comicInfoPage = (ComicInfoPage)null;
 				// Initialize the next handler.
-				Action Next = null;
+				var next = (Action)null;
 				// Initialize the number.
-				int Number = 0;
+				var number = 0;
 				// Initialize a new instance of the List class.
-				List<ComicInfoPage> MetaPages = new List<ComicInfoPage>();
+				var metaPages = new List<ComicInfoPage>();
 				// Check if the preview image is valid.
-				if (_Series.PreviewImage != null) {
+				if (_series.PreviewImage != null) {
 					// Publish the preview image.
-					MetaPages.Add(_Publisher.Publish(_Series.PreviewImage, true, 0));
+					metaPages.Add(_publisher.Publish(_series.PreviewImage, true, 0));
 				}
 				// Populate asynchronously.
-				(Next = () => Pages.Current.Populate((Page) => {
+				(next = () => pages.Current.Populate(Page => {
 					// Increment the number.
-					Number++;
+					number++;
 					// Use the page and dispose of it when done.
 					using (Page) {
 						// Publish the page.
-						if ((ComicInfoPage = _Publisher.Publish(Page.Image, false, Number)) != null) {
+						if ((comicInfoPage = _publisher.Publish(Page.Image, false, number)) != null) {
 							// Add the page.
-							MetaPages.Add(ComicInfoPage);
+							metaPages.Add(comicInfoPage);
 							// Check if the page is a broken page.
-							if (string.Equals(ComicInfoPage.Type, "Deleted")) {
+							if (string.Equals(comicInfoPage.Type, "Deleted")) {
 								// Add the broken page.
-								BrokenPages.Add(string.Format("{0}: {1}", Number.ToString("000"), Page.UniqueIdentifier));
+								brokenPages.Add(string.Format("{0}: {1}", number.ToString("000"), Page.UniqueIdentifier));
 							}
 						}
 					}
 					// Advance the enumerator to the next element.
-					if (Pages.MoveNext()) {
+					if (pages.MoveNext()) {
 						// Invoke the next handler.
-						Next();
+						next();
 					} else {
 						// Check if a broken page is available.
-						if (BrokenPages.Count != 0) {
+						if (brokenPages.Count != 0) {
 							// Publish broken page information.
-							_Publisher.Publish(BrokenPages);
+							_publisher.Publish(brokenPages);
 						}
 						// Check if a valid page is available.
-						if (MetaPages.Count != 0) {
+						if (metaPages.Count != 0) {
 							// Initialize a new instance of the ComicInfo class.
-							ComicInfo ComicInfo = new ComicInfo();
+							var comicInfo = new ComicInfo();
 							// Transcribe the series, chapter and pages information.
-							ComicInfo.Transcribe(_Series, _Chapter, MetaPages);
+							comicInfo.Transcribe(_series, _chapter, metaPages);
 							// Publish comic information.
-							_Publisher.Publish(ComicInfo);
+							_publisher.Publish(comicInfo);
 						}
 						// Invoke the callback.
-						Done(this);
+						done(this);
 					}
 				}))();
 			}

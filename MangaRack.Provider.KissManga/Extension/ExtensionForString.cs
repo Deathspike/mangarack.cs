@@ -13,54 +13,54 @@ namespace MangaRack.Provider.KissManga {
 		/// <summary>
 		/// Convert an alphabetic suffix to a numeric suffix.
 		/// </summary>
-		/// <param name="Value">The value.</param>
-		public static string AlphabeticToNumeric(this string Value) {
+		/// <param name="value">The value.</param>
+		public static string AlphabeticToNumeric(this string value) {
 			// Retrieve the alphabetic value.
-			char Alphabetic = Value.ToLowerInvariant()[Value.Length - 1];
+			var alphabetic = value.ToLowerInvariant()[value.Length - 1];
 			// Check if the presumed alphabetic value is actually alphabetic.
-			if (!char.IsDigit(Alphabetic)) {
+			if (!char.IsDigit(alphabetic)) {
 				// Remove the alphabetic value.
-				Value = Value.Substring(0, Value.Length - 1);
+				value = value.Substring(0, value.Length - 1);
 				// Check if the value does not values behind the digit.
-				if (Value.IndexOf('.') == -1) {
+				if (value.IndexOf('.') == -1) {
 					// Append the digit separator.
-					Value += '.';
+					value += '.';
 				}
 				// Convert the alphabetic value to numeric and append it.
-				Value += ((int) Alphabetic - 96).ToString();
+				value += ((int) alphabetic - 96).ToString();
 			}
 			// Return the value.
-			return Value;
+			return value;
 		}
 
 		/// <summary>
 		/// Remove characters before and including the first occurrence of the subject.
 		/// </summary>
-		/// <param name="Value">The value.</param>
-		/// <param name="Subject">The subject.</param>
-		public static string RemoveToIncluding(this string Value, string Subject) {
+		/// <param name="value">The value.</param>
+		/// <param name="subject">The subject.</param>
+		public static string RemoveToIncluding(this string value, string subject) {
 			// Declare the index.
-			int Index;
+			int index;
 			// Remove characters before and including the first occurrence of the subject.
-			return (Index = Value.IndexOf(Subject)) != -1 ? Value.Substring(Index + Subject.Length) : Value;
+			return (index = value.IndexOf(subject)) != -1 ? value.Substring(index + subject.Length) : value;
 		}
 
 		/// <summary>
 		/// Returns a new string in which all occurrences of a specified string in the current instance are replaced with another specified string.
 		/// </summary>
-		/// <param name="Value">The value.</param>
-		/// <param name="OldValue">The string to be replaced.</param>
-		/// <param name="NewValue">The string to replace all occurrences of OldValue.</param>
-		public static string ReplaceWhileWithDigit(this string Value, string OldValue, string NewValue) {
+		/// <param name="value">The value.</param>
+		/// <param name="oldValue">The string to be replaced.</param>
+		/// <param name="newValue">The string to replace all occurrences of OldValue.</param>
+		public static string ReplaceWhileWithDigit(this string value, string oldValue, string newValue) {
 			// Declare the index.
-			int Index;
+			int index;
 			// Iterate while the old value is available.
-			while ((Index = Value.IndexOf(OldValue)) != -1 && (Index + OldValue.Length > Value.Length || char.IsDigit(Value[Index + OldValue.Length]))) {
+			while ((index = value.IndexOf(oldValue)) != -1 && (index + oldValue.Length > value.Length || char.IsDigit(value[index + oldValue.Length]))) {
 				// Replace the old value with the new value.
-				Value = Value.Replace(OldValue, NewValue);
+				value = value.Replace(oldValue, newValue);
 			}
 			// Return the modified value.
-			return Value;
+			return value;
 		}
 		#endregion
 	}

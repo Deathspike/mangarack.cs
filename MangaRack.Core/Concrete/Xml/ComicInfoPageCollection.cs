@@ -27,12 +27,12 @@ namespace MangaRack.Core {
 		/// <summary>
 		/// Initialize a new instance of the ComicInfoPageCollection class.
 		/// </summary>
-		/// <param name="Collection">The collection.</param>
-		public ComicInfoPageCollection(IEnumerable<ComicInfoPage> Collection) {
+		/// <param name="collection">The collection.</param>
+		public ComicInfoPageCollection(IEnumerable<ComicInfoPage> collection) {
 			// Iterate through each page.
-			foreach (ComicInfoPage ComicInfoPage in Collection) {
+			foreach (var comicInfoPage in collection) {
 				// Add the page.
-				Add(ComicInfoPage);
+				Add(comicInfoPage);
 			}
 		}
 		#endregion
@@ -49,34 +49,34 @@ namespace MangaRack.Core {
 		/// <summary>
 		/// Generates an object from its XML representation.
 		/// </summary>
-		/// <param name="XmlReader">The stream from which the object is deserialized.</param>
-		public void ReadXml(XmlReader XmlReader) {
+		/// <param name="xmlReader">The stream from which the object is deserialized.</param>
+		public void ReadXml(XmlReader xmlReader) {
 			// Initialize a new instance of the XmlSerializer class.
-			XmlSerializer XmlSerializer = new XmlSerializer(typeof(ComicInfoPage));
+			var xmlSerializer = new XmlSerializer(typeof(ComicInfoPage));
 			// Read into the children.
-			XmlReader.Read();
+			xmlReader.Read();
 			// Iterate through each child.
-			while (XmlReader.Name.Equals("Page")) {
+			while (xmlReader.Name.Equals("Page")) {
 				// Add the deserialized page.
-				Add(XmlSerializer.Deserialize(XmlReader) as ComicInfoPage);
+				Add(xmlSerializer.Deserialize(xmlReader) as ComicInfoPage);
 			}
 			// Read out of the children.
-			XmlReader.Read();
+			xmlReader.Read();
 		}
 
 		/// <summary>
 		/// Converts an object into its XML representation.
 		/// </summary>
-		/// <param name="XmlWriter">The stream to which the object is serialized.</param>
-		public void WriteXml(XmlWriter XmlWriter) {
+		/// <param name="xmlWriter">The stream to which the object is serialized.</param>
+		public void WriteXml(XmlWriter xmlWriter) {
 			// Check if an item is available.
 			if (Count != 0) {
 				// Initialize a new instance of the XmlSerializer class.
-				XmlSerializer XmlSerializer = new XmlSerializer(typeof(ComicInfoPage));
+				var xmlSerializer = new XmlSerializer(typeof(ComicInfoPage));
 				// Iterate through each page.
-				foreach (ComicInfoPage ComicInfoPage in this.OrderBy(x => x.Image)) {
+				foreach (var comicInfoPage in this.OrderBy(x => x.Image)) {
 					// Add the serialized page.
-					XmlSerializer.Serialize(XmlWriter, ComicInfoPage);
+					xmlSerializer.Serialize(xmlWriter, comicInfoPage);
 				}
 			}
 		}

@@ -15,10 +15,10 @@ namespace MangaRack.Provider.KissManga {
 		/// <summary>
 		/// Initialize a new instance of the Page class.
 		/// </summary>
-		/// <param name="UniqueIdentifier">The unique identifier.</param>
-		public Page(string UniqueIdentifier) {
+		/// <param name="uniqueIdentifier">The unique identifier.</param>
+		public Page(string uniqueIdentifier) {
 			// Set the unique identifier.
-			this.UniqueIdentifier = UniqueIdentifier;
+			UniqueIdentifier = uniqueIdentifier;
 		}
 		#endregion
 
@@ -26,14 +26,14 @@ namespace MangaRack.Provider.KissManga {
 		/// <summary>
 		/// Populate asynchronously.
 		/// </summary>
-		/// <param name="Done">The callback.</param>
-		public void Populate(Action<IPage> Done) {
+		/// <param name="done">The callback.</param>
+		public void Populate(Action<IPage> done) {
 			// Download the source image.
-			Http.Get(UniqueIdentifier, (ImageResponse) => {
+			Http.Get(UniqueIdentifier, imageResponse => {
 				// Set the image.
-				Image = ImageResponse.AsBinary();
+				Image = imageResponse.AsBinary();
 				// Invoke the callback.
-				Done(this);
+				done(this);
 			});
 		}
 		#endregion

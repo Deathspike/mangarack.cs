@@ -17,10 +17,10 @@ namespace MangaRack.ViewModel {
 		/// <summary>
 		/// Initialize a new instance of the SeriesViewModel class.
 		/// </summary>
-		/// <param name="Source">The source.</param>
-		public SeriesViewModel(ISeries Source) {
+		/// <param name="source">The source.</param>
+		public SeriesViewModel(ISeries source) {
 			// Set the source.
-			this.Source = Source;
+			Source = source;
 		}
 		#endregion
 

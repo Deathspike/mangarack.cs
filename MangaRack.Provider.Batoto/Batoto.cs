@@ -12,7 +12,7 @@ namespace MangaRack.Provider.Batoto {
 		/// <summary>
 		/// Contains the provider.
 		/// </summary>
-		private readonly IProvider _Provider;
+		private readonly IProvider _provider;
 
 		#region Constructor
 		/// <summary>
@@ -20,7 +20,7 @@ namespace MangaRack.Provider.Batoto {
 		/// </summary>
 		private Batoto() {
 			// Set the provider.
-			_Provider = new Provider();
+			_provider = new Provider();
 		}
 		#endregion
 
@@ -28,19 +28,19 @@ namespace MangaRack.Provider.Batoto {
 		/// <summary>
 		/// Open a series.
 		/// </summary>
-		/// <param name="UniqueIdentifier">The unique identifier.</param>
-		public ISeries Open(string UniqueIdentifier) {
+		/// <param name="uniqueIdentifier">The unique identifier.</param>
+		public ISeries Open(string uniqueIdentifier) {
 			// Open a series.
-			return _Provider.Open(UniqueIdentifier);
+			return _provider.Open(uniqueIdentifier);
 		}
 
 		/// <summary>
 		/// Search series.
 		/// </summary>
-		/// <param name="Input">The input.</param>
-		public ISearch Search(string Input) {
+		/// <param name="input">The input.</param>
+		public ISearch Search(string input) {
 			// Search series.
-			return _Provider.Search(Input);
+			return _provider.Search(input);
 		}
 		#endregion
 
@@ -51,7 +51,7 @@ namespace MangaRack.Provider.Batoto {
 		public string UniqueIdentifier {
 			get {
 				// Return the unique identifier.
-				return _Provider.UniqueIdentifier;
+				return _provider.UniqueIdentifier;
 			}
 		}
 		#endregion

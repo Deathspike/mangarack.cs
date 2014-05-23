@@ -17,10 +17,10 @@ namespace MangaRack.Provider.Batoto {
 		/// <summary>
 		/// Initialize a new instance of the Page class.
 		/// </summary>
-		/// <param name="UniqueIdentifier">The unique identifier.</param>
-		public Page(string UniqueIdentifier) {
+		/// <param name="uniqueIdentifier">The unique identifier.</param>
+		public Page(string uniqueIdentifier) {
 			// Set the unique identifier.
-			this.UniqueIdentifier = UniqueIdentifier;
+			UniqueIdentifier = uniqueIdentifier;
 		}
 		#endregion
 
@@ -28,32 +28,32 @@ namespace MangaRack.Provider.Batoto {
 		/// <summary>
 		/// Populate asynchronously.
 		/// </summary>
-		/// <param name="Done">The callback.</param>
-		public void Populate(Action<IPage> Done) {
+		/// <param name="done">The callback.</param>
+		public void Populate(Action<IPage> done) {
 			// Get the document.
-			Http.Get(UniqueIdentifier + "?supress_webtoon=t", (HtmlResponse) => {
+			Http.Get(UniqueIdentifier + "?supress_webtoon=t", HtmlResponse => {
 				// Initialize a new instance of the HtmlDocument class.
-				HtmlDocument HtmlDocument = new HtmlDocument();
+				var htmlDocument = new HtmlDocument();
 				// Initialize a new instance of the HtmlNode class.
-				HtmlNode HtmlNode;
+				var htmlNode = null as HtmlNode;
 				// Load the document.
-				HtmlDocument.LoadHtml(HtmlResponse.AsString());
+				htmlDocument.LoadHtml(HtmlResponse.AsString());
 				// Find each image ...
-				if ((HtmlNode = HtmlDocument.DocumentNode.Descendants("img")
+				if ((htmlNode = htmlDocument.DocumentNode.Descendants("img")
 					// ... whith an attribute indicating the main image ...
 					.Where(x => HtmlEntity.DeEntitize(x.GetAttributeValue("alt", string.Empty)).Trim().EndsWith("Batoto!"))
 					// ... use the first or default.
 					.FirstOrDefault()) != null) {
 					// Request the image.
-					Http.Get(HtmlEntity.DeEntitize(HtmlNode.GetAttributeValue("src", string.Empty)).Trim(), (ImageResponse) => {
+					Http.Get(HtmlEntity.DeEntitize(htmlNode.GetAttributeValue("src", string.Empty)).Trim(), imageResponse => {
 						// Set the image.
-						Image = ImageResponse.AsBinary();
+						Image = imageResponse.AsBinary();
 						// Invoke the callback.
-						Done(this);
+						done(this);
 					});
 				} else {
 					// Invoke the callback.
-					Done(this);
+					done(this);
 				}
 			});
 		}

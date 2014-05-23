@@ -15,16 +15,16 @@ namespace MangaRack.ViewModel {
 		/// <summary>
 		/// Contains each key and value.
 		/// </summary>
-		private Dictionary<string, object> _KeyValueStore;
+		private Dictionary<string, object> _keyValueStore;
 
 		#region Abstract
 		/// <summary>
 		/// Convert the expression to a key.
 		/// </summary>
-		/// <param name="Expression">The expression.</param>
-		private string _Key(Expression<Func<object>> Expression) {
+		/// <param name="expression">The expression.</param>
+		private string _Key(Expression<Func<object>> expression) {
 			// Return the key.
-			return ((MemberExpression)Expression.Body).Member.Name;
+			return ((MemberExpression)expression.Body).Member.Name;
 		}
 		#endregion
 
@@ -34,7 +34,7 @@ namespace MangaRack.ViewModel {
 		/// </summary>
 		public KeyValueStore() {
 			// Initialize a new instance of the Dictionary class.
-			_KeyValueStore = new Dictionary<string, object>();
+			_keyValueStore = new Dictionary<string, object>();
 		}
 		#endregion
 
@@ -42,115 +42,115 @@ namespace MangaRack.ViewModel {
 		/// <summary>
 		/// Check if the key-value store contains the key.
 		/// </summary>
-		/// <param name="Expression">The expression.</param>
-		public bool Contains(Expression<Func<object>> Expression) {
+		/// <param name="expression">The expression.</param>
+		public bool Contains(Expression<Func<object>> expression) {
 			// Check if the key-value store contains the key.
-			return Contains(_Key(Expression));
+			return Contains(_Key(expression));
 		}
 
 		/// <summary>
 		/// Check if the key-value store contains the key.
 		/// </summary>
-		/// <param name="Key">The key.</param>
-		public bool Contains(string Key) {
+		/// <param name="key">The key.</param>
+		public bool Contains(string key) {
 			// Check if the key-value store contains the key.
-			return _KeyValueStore.ContainsKey(Key);
+			return _keyValueStore.ContainsKey(key);
 		}
 
 		/// <summary>
 		/// Get a value.
 		/// </summary>
-		/// <param name="Expression">The expression.</param>
-		public T Get<T>(Expression<Func<object>> Expression) {
+		/// <param name="expression">The expression.</param>
+		public T Get<T>(Expression<Func<object>> expression) {
 			// Return a value.
-			return (T) Get(_Key(Expression));
+			return (T) Get(_Key(expression));
 		}
 
 		/// <summary>
 		/// Get a value.
 		/// </summary>
-		/// <param name="Expression">The expression.</param>
-		/// <param name="Default">The default value.</param>
-		public T Get<T>(Expression<Func<object>> Expression, T Default) {
+		/// <param name="expression">The expression.</param>
+		/// <param name="defaultValue">The default value.</param>
+		public T Get<T>(Expression<Func<object>> expression, T defaultValue) {
 			// Return a value.
-			return (T) Get(_Key(Expression), Default);
+			return (T) Get(_Key(expression), defaultValue);
 		}
 
 		/// <summary>
 		/// Get a value.
 		/// </summary>
-		/// <param name="Key">The key.</param>
-		public T Get<T>(string Key) {
+		/// <param name="key">The key.</param>
+		public T Get<T>(string key) {
 			// Return a value.
-			return (T) Get(Key);
+			return (T) Get(key);
 		}
 
 		/// <summary>
 		/// Get a value.
 		/// </summary>
-		/// <param name="Key">The key.</param>
-		/// <param name="Default">The default value.</param>
-		public T Get<T>(string Key, T Default) {
+		/// <param name="key">The key.</param>
+		/// <param name="defaultValue">The default value.</param>
+		public T Get<T>(string key, T defaultValue) {
 			// Return a value.
-			return (T) Get(Key, (object) Default);
+			return (T) Get(key, (object) defaultValue);
 		}
 		
 		/// <summary>
 		/// Get a value.
 		/// </summary>
-		/// <param name="Expression">The expression.</param>
-		public object Get(Expression<Func<object>> Expression) {
+		/// <param name="expression">The expression.</param>
+		public object Get(Expression<Func<object>> expression) {
 			// Return a value.
-			return Get(_Key(Expression), null);
+			return Get(_Key(expression), null);
 		}
 
 		/// <summary>
 		/// Get a value.
 		/// </summary>
-		/// <param name="Expression">The expression.</param>
-		/// <param name="Default">The default value.</param>
-		public object Get(Expression<Func<object>> Expression, object Default) {
+		/// <param name="expression">The expression.</param>
+		/// <param name="defaultValue">The default value.</param>
+		public object Get(Expression<Func<object>> expression, object defaultValue) {
 			// Return a value.
-			return Get(_Key(Expression), Default);
+			return Get(_Key(expression), defaultValue);
 		}
 
 		/// <summary>
 		/// Get a value.
 		/// </summary>
-		/// <param name="Key">The key.</param>
-		public object Get(string Key) {
+		/// <param name="key">The key.</param>
+		public object Get(string key) {
 			// Return a value.
-			return Get(Key, null);
+			return Get(key, null);
 		}
 
 		/// <summary>
 		/// Get a value.
 		/// </summary>
-		/// <param name="Key">The key.</param>
-		/// <param name="Default">The default value.</param>
-		public object Get(string Key, object Default) {
+		/// <param name="key">The key.</param>
+		/// <param name="defaultValue">The default value.</param>
+		public object Get(string key, object defaultValue) {
 			// Return a value.
-			return Contains(Key) ? _KeyValueStore[Key] : Default;
+			return Contains(key) ? _keyValueStore[key] : defaultValue;
 		}
 
 		/// <summary>
 		/// Remove a value.
 		/// </summary>
-		/// <param name="Expression">The expression.</param>
-		public bool Remove(Expression<Func<object>> Expression) {
+		/// <param name="expression">The expression.</param>
+		public bool Remove(Expression<Func<object>> expression) {
 			// Remove a value.
-			return Remove(_Key(Expression));
+			return Remove(_Key(expression));
 		}
 
 		/// <summary>
 		/// Remove a value.
 		/// </summary>
-		/// <param name="Key">The key.</param>
-		public virtual bool Remove(string Key) {
+		/// <param name="key">The key.</param>
+		public virtual bool Remove(string key) {
 			// Check if the key-value store contains the key.
-			if (Contains(Key)) {
+			if (Contains(key)) {
 				// Remove the key from the key-value store.
-				_KeyValueStore.Remove(Key);
+				_keyValueStore.Remove(key);
 				// Return true.
 				return true;
 			}
@@ -161,23 +161,23 @@ namespace MangaRack.ViewModel {
 		/// <summary>
 		/// Set a value.
 		/// </summary>
-		/// <param name="Expression">The expression.</param>
-		/// <param name="Value">The value.</param>
-		public bool Set(Expression<Func<object>> Expression, object Value) {
+		/// <param name="expression">The expression.</param>
+		/// <param name="value">The value.</param>
+		public bool Set(Expression<Func<object>> expression, object value) {
 			// Set a value.
-			return Set(_Key(Expression), Value);
+			return Set(_Key(expression), value);
 		}
 
 		/// <summary>
 		/// Set a value.
 		/// </summary>
-		/// <param name="Key">The key.</param>
-		/// <param name="Value">The value.</param>
-		public virtual bool Set(string Key, object Value) {
+		/// <param name="key">The key.</param>
+		/// <param name="value">The value.</param>
+		public virtual bool Set(string key, object value) {
 			// Check if the key-value store does not contain the key or differs.
-			if (!Contains(Key) || _KeyValueStore[Key] != Value) {
+			if (!Contains(key) || _keyValueStore[key] != value) {
 				// Set a value.
-				_KeyValueStore[Key] = Value;
+				_keyValueStore[key] = value;
 				// Return true.
 				return true;
 			}

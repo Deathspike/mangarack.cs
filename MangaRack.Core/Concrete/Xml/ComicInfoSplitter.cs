@@ -27,12 +27,12 @@ namespace MangaRack.Core {
 		/// <summary>
 		/// Initialize a new instance of the ComicInfoSplitter class.
 		/// </summary>
-		/// <param name="Collection">The collection.</param>
-		public ComicInfoSplitter(IEnumerable<string> Collection) {
+		/// <param name="collection">The collection.</param>
+		public ComicInfoSplitter(IEnumerable<string> collection) {
 			// Iterate through each value.
-			foreach (string Value in Collection) {
+			foreach (var value in collection) {
 				// Add the value.
-				Add(Value);
+				Add(value);
 			}
 		}
 		#endregion
@@ -49,24 +49,24 @@ namespace MangaRack.Core {
 		/// <summary>
 		/// Generates an object from its XML representation.
 		/// </summary>
-		/// <param name="XmlReader">The stream from which the object is deserialized.</param>
-		public void ReadXml(XmlReader XmlReader) {
+		/// <param name="xmlReader">The stream from which the object is deserialized.</param>
+		public void ReadXml(XmlReader xmlReader) {
 			// Iterate through each value.
-			foreach (string Value in XmlReader.ReadElementContentAsString().Split(',')) {
+			foreach (var value in xmlReader.ReadElementContentAsString().Split(',')) {
 				// Add the value to the collection.
-				Add(Value.Trim());
+				Add(value.Trim());
 			}
 		}
 
 		/// <summary>
 		/// Converts an object into its XML representation.
 		/// </summary>
-		/// <param name="XmlWriter">The stream to which the object is serialized.</param>
-		public void WriteXml(XmlWriter XmlWriter) {
+		/// <param name="xmlWriter">The stream to which the object is serialized.</param>
+		public void WriteXml(XmlWriter xmlWriter) {
 			// Check if an item is available.
 			if (Count != 0) {
 				// Write the string.
-				XmlWriter.WriteString(string.Join(", ", this.Where(x => !string.IsNullOrEmpty(x)).ToArray()));
+				xmlWriter.WriteString(string.Join(", ", this.Where(x => !string.IsNullOrEmpty(x)).ToArray()));
 			}
 		}
 		#endregion

@@ -19,42 +19,42 @@ namespace MangaRack.Analyze {
 		/// <summary>
 		/// Contains the number of archives containing damaged meta-information.
 		/// </summary>
-		private static int _NumberOfDamaged;
+		private static int _numberOfDamaged;
 
 		/// <summary>
 		/// Contains the number of archives lacking meta-information.
 		/// </summary>
-		private static int _NumberOfMissing;
+		private static int _numberOfMissing;
 
 		#region Methods
 		/// <summary>
 		/// Inspect the path.
 		/// </summary>
-		/// <param name="InspectPath">The path.</param>
-		public static void Inspect(string InspectPath) {
+		/// <param name="inspectPath">The path.</param>
+		public static void Inspect(string inspectPath) {
 			// Iterate through each directory.
-			foreach (string DirectoryPath in Directory.GetDirectories(InspectPath)) {
+			foreach (var directoryPath in Directory.GetDirectories(inspectPath)) {
 				// Inspect the directory.
-				Inspect(DirectoryPath);
+				Inspect(directoryPath);
 			}
 			// Iterate through each archive file.
-			foreach (string FilePath in Directory.GetFiles(InspectPath).Where(x => x.EndsWith(".cbz"))) {
+			foreach (var filePath in Directory.GetFiles(inspectPath).Where(x => x.EndsWith(".cbz"))) {
 				// Read the comic information.
-				ComicInfo ComicInfo = Read(FilePath);
+				var comicInfo = Read(filePath);
 				// Check if comic information is available.
-				if (ComicInfo != null) {
+				if (comicInfo != null) {
 					// Check if the series is invalid.
-					if (string.IsNullOrEmpty(ComicInfo.Series)) {
+					if (string.IsNullOrEmpty(comicInfo.Series)) {
 						// Write the message.
-						Console.WriteLine("Damaged: {0}", Path.GetFileNameWithoutExtension(FilePath));
+						Console.WriteLine("Damaged: {0}", Path.GetFileNameWithoutExtension(filePath));
 						// Increment the number of archives containing damaged meta-information.
-						_NumberOfDamaged++;
+						_numberOfDamaged++;
 					}
 				} else {
 					// Write the message.
-					Console.WriteLine("Missing: {0}", Path.GetFileNameWithoutExtension(FilePath));
+					Console.WriteLine("Missing: {0}", Path.GetFileNameWithoutExtension(filePath));
 					// Increment the number of archives lacking meta-information.
-					_NumberOfMissing++;
+					_numberOfMissing++;
 				}
 			}
 		}
@@ -62,8 +62,8 @@ namespace MangaRack.Analyze {
 		/// <summary>
 		/// Entry point of the application.
 		/// </summary>
-		/// <param name="Arguments">Each command line argument.</param>
-		public static void Main(string[] Arguments) {
+		/// <param name="arguments">Each command line argument.</param>
+		public static void Main(string[] arguments) {
 			// Set the thread culture.
 			Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
 			// Occurs when an exception is not caught.
@@ -83,19 +83,19 @@ namespace MangaRack.Analyze {
 			// Parse each command line argument into the options instance.
 			if (true) {
 				// Initialize the begin time.
-				long Time = DateTime.Now.Ticks;
+				var time = DateTime.Now.Ticks;
 				// Inspect the current directory.
 				Inspect(Directory.GetCurrentDirectory());
 				// Write the message.
-				Console.WriteLine("Total Damaged: {0}", _NumberOfDamaged);
+				Console.WriteLine("Total Damaged: {0}", _numberOfDamaged);
 				// Write the message.
-				Console.WriteLine("Total Missing: {0}", _NumberOfMissing);
+				Console.WriteLine("Total Missing: {0}", _numberOfMissing);
 				// Check if the total elapsed time notification is not disabled.
 				if (true) {
 					// Calculate the elapsed time.
-					TimeSpan Elapsed = new TimeSpan(DateTime.Now.Ticks - Time);
+					var elapsed = new TimeSpan(DateTime.Now.Ticks - time);
 					// Write the message.
-					Console.WriteLine("Completed ({0}:{1}:{2})!", Elapsed.Hours.ToString("00"), Elapsed.Minutes.ToString("00"), Elapsed.Seconds.ToString("00"));
+					Console.WriteLine("Completed ({0}:{1}:{2})!", elapsed.Hours.ToString("00"), elapsed.Minutes.ToString("00"), elapsed.Seconds.ToString("00"));
 				}
 				// Check if the keep-alive behavior is not disabled.
 				if (true) {
@@ -110,21 +110,21 @@ namespace MangaRack.Analyze {
 		/// <summary>
 		/// Read comic information.
 		/// </summary>
-		/// <param name="FilePath">The file path.</param>
-		public static ComicInfo Read(string FilePath) {
+		/// <param name="filePath">The file path.</param>
+		public static ComicInfo Read(string filePath) {
 			// Attempt the following code.
 			try {
 				// Initialize a new instance of the ZipFile class.
-				using (ZipFile ZipFile = new ZipFile(FilePath)) {
+				using (var zipFile = new ZipFile(filePath)) {
 					// Find the comic information.
-					ZipEntry ZipEntry = ZipFile.GetEntry("ComicInfo.xml");
+					var zipEntry = zipFile.GetEntry("ComicInfo.xml");
 					// Check if comic information is available.
-					if (ZipEntry == null) {
+					if (zipEntry == null) {
 						// Stop the function.
 						return null;
 					} else {
 						// Load the comic information.
-						return ComicInfo.Load(ZipFile.GetInputStream(ZipEntry));
+						return ComicInfo.Load(zipFile.GetInputStream(zipEntry));
 					}
 				}
 			} catch {

@@ -14,12 +14,12 @@ namespace MangaRack.Provider.Batoto {
 		/// <summary>
 		/// Open a series.
 		/// </summary>
-		/// <param name="UniqueIdentifier">The unique identifier.</param>
-		public ISeries Open(string UniqueIdentifier) {
+		/// <param name="uniqueIdentifier">The unique identifier.</param>
+		public ISeries Open(string uniqueIdentifier) {
 			// Check if the unique identifier can be handled.
-			if (Regex.Match(UniqueIdentifier, @"^http://www\.batoto\.net/comic/_/comics/(.*)-r([0-9]+)", RegexOptions.IgnoreCase).Success) {
+			if (Regex.Match(uniqueIdentifier, @"^http://www\.batoto\.net/comic/_/comics/(.*)-r([0-9]+)", RegexOptions.IgnoreCase).Success) {
 				// Initialize a new instance of the Series class.
-				return new Series(UniqueIdentifier);
+				return new Series(uniqueIdentifier);
 			}
 			// Return null.
 			return null;
@@ -28,10 +28,10 @@ namespace MangaRack.Provider.Batoto {
 		/// <summary>
 		/// Search series.
 		/// </summary>
-		/// <param name="Input">The input.</param>
-		public ISearch Search(string Input) {
+		/// <param name="input">The input.</param>
+		public ISearch Search(string input) {
 			// Initialize a new instance of the Search class.
-			return new Search(Input);
+			return new Search(input);
 		}
 		#endregion
 

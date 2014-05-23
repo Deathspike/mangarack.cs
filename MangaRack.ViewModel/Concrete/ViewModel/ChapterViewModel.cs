@@ -17,10 +17,10 @@ namespace MangaRack.ViewModel {
 		/// <summary>
 		/// Initialize a new instance of the ChapterViewModel class.
 		/// </summary>
-		/// <param name="Source">The source.</param>
-		public ChapterViewModel(IChapter Source) {
+		/// <param name="source">The source.</param>
+		public ChapterViewModel(IChapter source) {
 			// Set the source.
-			this.Source = Source;
+			Source = source;
 		}
 		#endregion
 

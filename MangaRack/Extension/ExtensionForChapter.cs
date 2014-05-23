@@ -16,39 +16,39 @@ namespace MangaRack {
 		/// <summary>
 		/// Filter the chapters according to the chapter and volume filter.
 		/// </summary>
-		/// <param name="Chapters">Each chapter.</param>
-		/// <param name="Options">The collection of options.</param>
-		public static IEnumerable<IChapter> Filter(this IEnumerable<IChapter> Chapters, Options Options) {
+		/// <param name="chapters">Each chapter.</param>
+		/// <param name="options">The collection of options.</param>
+		public static IEnumerable<IChapter> Filter(this IEnumerable<IChapter> chapters, Options options) {
 			// Iterate through each chapter.
-			foreach (IChapter Chapter in Chapters) {
+			foreach (var chapter in chapters) {
 				// Check if the chapter number is valid.
-				if (Chapter.Number != -1) {
+				if (chapter.Number != -1) {
 					// Filter on negative chapter number values.
-					if (Options.FilterOnChapter < 0 && Chapter.Number >= Math.Abs(Options.FilterOnChapter)) {
+					if (options.FilterOnChapter < 0 && chapter.Number >= Math.Abs(options.FilterOnChapter)) {
 						// Continue iteration.
 						continue;
 					}
 					// Filter on positive chapter number values.
-					if (Options.FilterOnChapter > 0 && Chapter.Number <= Options.FilterOnChapter) {
+					if (options.FilterOnChapter > 0 && chapter.Number <= options.FilterOnChapter) {
 						// Continue iteration.
 						continue;
 					}
 				}
 				// Check if the volume is valid.
-				if (Chapter.Volume != -1) {
+				if (chapter.Volume != -1) {
 					// Filter on negative chapter volume values.
-					if (Options.FilterOnVolume < 0 && Chapter.Volume >= Math.Abs(Options.FilterOnVolume)) {
+					if (options.FilterOnVolume < 0 && chapter.Volume >= Math.Abs(options.FilterOnVolume)) {
 						// Continue iteration.
 						continue;
 					}
 					// Filter on positive chapter volume values.
-					if (Options.FilterOnVolume > 0 && Chapter.Volume <= Options.FilterOnVolume) {
+					if (options.FilterOnVolume > 0 && chapter.Volume <= options.FilterOnVolume) {
 						// Continue iteration.
 						continue;
 					}
 				}
 				// Return the chapter.
-				yield return Chapter;
+				yield return chapter;
 			}
 		}
 		#endregion

@@ -13,14 +13,14 @@ namespace MangaRack.Provider {
 		/// <summary>
 		/// Open a series.
 		/// </summary>
-		/// <param name="UniqueIdentifier">The unique identifier.</param>
-		ISeries Open(string UniqueIdentifier);
+		/// <param name="uniqueIdentifier">The unique identifier.</param>
+		ISeries Open(string uniqueIdentifier);
 
 		/// <summary>
 		/// Search series.
 		/// </summary>
-		/// <param name="Input">The input.</param>
-		ISearch Search(string Input);
+		/// <param name="input">The input.</param>
+		ISearch Search(string input);
 		#endregion
 
 		#region Properties

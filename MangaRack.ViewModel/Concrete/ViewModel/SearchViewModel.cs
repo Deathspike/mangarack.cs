@@ -17,10 +17,10 @@ namespace MangaRack.ViewModel {
 		/// <summary>
 		/// Initialize a new instance of the SearchViewModel class.
 		/// </summary>
-		/// <param name="Source">The source.</param>
-		public SearchViewModel(ISearch Source) {
+		/// <param name="source">The source.</param>
+		public SearchViewModel(ISearch source) {
 			// Set the source.
-			this.Source = Source;
+			Source = source;
 		}
 		#endregion
 

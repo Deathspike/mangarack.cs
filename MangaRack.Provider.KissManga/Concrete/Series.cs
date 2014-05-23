@@ -112,21 +112,21 @@ namespace MangaRack.Provider.KissManga {
 		/// <summary>
 		/// Initialize a new instance of the Series class.
 		/// </summary>
-		/// <param name="UniqueIdentifier">The unique identifier.</param>
-		public Series(string UniqueIdentifier) {
+		/// <param name="uniqueIdentifier">The unique identifier.</param>
+		public Series(string uniqueIdentifier) {
 			// Set the unique identifier.
-			this.UniqueIdentifier = UniqueIdentifier;
+			UniqueIdentifier = uniqueIdentifier;
 		}
 
 		/// <summary>
 		/// Initialize a new instance of the Series class.
 		/// </summary>
-		/// <param name="UniqueIdentifier">The unique identifier.</param>
-		/// <param name="Title">The title.</param>
-		public Series(string UniqueIdentifier, string Title)
-			: this(UniqueIdentifier) {
+		/// <param name="uniqueIdentifier">The unique identifier.</param>
+		/// <param name="title">The title.</param>
+		public Series(string uniqueIdentifier, string title)
+			: this(uniqueIdentifier) {
 			// Set the title.
-			this.Title = Title;
+			Title = title;
 		}
 		#endregion
 
@@ -134,31 +134,31 @@ namespace MangaRack.Provider.KissManga {
 		/// <summary>
 		/// Populate asynchronously.
 		/// </summary>
-		/// <param name="Done">The callback.</param>
-		public void Populate(Action<ISeries> Done) {
+		/// <param name="done">The callback.</param>
+		public void Populate(Action<ISeries> done) {
 			// Get the document.
-			Http.Get(UniqueIdentifier + "?confirm=yes", (Response) => {
+			Http.Get(UniqueIdentifier + "?confirm=yes", response => {
 				// Initialize a new instance of the HtmlDocument class.
-				HtmlDocument HtmlDocument = new HtmlDocument();
+				var htmlDocument = new HtmlDocument();
 				// Load the document.
-				HtmlDocument.LoadHtml(Response.AsString());
+				htmlDocument.LoadHtml(response.AsString());
 				// Iterate through each property to populate the series without retaining the document.
-				foreach (PropertyInfo PropertyInfo in GetType().GetProperties(BindingFlags.Instance | BindingFlags.NonPublic).Where(x => x.CanWrite).Reverse()) {
+				foreach (var propertyInfo in GetType().GetProperties(BindingFlags.Instance | BindingFlags.NonPublic).Where(x => x.CanWrite).Reverse()) {
 					// Set the value, causing it to populate this property.
-					PropertyInfo.SetValue(this, HtmlDocument, null);
+					propertyInfo.SetValue(this, htmlDocument, null);
 				}
 				// Find each image element ..
-				Http.Get(HtmlDocument.DocumentNode.Descendants("img")
+				Http.Get(htmlDocument.DocumentNode.Descendants("img")
 					// ... with a reference containing a preview image ...
 					.Where(x => HtmlEntity.DeEntitize(x.GetAttributeValue("src", string.Empty)).Trim().Contains("/Uploads/"))
 					// ... select the reference attribute ...
 					.Select(x => HtmlEntity.DeEntitize(x.Attributes["src"].Value).Trim())
 					// ... download the first preview image ...
-					.First(), (ImageResponse) => {
+					.First(), ImageResponse => {
 						// ... and set the image for the bytes.
 						PreviewImage = ImageResponse.AsBinary();
 						// Invoke the handler indicating the initialization is completed.
-						Done(this);
+						done(this);
 					});
 			});
 		}
@@ -172,9 +172,9 @@ namespace MangaRack.Provider.KissManga {
 			// Check if the children are valid.
 			if (Children != null) {
 				// Iterate through each child.
-				foreach (IChapter Child in Children) {
+				foreach (var child in Children) {
 					// Dispose of the object.
-					Child.Dispose();
+					child.Dispose();
 				}
 				// Remove the children.
 				Children = null;

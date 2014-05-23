@@ -35,45 +35,45 @@ namespace MangaRack.Core {
 		/// <summary>
 		/// Transcribe the series, chapter and pages information.
 		/// </summary>
-		/// <param name="Series">The series.</param>
-		/// <param name="Chapter">The chapter.</param>
-		/// <param name="Pages">Each page.</param>
-		public void Transcribe(ISeries Series, IChapter Chapter, IEnumerable<ComicInfoPage> Pages) {
+		/// <param name="series">The series.</param>
+		/// <param name="chapter">The chapter.</param>
+		/// <param name="pages">Each page.</param>
+		public void Transcribe(ISeries series, IChapter chapter, IEnumerable<ComicInfoPage> pages) {
 			// Set each genre.
-			this.Genre = new ComicInfoSplitter(Series.Genres);
+			Genre = new ComicInfoSplitter(series.Genres);
 			// Set the manga specification.
-			this.Manga = "YesAndRightToLeft";
+			Manga = "YesAndRightToLeft";
 			// Set the number.
-			this.Number = Chapter.Number;
+			Number = chapter.Number;
 			// Set each page.
-			this.Pages = new ComicInfoPageCollection(Pages);
+			Pages = new ComicInfoPageCollection(pages);
 			// Set each penciller.
-			this.Penciller = new ComicInfoSplitter(Series.Artists);
+			Penciller = new ComicInfoSplitter(series.Artists);
 			// Set the series.
-			this.Series = Series.Title;
+			Series = series.Title;
 			// Set the summary.
-			this.Summary = Series.Summary;
+			Summary = series.Summary;
 			// Set the title.
-			this.Title = Chapter.Title;
+			Title = chapter.Title;
 			// Set the volume.
-			this.Volume = Chapter.Volume;
+			Volume = chapter.Volume;
 			// Set each writer.
-			this.Writer = new ComicInfoSplitter(Series.Authors);
+			Writer = new ComicInfoSplitter(series.Authors);
 		}
 
 		/// <summary>
 		/// Save the instance to a stream.
 		/// </summary>
-		/// <param name="Stream">The stream.</param>
-		public void Save(Stream Stream) {
-			// Initialize a new instance of the XmlSerializer class.
-			XmlSerializer XmlSerializer = new XmlSerializer(typeof(ComicInfo));
+		/// <param name="stream">The stream.</param>
+		public void Save(Stream stream) {
 			// Initialize a new instance of the StreamWriter class.
-			StreamWriter StreamWriter = new StreamWriter(Stream, Encoding.UTF8);
+			var streamWriter = new StreamWriter(stream, Encoding.UTF8);
+			// Initialize a new instance of the XmlSerializer class.
+			var xmlSerializer = new XmlSerializer(typeof(ComicInfo));
 			// Serialize the document
-			XmlSerializer.Serialize(StreamWriter, this);
+			xmlSerializer.Serialize(streamWriter, this);
 			// Flush the stream writer.
-			StreamWriter.Flush();
+			streamWriter.Flush();
 		}
 		#endregion
 
@@ -153,13 +153,13 @@ namespace MangaRack.Core {
 		/// <summary>
 		/// Load an instance from a stream.
 		/// </summary>
-		/// <param name="Stream">The stream.</param>
+		/// <param name="stream">The stream.</param>
 		/// <returns></returns>
-		public static ComicInfo Load(Stream Stream) {
+		public static ComicInfo Load(Stream stream) {
 			// Initialize a new instance of the XmlSerializer class.
-			XmlSerializer XmlSerializer = new XmlSerializer(typeof(ComicInfo));
+			var xmlSerializer = new XmlSerializer(typeof(ComicInfo));
 			// Return the deserialized the document.
-			return XmlSerializer.Deserialize(Stream) as ComicInfo;
+			return xmlSerializer.Deserialize(stream) as ComicInfo;
 		}
 		#endregion
 	}

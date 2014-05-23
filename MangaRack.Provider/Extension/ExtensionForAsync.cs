@@ -15,35 +15,35 @@ namespace MangaRack.Provider {
 		/// <summary>
 		/// Populate synchronously.
 		/// </summary>
-		/// <param name="Async">The asynchronous population.</param>
-		public static T Populate<T>(this IAsync<T> Async) {
+		/// <param name="async">The asynchronous population.</param>
+		public static T Populate<T>(this IAsync<T> async) {
 			// Initialize a new instance of the ManualResetEventSlim class.
-			ManualResetEvent ManualResetEventSlim = new ManualResetEvent(false);
+			var manualResetEventSlim = new ManualResetEvent(false);
 			// Initialize the result.
-			T Result = default(T);
+			var result = default(T);
 			// Populate asynchronously.
-			Async.Populate((Done) => {
+			async.Populate(Done => {
 				// Set the result.
-				Result = Done;
+				result = Done;
 				// Raise the event and unblock the calling thread.
-				ManualResetEventSlim.Set();
+				manualResetEventSlim.Set();
 			});
 			// Block the thread waiting for the event.
-			ManualResetEventSlim.WaitOne();
+			manualResetEventSlim.WaitOne();
 			// Return the result.
-			return Result;
+			return result;
 		}
 
 		/// <summary>
 		/// Populate asynchronously.
 		/// </summary>
-		/// <param name="Async">The asynchronous population.</param>
-		/// <param name="Done">The callback.</param>
-		public static void Populate<T>(this IAsync<T> Async, Action Done) {
+		/// <param name="async">The asynchronous population.</param>
+		/// <param name="done">The callback.</param>
+		public static void Populate<T>(this IAsync<T> async, Action done) {
 			// Populate asynchronously.
-			Async.Populate((Result) => {
+			async.Populate(Result => {
 				// Invoke the callback.
-				Done();
+				done();
 			});
 		}
 		#endregion

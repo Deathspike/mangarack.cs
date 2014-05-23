@@ -10,19 +10,19 @@ namespace MangaRack {
 	/// <summary>
 	/// Represents a stream data source.
 	/// </summary>
-	public sealed class DataSource : IStaticDataSource {
+	sealed class DataSource : IStaticDataSource {
 		/// <summary>
 		/// Contains the stream.
 		/// </summary>
-		private Stream _Stream;
+		private Stream _stream;
 
 		#region Constructor
 		/// <summary>
 		/// Initialize a new instance of the DataSource class.
 		/// </summary>
-		/// <param name="Buffer">The buffer.</param>
-		public DataSource(byte[] Buffer)
-			: this(new MemoryStream(Buffer)) {
+		/// <param name="buffer">The buffer.</param>
+		public DataSource(byte[] buffer)
+			: this(new MemoryStream(buffer)) {
 			// Stop the function.
 			return;
 		}
@@ -30,10 +30,10 @@ namespace MangaRack {
 		/// <summary>
 		/// Initialize a new instance of the DataSource class.
 		/// </summary>
-		/// <param name="Stream">The stream.</param>
-		public DataSource(Stream Stream) {
+		/// <param name="stream">The stream.</param>
+		public DataSource(Stream stream) {
 			// Set the stream.
-			_Stream = Stream;
+			_stream = stream;
 		}
 		#endregion
 
@@ -43,7 +43,7 @@ namespace MangaRack {
 		/// </summary>
 		public Stream GetSource() {
 			// Return the stream.
-			return _Stream;
+			return _stream;
 		}
 		#endregion
 	}

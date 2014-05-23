@@ -13,16 +13,16 @@ namespace MangaRack.Provider {
 		/// <summary>
 		/// Contains the page.
 		/// </summary>
-		private IPage _Page;
+		private IPage _page;
 
 		#region Constructor
 		/// <summary>
 		/// Initialize a new instance of the Page class.
 		/// </summary>
-		/// <param name="Page">The page.</param>
-		public Page(IPage Page) {
+		/// <param name="page">The page.</param>
+		public Page(IPage page) {
 			// Set the page.
-			_Page = Page;
+			_page = page;
 		}
 		#endregion
 
@@ -30,12 +30,12 @@ namespace MangaRack.Provider {
 		/// <summary>
 		/// Populate asynchronously.
 		/// </summary>
-		/// <param name="Done">The callback.</param>
-		public void Populate(Action<IPage> Done) {
+		/// <param name="done">The callback.</param>
+		public void Populate(Action<IPage> done) {
 			// Populate asynchronously.
-			_Page.Populate(() => {
+			_page.Populate(() => {
 				// Invoke the callback.
-				Done(this);
+				done(this);
 			});
 		}
 		#endregion
@@ -46,7 +46,7 @@ namespace MangaRack.Provider {
 		/// </summary>
 		public void Dispose() {
 			// Dispose of the object.
-			_Page.Dispose();
+			_page.Dispose();
 		}
 		#endregion
 
@@ -57,7 +57,7 @@ namespace MangaRack.Provider {
 		public byte[] Image {
 			get {
 				// Return the image.
-				return _Page.Image;
+				return _page.Image;
 			}
 		}
 
@@ -67,7 +67,7 @@ namespace MangaRack.Provider {
 		public string UniqueIdentifier {
 			get {
 				// Return the unique identifier.
-				return _Page.UniqueIdentifier;
+				return _page.UniqueIdentifier;
 			}
 		}
 		#endregion

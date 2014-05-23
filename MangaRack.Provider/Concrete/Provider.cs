@@ -12,16 +12,16 @@ namespace MangaRack.Provider {
 		/// <summary>
 		/// Contains the provider.
 		/// </summary>
-		private IProvider _Provider;
+		private IProvider _provider;
 
 		#region Constructor
 		/// <summary>
 		/// Initialize a new instance of the Provider class.
 		/// </summary>
-		/// <param name="Provider">The provider.</param>
-		public Provider(IProvider Provider) {
+		/// <param name="provider">The provider.</param>
+		public Provider(IProvider provider) {
 			// Set the provider.
-			_Provider = Provider;
+			_provider = provider;
 		}
 		#endregion
 
@@ -29,10 +29,10 @@ namespace MangaRack.Provider {
 		/// <summary>
 		/// Open a series.
 		/// </summary>
-		/// <param name="UniqueIdentifier">The unique identifier.</param>
-		public ISeries Open(string UniqueIdentifier) {
+		/// <param name="uniqueIdentifier">The unique identifier.</param>
+		public ISeries Open(string uniqueIdentifier) {
 			// Open a series.
-			ISeries Series = _Provider.Open(UniqueIdentifier);
+			ISeries Series = _provider.Open(uniqueIdentifier);
 			// Return a series or null.
 			return Series == null ? null : new Series(Series);
 		}
@@ -40,10 +40,10 @@ namespace MangaRack.Provider {
 		/// <summary>
 		/// Search series.
 		/// </summary>
-		/// <param name="Input">The input.</param>
-		public ISearch Search(string Input) {
+		/// <param name="input">The input.</param>
+		public ISearch Search(string input) {
 			// Search series.
-			ISearch Search = _Provider.Search(Input);
+			ISearch Search = _provider.Search(input);
 			// Return a series search or null.
 			return Search == null ? null : new Search(Search);
 		}
@@ -56,7 +56,7 @@ namespace MangaRack.Provider {
 		public string UniqueIdentifier {
 			get {
 				// Return the unique identifier.
-				return _Provider.UniqueIdentifier;
+				return _provider.UniqueIdentifier;
 			}
 		}
 		#endregion

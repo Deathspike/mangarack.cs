@@ -15,10 +15,10 @@ namespace MangaRack {
 		/// <summary>
 		/// Remove invalid path characters.
 		/// </summary>
-		/// <param name="LocalPath">The local path.</param>
-		public static string InvalidatePath(this string LocalPath) {
+		/// <param name="localPath">The local path.</param>
+		public static string InvalidatePath(this string localPath) {
 			// Remove invalid characters for a path.
-			return string.IsNullOrEmpty(LocalPath) ? LocalPath : string.Join(null, LocalPath.Where(x => !Path.GetInvalidFileNameChars().Contains(x)).Select(x => x.ToString()).ToArray());
+			return string.IsNullOrEmpty(localPath) ? localPath : string.Join(null, localPath.Where(x => !Path.GetInvalidFileNameChars().Contains(x)).Select(x => x.ToString()).ToArray());
 		}
 		#endregion
 	}

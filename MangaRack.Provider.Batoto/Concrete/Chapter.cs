@@ -18,19 +18,19 @@ namespace MangaRack.Provider.Batoto {
 		/// <summary>
 		/// Initialize a new instance of the Chapter class.
 		/// </summary>
-		/// <param name="Number">The number.</param>
-		/// <param name="Title">The title.</param>
-		/// <param name="UniqueIdentifier">The unique identifier.</param>
-		/// <param name="Volume">The volume.</param>
-		public Chapter(double Number, string Title, string UniqueIdentifier, double Volume) {
+		/// <param name="number">The number.</param>
+		/// <param name="title">The title.</param>
+		/// <param name="uniqueIdentifier">The unique identifier.</param>
+		/// <param name="volume">The volume.</param>
+		public Chapter(double number, string title, string uniqueIdentifier, double volume) {
 			// Set the number.
-			this.Number = Number;
+			Number = number;
 			// Set the title.
-			this.Title = Title;
+			Title = title;
 			// Set the unique identifier.
-			this.UniqueIdentifier = UniqueIdentifier;
+			UniqueIdentifier = uniqueIdentifier;
 			// Set the volume.
-			this.Volume = Volume;
+			Volume = volume;
 		}
 		#endregion
 		
@@ -38,33 +38,33 @@ namespace MangaRack.Provider.Batoto {
 		/// <summary>
 		/// Populate asynchronously.
 		/// </summary>
-		/// <param name="Done">The callback.</param>
-		public void Populate(Action<IChapter> Done) {
+		/// <param name="done">The callback.</param>
+		public void Populate(Action<IChapter> done) {
 			// Retrieve the address.
-			string Address = UniqueIdentifier;
+			var address = UniqueIdentifier;
 			// Initialize the next.
-			Action Next = null;
+			var next = null as Action;
 			// Initialize the next handler.
-			Next = () => {
+			next = () => {
 				// Get the document.
-				Http.Get(Address, (Response) => {
+				Http.Get(address, response => {
 					// Initialize a new instance of the HtmlDocument class.
-					HtmlDocument HtmlDocument = new HtmlDocument();
+					var htmlDocument = new HtmlDocument();
 					// Initialize the node.
-					HtmlNode HtmlNode;
+					var htmlNode = null as HtmlNode;
 					// Load the document.
-					HtmlDocument.LoadHtml(Response.AsString());
+					htmlDocument.LoadHtml(response.AsString());
 					// Check if a link allowing switching to traditional reading mode is available.
-					if ((HtmlNode = HtmlDocument.DocumentNode.Descendants("a").FirstOrDefault(x => HtmlEntity.DeEntitize(x.GetAttributeValue("href", string.Empty)).Equals("?supress_webtoon=t"))) != null) {
+					if ((htmlNode = htmlDocument.DocumentNode.Descendants("a").FirstOrDefault(x => HtmlEntity.DeEntitize(x.GetAttributeValue("href", string.Empty)).Equals("?supress_webtoon=t"))) != null) {
 						// Set the address.
-						Address = Address + HtmlEntity.DeEntitize(HtmlNode.Attributes["href"].Value).Trim();
+						address = address + HtmlEntity.DeEntitize(htmlNode.Attributes["href"].Value).Trim();
 						// Invoke the next handler.
-						Next();
+						next();
 						// Stop the function.
 						return;
 					}
 					// Find each select element ...
-					Children = HtmlDocument.DocumentNode.Descendants("select")
+					Children = htmlDocument.DocumentNode.Descendants("select")
 						// ... with the page selection name ...
 						.Where(x => HtmlEntity.DeEntitize(x.GetAttributeValue("name", string.Empty)).Trim().Equals("page_select"))
 						// ... select each option element ...
@@ -78,11 +78,11 @@ namespace MangaRack.Provider.Batoto {
 						// ... and create an array.
 						.ToArray();
 					// Invoke the callback.
-					Done(this);
+					done(this);
 				});
 			};
 			// Start population.
-			Next();
+			next();
 		}
 		#endregion
 
@@ -121,9 +121,9 @@ namespace MangaRack.Provider.Batoto {
 			// Check if the children are valid.
 			if (Children != null) {
 				// Iterate through each child.
-				foreach (IPage Child in Children) {
+				foreach (var child in Children) {
 					// Dispose of the object.
-					Child.Dispose();
+					child.Dispose();
 				}
 				// Remove the children.
 				Children = null;

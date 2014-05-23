@@ -14,22 +14,22 @@ namespace MangaRack.Core {
 		/// <summary>
 		/// Publish an image.
 		/// </summary>
-		/// <param name="Image">The image.</param>
-		/// <param name="PreviewImage">Indicates whether this is a preview image.</param>
-		/// <param name="Number">The number, when not a preview image.</param>
-		ComicInfoPage Publish(byte[] Image, bool PreviewImage, int Number);
+		/// <param name="image">The image.</param>
+		/// <param name="previewImage">Indicates whether this is a preview image.</param>
+		/// <param name="number">The number, when not a preview image.</param>
+		ComicInfoPage Publish(byte[] image, bool previewImage, int number);
 
 		/// <summary>
 		/// Publish comic information.
 		/// </summary>
-		/// <param name="ComicInfo">The comic information.</param>
-		void Publish(ComicInfo ComicInfo);
+		/// <param name="comicInfo">The comic information.</param>
+		void Publish(ComicInfo comicInfo);
 
 		/// <summary>
 		/// Publish broken page information.
 		/// </summary>
-		/// <param name="BrokenPages">Each broken page.</param>
-		void Publish(IEnumerable<string> BrokenPages);
+		/// <param name="brokenPages">Each broken page.</param>
+		void Publish(IEnumerable<string> brokenPages);
 		#endregion
 	}
 }

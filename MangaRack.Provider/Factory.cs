@@ -24,14 +24,14 @@ namespace MangaRack.Provider {
 		/// <summary>
 		/// Initialize a new instance of the Provider class.
 		/// </summary>
-		/// <param name="Type">The type.</param>
-		public static IProvider Create(Type Type) {
+		/// <param name="type">The type.</param>
+		public static IProvider Create(Type type) {
 			// Check if the interface is implemented.
-			if (Type.GetInterfaces().FirstOrDefault(x => x.FullName.Equals(typeof(IProvider).FullName)) != null) {
+			if (type.GetInterfaces().FirstOrDefault(x => x.FullName.Equals(typeof(IProvider).FullName)) != null) {
 				// Initialize the constructor information.
-				ConstructorInfo ConstructorInfo = Type.GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic).FirstOrDefault(x => x.GetParameters().Length == 0);
+				var constructorInfo = type.GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic).FirstOrDefault(x => x.GetParameters().Length == 0);
 				// Initialize a new instance of the Provider class.
-				return ConstructorInfo == null ? null : new Provider(ConstructorInfo.Invoke(null) as IProvider);
+				return constructorInfo == null ? null : new Provider(constructorInfo.Invoke(null) as IProvider);
 			}
 			// Return null.
 			return null;

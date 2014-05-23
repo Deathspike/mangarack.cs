@@ -19,10 +19,10 @@ namespace MangaRack.Provider.KissManga {
 		/// <summary>
 		/// Initialize a new instance of the Search class.
 		/// </summary>
-		/// <param name="Input">The input.</param>
-		public Search(string Input) {
+		/// <param name="input">The input.</param>
+		public Search(string input) {
 			// Set the input.
-			this.Input = Input;
+			Input = input;
 		}
 		#endregion
 
@@ -30,20 +30,20 @@ namespace MangaRack.Provider.KissManga {
 		/// <summary>
 		/// Populate asynchronously.
 		/// </summary>
-		/// <param name="Done">The callback.</param>
-		public void Populate(Action<ISearch> Done) {
+		/// <param name="done">The callback.</param>
+		public void Populate(Action<ISearch> done) {
 			// Initialize each value.
-			var Values = new Dictionary<string, string>();
+			var values = new Dictionary<string, string>();
 			// Add the keyword.
-			Values.Add("keyword", Input);
+			values.Add("keyword", Input);
 			// Get the document.
-			Http.Post(Provider.Domain + "/Search/Manga", Values, (Response) => {
+			Http.Post(Provider.Domain + "/Search/Manga", values, response => {
 				// Initialize a new instance of the HtmlDocument class.
-				HtmlDocument HtmlDocument = new HtmlDocument();
+				var htmlDocument = new HtmlDocument();
 				// Load the document.
-				HtmlDocument.LoadHtml(Response.AsString());
+				htmlDocument.LoadHtml(response.AsString());
 				// Find each anchor element ...
-				Children = HtmlDocument.DocumentNode.Descendants("a")
+				Children = htmlDocument.DocumentNode.Descendants("a")
 					// ... with a references indicating a series ...
 					.Where(x => Regex.Match(HtmlEntity.DeEntitize(x.GetAttributeValue("href", string.Empty)).Trim(), "^(?!http).*/manga/([^/]+?)/?$", RegexOptions.IgnoreCase).Success)
 					// ... select the results ...
@@ -51,7 +51,7 @@ namespace MangaRack.Provider.KissManga {
 					// ... and create an array.
 					.ToArray();
 				// Invoke the callback.
-				Done(this);
+				done(this);
 			});
 		}
 		#endregion
@@ -64,9 +64,9 @@ namespace MangaRack.Provider.KissManga {
 			// Check if the children are valid.
 			if (Children != null) {
 				// Iterate through each child.
-				foreach (ISeries Child in Children) {
+				foreach (var child in Children) {
 					// Dispose of the object.
-					Child.Dispose();
+					child.Dispose();
 				}
 				// Remove the children.
 				Children = null;

@@ -19,10 +19,10 @@ namespace MangaRack.Provider.MangaFox {
 		/// <summary>
 		/// Initialize a new instance of the Search class.
 		/// </summary>
-		/// <param name="Input">The input.</param>
-		public Search(string Input) {
+		/// <param name="input">The input.</param>
+		public Search(string input) {
 			// Set the input.
-			this.Input = Input;
+			Input = input;
 		}
 		#endregion
 
@@ -30,16 +30,16 @@ namespace MangaRack.Provider.MangaFox {
 		/// <summary>
 		/// Populate asynchronously.
 		/// </summary>
-		/// <param name="Done">The callback.</param>
-		public void Populate(Action<ISearch> Done) {
+		/// <param name="done">The callback.</param>
+		public void Populate(Action<ISearch> done) {
 			// Get the document.
-			Http.Get("http://mangafox.me/search.php?advopts=1&name=" + Uri.EscapeDataString(Input), (Response) => {
+			Http.Get("http://mangafox.me/search.php?advopts=1&name=" + Uri.EscapeDataString(Input), response => {
 				// Initialize a new instance of the HtmlDocument class.
-				HtmlDocument HtmlDocument = new HtmlDocument();
+				var htmlDocument = new HtmlDocument();
 				// Load the document.
-				HtmlDocument.LoadHtml(Response.AsString());
+				htmlDocument.LoadHtml(response.AsString());
 				// Find each anchor element ...
-				Children = HtmlDocument.DocumentNode.Descendants("a")
+				Children = htmlDocument.DocumentNode.Descendants("a")
 					// ... with a references indicating a series ...
 					.Where(x => Regex.Match(HtmlEntity.DeEntitize(x.GetAttributeValue("href", string.Empty)).Trim(), "/manga/([^/]+?)/?$", RegexOptions.IgnoreCase).Success)
 					// ... select the results ...
@@ -47,7 +47,7 @@ namespace MangaRack.Provider.MangaFox {
 					// ... and create an array.
 					.ToArray();
 				// Invoke the callback.
-				Done(this);
+				done(this);
 			});
 		}
 		#endregion
@@ -60,9 +60,9 @@ namespace MangaRack.Provider.MangaFox {
 			// Check if the children are valid.
 			if (Children != null) {
 				// Iterate through each child.
-				foreach (ISeries Child in Children) {
+				foreach (var child in Children) {
 					// Dispose of the object.
-					Child.Dispose();
+					child.Dispose();
 				}
 				// Remove the children.
 				Children = null;

@@ -15,16 +15,16 @@ namespace MangaRack.Provider {
 		/// <summary>
 		/// Contains the search.
 		/// </summary>
-		private ISearch _Search;
+		private ISearch _search;
 
 		#region Constructor
 		/// <summary>
 		/// Initialize a new instance of the Search class.
 		/// </summary>
-		/// <param name="Search">The search.</param>
-		public Search(ISearch Search) {
+		/// <param name="search">The search.</param>
+		public Search(ISearch search) {
 			// Set the search.
-			_Search = Search;
+			_search = search;
 		}
 		#endregion
 
@@ -32,14 +32,14 @@ namespace MangaRack.Provider {
 		/// <summary>
 		/// Populate asynchronously.
 		/// </summary>
-		/// <param name="Done">The callback.</param>
-		public void Populate(Action<ISearch> Done) {
+		/// <param name="done">The callback.</param>
+		public void Populate(Action<ISearch> done) {
 			// Populate asynchronously.
-			_Search.Populate(() => {
+			_search.Populate(() => {
 				// Set each child.
-				Children = _Search.Children.Select(x => new Series(x) as ISeries).ToArray();
+				Children = _search.Children.Select(x => new Series(x) as ISeries).ToArray();
 				// Invoke the callback.
-				Done(this);
+				done(this);
 			});
 		}
 		#endregion
@@ -50,7 +50,7 @@ namespace MangaRack.Provider {
 		/// </summary>
 		public void Dispose() {
 			// Dispose of the object.
-			_Search.Dispose();
+			_search.Dispose();
 		}
 		#endregion
 
@@ -66,7 +66,7 @@ namespace MangaRack.Provider {
 		public string Input {
 			get {
 				// Return the input.
-				return _Search.Input;
+				return _search.Input;
 			}
 		}
 		#endregion

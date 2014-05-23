@@ -11,50 +11,50 @@ namespace MangaRack {
 	/// <summary>
 	/// Represents the class providing extensions for each byte array.
 	/// </summary>
-	static class ExtensionForByteArray {
+	public static class ExtensionForByteArray {
 		/// <summary>
 		/// Contains the Bitmap (BMP) header.
 		/// </summary>
-		private static byte[] _BMP = new byte[] { 66, 77 };
+		private static byte[] _bmp = new byte[] { 66, 77 };
 
 		/// <summary>
 		/// Contains the Graphics Interchange Format (GIF) header.
 		/// </summary>
-		private static byte[] _GIF = new byte[] { 71, 73, 70 };
+		private static byte[] _gif = new byte[] { 71, 73, 70 };
 		
 		/// <summary>
 		/// Contains the Joint Photographic Experts Group (JPEG) header.
 		/// </summary>
-		private static byte[] _JPG = new byte[] { 255, 216 };
+		private static byte[] _jpg = new byte[] { 255, 216 };
 
 		/// <summary>
 		/// Contains the W3C Portable Network Graphics (PNG) header.
 		/// </summary>
-		private static byte[] _PNG = new byte[] { 137, 80, 78, 71 };
+		private static byte[] _png = new byte[] { 137, 80, 78, 71 };
 
 		#region Methods
 		/// <summary>
 		/// Detect an image format from the header.
 		/// </summary>
-		/// <param name="Buffer">Each byte.</param>
-		public static string DetectImageFormat(this byte[] Buffer) {
+		/// <param name="buffer">Each byte.</param>
+		public static string DetectImageFormat(this byte[] buffer) {
 			// Bitmap (BMP)
-			if (_BMP.SequenceEqual(Buffer.Take(_BMP.Length))) {
+			if (_bmp.SequenceEqual(buffer.Take(_bmp.Length))) {
 				// Return the format.
 				return "bmp";
 			}
 			// Graphics Interchange Format (GIF).
-			if (_GIF.SequenceEqual(Buffer.Take(_GIF.Length))) {
+			if (_gif.SequenceEqual(buffer.Take(_gif.Length))) {
 				// Return the format.
 				return "gif";
 			}
 			// Joint Photographic Experts Group (JPEG).
-			if (_JPG.SequenceEqual(Buffer.Take(_JPG.Length))) {
+			if (_jpg.SequenceEqual(buffer.Take(_jpg.Length))) {
 				// Return the format.
 				return "jpg";
 			}
 			// W3C Portable Network Graphics (JPEG).
-			if (_PNG.SequenceEqual(Buffer.Take(_PNG.Length))) {
+			if (_png.SequenceEqual(buffer.Take(_png.Length))) {
 				// Return the format.
 				return "png";
 			}
@@ -65,16 +65,16 @@ namespace MangaRack {
 		/// <summary>
 		/// Create an bitmap from the byte array.
 		/// </summary>
-		/// <param name="Buffer">Each byte.</param>
-		public static Bitmap ToBitmap(this byte[] Buffer) {
+		/// <param name="buffer">Each byte.</param>
+		public static Bitmap ToBitmap(this byte[] buffer) {
 			// Attempt the following code.
 			try {
 				// Initialize a new instance of the MemoryStream class.
-				using (MemoryStream MemoryStream = new MemoryStream(Buffer)) {
+				using (var memoryStream = new MemoryStream(buffer)) {
 					// Create the bitmap from the strea.
-					using (Bitmap Bitmap = Bitmap.FromStream(MemoryStream) as Bitmap) {
+					using (var bitmap = Bitmap.FromStream(memoryStream) as Bitmap) {
 						// Create the bitmap clone.
-						return new Bitmap(Bitmap);
+						return new Bitmap(bitmap);
 					}
 				}
 			} catch {

@@ -7,7 +7,6 @@ using HtmlAgilityPack;
 using System;
 using System.Linq;
 using System.Net;
-using System.Text.RegularExpressions;
 using TinyHttp;
 
 namespace MangaRack.Provider.MangaFox {
@@ -19,10 +18,10 @@ namespace MangaRack.Provider.MangaFox {
 		/// <summary>
 		/// Initialize a new instance of the Page class.
 		/// </summary>
-		/// <param name="UniqueIdentifier">The unique identifier.</param>
-		public Page(string UniqueIdentifier) {
+		/// <param name="uniqueIdentifier">The unique identifier.</param>
+		public Page(string uniqueIdentifier) {
 			// Set the unique identifier.
-			this.UniqueIdentifier = UniqueIdentifier;
+			UniqueIdentifier = uniqueIdentifier;
 		}
 		#endregion
 
@@ -30,49 +29,49 @@ namespace MangaRack.Provider.MangaFox {
 		/// <summary>
 		/// Populate asynchronously.
 		/// </summary>
-		/// <param name="Done">The callback.</param>
-		public void Populate(Action<IPage> Done) {
+		/// <param name="done">The callback.</param>
+		public void Populate(Action<IPage> done) {
 			// Get the document.
-			Http.Get(UniqueIdentifier, (HtmlResponse) => {
+			Http.Get(UniqueIdentifier, htmlResponse => {
 				// Initialize a new instance of the HtmlDocument class.
-				HtmlDocument HtmlDocument = new HtmlDocument();
+				var htmlDocument = new HtmlDocument();
 				// Initialize a new instance of the HtmlNode class.
-				HtmlNode HtmlNode;
+				var htmlNode = null as HtmlNode;
 				// Load the document.
-				HtmlDocument.LoadHtml(HtmlResponse.AsString());
+				htmlDocument.LoadHtml(htmlResponse.AsString());
 				// Find the each meta ...
-				if ((HtmlNode = HtmlDocument.DocumentNode.Descendants("meta")
+				if ((htmlNode = htmlDocument.DocumentNode.Descendants("meta")
 					// ... with a property indicating the image thumbnail ...
 					.Where(x => HtmlEntity.DeEntitize(x.GetAttributeValue("property", string.Empty)).Equals("og:image"))
 					// ... use the first or default.
 					.FirstOrDefault()) != null) {
 					// Initialize the address ...
-					string Address = HtmlEntity.DeEntitize(HtmlNode.GetAttributeValue("content", string.Empty)).Trim()
+					var address = HtmlEntity.DeEntitize(htmlNode.GetAttributeValue("content", string.Empty)).Trim()
 						// ... replace the thumbnail address for the page address ...
 						.Replace("thumbnails/mini.", "compressed/")
 						// ... replace the back-up server for the main server.
 						.Replace("http://l.", "http://l.");
 					// Request the image.
-					Http.Get(Address, (ImageResponse) => {
+					Http.Get(address, imageResponse => {
 						// Check if the image response is invalid.
-						if (ImageResponse == null || ImageResponse.StatusCode != HttpStatusCode.OK) {
+						if (imageResponse == null || imageResponse.StatusCode != HttpStatusCode.OK) {
 							// Request an alternative image.
-							Http.Get(Address.Replace("http://z.", "http://l."), (AlternativeImageResponse) => {
+							Http.Get(address.Replace("http://z.", "http://l."), alternativeImageResponse => {
 								// Set the image.
-								Image = AlternativeImageResponse.AsBinary();
+								Image = alternativeImageResponse.AsBinary();
 								// Invoke the callback.
-								Done(this);
+								done(this);
 							});
 						} else {
 							// Set the image.
-							Image = ImageResponse.AsBinary();
+							Image = imageResponse.AsBinary();
 							// Invoke the callback.
-							Done(this);
+							done(this);
 						}
 					});
 				} else {
 					// Invoke the callback.
-					Done(this);
+					done(this);
 				}
 			});
 		}

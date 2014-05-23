@@ -18,259 +18,262 @@ namespace MangaRack {
 		/// <summary>
 		/// Convert grayscale to RGB colour space.
 		/// </summary>
-		/// <param name="Bitmap">The bitmap.</param>
-		public static Bitmap Channel(this Bitmap Bitmap) {
+		/// <param name="bitmap">The bitmap.</param>
+		public static Bitmap Channel(this Bitmap bitmap) {
 			// Initialize a new instance of the ImageStatistics class.
-			ImageStatistics ImageStatistics = new ImageStatistics(Bitmap);
+			var imageStatistics = new ImageStatistics(bitmap);
 			// Check if the image is grayscale.
-			if (ImageStatistics.IsGrayscale) {
+			if (imageStatistics.IsGrayscale) {
 				// Initialize a new instance of the GrayscaleToRGB class.
-				GrayscaleToRGB GrayscaleToRGB = new GrayscaleToRGB();
+				var grayscaleToRgb = new GrayscaleToRGB();
 				// Apply the filter to the image.
-				Bitmap Result = GrayscaleToRGB.Apply(Bitmap);
+				var result = grayscaleToRgb.Apply(bitmap);
 				// Dispose of the original image.
-				Bitmap.Dispose();
+				bitmap.Dispose();
 				// Return the result.
-				return Result;
+				return result;
 			}
 			// Return the bitmap.
-			return Bitmap;
+			return bitmap;
 		}
 
 		/// <summary>
 		/// Linear correction in RGB colour space.
 		/// </summary>
-		/// <param name="Bitmap">The bitmap.</param>
-		public static Bitmap Colour(this Bitmap Bitmap) {
+		/// <param name="bitmap">The bitmap.</param>
+		public static Bitmap Colour(this Bitmap bitmap) {
 			// Convert grayscale to RGB colour space.
-			if ((Bitmap = Bitmap.Channel()) != null) {
+			if ((bitmap = bitmap.Channel()) != null) {
 				// Initialize a new instance of the LevelsLinear class.
-				ImageStatistics ImageStatistics = new ImageStatistics(Bitmap);
+				var imageStatistics = new ImageStatistics(bitmap);
 				// Initialize a new instance of the LevelsLinear class.
-				LevelsLinear LevelsLinear = new LevelsLinear {
+				var levelsLinear = new LevelsLinear {
 					// Retrieve and set the range around the median for the red-channel.
-					InRed = ImageStatistics.Red.GetRange(0.995),
+					InRed = imageStatistics.Red.GetRange(0.995),
 					// Retrieve and set the range around the median for the green-channel.
-					InGreen = ImageStatistics.Green.GetRange(0.995),
+					InGreen = imageStatistics.Green.GetRange(0.995),
 					// Retrieve and set the range around the median for the blue-channel.
-					InBlue = ImageStatistics.Blue.GetRange(0.995)
+					InBlue = imageStatistics.Blue.GetRange(0.995)
 				};
 				// Apply the filter to the image.
-				LevelsLinear.ApplyInPlace(Bitmap);
+				levelsLinear.ApplyInPlace(bitmap);
 			}
 			// Return the bitmap.
-			return Bitmap;
+			return bitmap;
 		}
 
 		/// <summary>
 		/// Adjust contrast in RGB colour space.
 		/// </summary>
-		public static Bitmap Contrast(this Bitmap Bitmap) {
+		/// <param name="bitmap">The bitmap.</param>
+		public static Bitmap Contrast(this Bitmap bitmap) {
 			// Convert grayscale to RGB colour space.
-			if ((Bitmap = Bitmap.Channel()) != null) {
+			if ((bitmap = bitmap.Channel()) != null) {
 				// Initialize a new instance of the ContrastCorrection class.
-				var ContrastCorrection = new ContrastCorrection();
+				var contrastCorrection = new ContrastCorrection();
 				// Apply the filter to the image.
-				ContrastCorrection.ApplyInPlace(Bitmap);
+				contrastCorrection.ApplyInPlace(bitmap);
 			}
 			// Return the bitmap.
-			return Bitmap;
+			return bitmap;
 		}
 
 		/// <summary>
 		/// Crop the image to remove a textual addition.
 		/// </summary>
-		/// <param name="Bitmap">The bitmap.</param>
-		public static Bitmap Crop(this Bitmap Bitmap) {
+		/// <param name="bitmap">The bitmap.</param>
+		public static Bitmap Crop(this Bitmap bitmap) {
 			// Convert grayscale to RGB colour space.
-			if ((Bitmap = Bitmap.Channel()) != null) {
+			if ((bitmap = bitmap.Channel()) != null) {
 				// Initialize each channel.
-				int[] Channel = new int[3];
+				var channel = new int[3];
 				// Initialize the incision line.
-				int Incision = -1;
+				var incision = -1;
 				// Initialize the first black line.
-				int FirstBlack = -1;
+				var firstBlack = -1;
 				// Initialize the previous black line.
-				int PreviousBlack = -1;
+				var previousBlack = -1;
 				// Iterate through each line until the maximum incision height.
-				for (int Line = 0; Line < 80 && Line < Bitmap.Height; Line++) {
+				for (var line = 0; line < 80 && line < bitmap.Height; line++) {
 					// Initialize the boolean indicating whether the line has black.
-					bool HasBlack = false;
+					var hasBlack = false;
 					// Initialize the line.
-					int Y = Bitmap.Height - Line - 1;
+					var y = bitmap.Height - line - 1;
 					// Reset each channel.
-					Channel[0] = Channel[1] = Channel[2] = 0;
+					channel[0] = channel[1] = channel[2] = 0;
 					// Iterate through each pixel on the line.
-					for (int X = 0; X < Bitmap.Width; X++) {
+					for (var x = 0; x < bitmap.Width; x++) {
 						// Retrieve the color for the pixel.
-						Color Color = Bitmap.GetPixel(X, Y);
+						var color = bitmap.GetPixel(x, y);
 						// Check if the color is considered to be black.
-						if (Color.R < 45 && Color.G < 45 && Color.B < 45) {
+						if (color.R < 45 && color.G < 45 && color.B < 45) {
 							// Set the status indicating this line has black.
-							HasBlack = true;
+							hasBlack = true;
 							// Break from the iteration.
 							break;
 						}
 						// Add the red component to the red channel.
-						Channel[0] += Color.R;
+						channel[0] += color.R;
 						// Add the green component to the red channel.
-						Channel[1] += Color.G;
+						channel[1] += color.G;
 						// Add the blue component to the red channel.
-						Channel[2] += Color.B;
+						channel[2] += color.B;
 					}
 					// Check if the line has black.
-					if (HasBlack) {
+					if (hasBlack) {
 						// Check if the first black line has not been set.
-						if (FirstBlack == -1 && (FirstBlack = Line > 5 ? 5 : Line) == 0) {
+						if (firstBlack == -1 && (firstBlack = line > 5 ? 5 : line) == 0) {
 							// Break when the first line is black.
 							break;
 						}
 						// Set the previous black line.
-						PreviousBlack = Line;
-					} else if (FirstBlack != -1 && PreviousBlack != -1) {
+						previousBlack = line;
+					} else if (firstBlack != -1 && previousBlack != -1) {
 						// Divide the red color channel to attain the median.
-						Channel[0] /= Bitmap.Width;
+						channel[0] /= bitmap.Width;
 						// Divide the green color channel to attain the median.
-						Channel[1] /= Bitmap.Width;
+						channel[1] /= bitmap.Width;
 						// Divide the blue color channel to attain the median.
-						Channel[2] /= Bitmap.Width;
+						channel[2] /= bitmap.Width;
 						// Check if the line is considered to be white.
-						if (Channel[0] >= 245 && Channel[1] >= 245 && Channel[2] >= 245) {
+						if (channel[0] >= 245 && channel[1] >= 245 && channel[2] >= 245) {
 							// Set the incision line.
-							Incision = PreviousBlack + FirstBlack;
+							incision = previousBlack + firstBlack;
 						}
 					}
 				}
 				// Check if an incision line is available.
-				if (Incision != -1) {
+				if (incision != -1) {
 					// Initialize the rectangle.
-					Rectangle Rectangle = new Rectangle(0, 0, Bitmap.Width, Bitmap.Height - Incision);
+					var rectangle = new Rectangle(0, 0, bitmap.Width, bitmap.Height - incision);
 					// Initialize the result.
-					Bitmap Result = Bitmap.Clone(Rectangle, Bitmap.PixelFormat);
+					var result = bitmap.Clone(rectangle, bitmap.PixelFormat);
 					// Dispose of the image.
-					Bitmap.Dispose();
+					bitmap.Dispose();
 					// Return the result.
-					return Result;
+					return result;
 				}
 			}
 			// Return the bitmap.
-			return Bitmap;
+			return bitmap;
 		}
 
 		/// <summary>
 		/// Frame to the last available frame.
 		/// </summary>
-		/// <param name="Bitmap">The bitmap.</param>
-		public static Bitmap Frame(this Bitmap Bitmap) {
+		/// <param name="bitmap">The bitmap.</param>
+		public static Bitmap Frame(this Bitmap bitmap) {
 			// Check if the frame dimension list is available.
-			if (Bitmap.FrameDimensionsList != null) {
+			if (bitmap.FrameDimensionsList != null) {
 				// Initialize a new instance of the FrameDimension class.
-				FrameDimension FrameDimension = new FrameDimension(Bitmap.FrameDimensionsList[0]);
+				var frameDimension = new FrameDimension(bitmap.FrameDimensionsList[0]);
 				// Retrieve the number of frames.
-				int FrameCount = Bitmap.GetFrameCount(FrameDimension);
+				var frameCount = bitmap.GetFrameCount(frameDimension);
 				// Check if more than one frame is available.
-				if (FrameCount > 1) {
+				if (frameCount > 1) {
 					// Select the last frame containing the appropriate image.
-					Bitmap.SelectActiveFrame(FrameDimension, FrameCount - 1);
+					bitmap.SelectActiveFrame(frameDimension, frameCount - 1);
 					// Create the image for the frame.
-					Bitmap Result = new Bitmap(Bitmap);
+					var result = new Bitmap(bitmap);
 					// Dispose of the original image.
-					Bitmap.Dispose();
+					bitmap.Dispose();
 					// Return the result.
-					return Result;
+					return result;
 				}
 			}
 			// Return the bitmap.
-			return Bitmap;
+			return bitmap;
 		}
 
 		/// <summary>
 		/// Convert RGB colour space to grayscale when applicable.
 		/// </summary>
-		public static Bitmap Grayscale(this Bitmap Bitmap) {
+		/// <param name="bitmap">The bitmap.</param>
+		public static Bitmap Grayscale(this Bitmap bitmap) {
 			// Convert grayscale to RGB colour space.
-			if ((Bitmap = Bitmap.Channel()) != null) {
+			if ((bitmap = bitmap.Channel()) != null) {
 				// Initialize a new instance of the ImageStatisticsHSL class.
-				ImageStatisticsHSL ImageStatisticsHSL = new ImageStatisticsHSL(Bitmap);
+				var imageStatisticsHSL = new ImageStatisticsHSL(bitmap);
 				// Check if the image is grayscale.
-				if (ImageStatisticsHSL.Saturation.Max == 0) {
+				if (imageStatisticsHSL.Saturation.Max == 0) {
 					// Initialize a new instance of the Grayscale class.
-					Grayscale Grayscale = new Grayscale(0.2125, 0.7154, 0.0721);
+					var grayscale = new Grayscale(0.2125, 0.7154, 0.0721);
 					// Apply the filter to the image.
-					Bitmap Result = Grayscale.Apply(Bitmap);
+					var result = grayscale.Apply(bitmap);
 					// Dispose of the original image.
-					Bitmap.Dispose();
+					bitmap.Dispose();
 					// Return the result.
-					return Result;
+					return result;
 				}
 			}
 			// Return the bitmap.
-			return Bitmap;
+			return bitmap;
 		}
 
 		/// <summary>
 		/// Reduce noise using conservative smoothing.
 		/// </summary>
-		public static Bitmap Noise(this Bitmap Bitmap) {
+		/// <param name="bitmap">The bitmap.</param>
+		public static Bitmap Noise(this Bitmap bitmap) {
 			// Convert grayscale to RGB colour space.
-			if ((Bitmap = Bitmap.Channel()) != null) {
+			if ((bitmap = bitmap.Channel()) != null) {
 				// Initialize a new instance of the ConservativeSmoothing class.
-				var ConservativeSmoothing = new ConservativeSmoothing();
+				var conservativeSmoothing = new ConservativeSmoothing();
 				// Reduce noise while preserving detail.
-				ConservativeSmoothing.ApplyInPlace(Bitmap);
+				conservativeSmoothing.ApplyInPlace(bitmap);
 			}
 			// Return the bitmap.
-			return Bitmap;
+			return bitmap;
 		}
 
 		/// <summary>
 		/// Sharpen using a gaussian sharpen filter.
 		/// </summary>
-		public static Bitmap Sharpen(this Bitmap Bitmap) {
+		public static Bitmap Sharpen(this Bitmap bitmap) {
 			// Convert grayscale to RGB colour space.
-			if ((Bitmap = Bitmap.Channel()) != null) {
+			if ((bitmap = bitmap.Channel()) != null) {
 				// Initialize a new instance of the GaussianSharpen class.
-				var GaussianSharpen = new GaussianSharpen();
+				var gaussianSharpen = new GaussianSharpen();
 				// Apply the filter to the image.
-				GaussianSharpen.ApplyInPlace(Bitmap);
+				gaussianSharpen.ApplyInPlace(bitmap);
 			}
 			// Return the bitmap.
-			return Bitmap;
+			return bitmap;
 		}
 
 		/// <summary>
 		/// Create an byte array from the bitmap.
 		/// </summary>
-		/// <param name="Bitmap">The bitmap.</param>
-		/// <param name="OutputFormat">The output format.</param>
-		public static byte[] ToByteArray(this Bitmap Bitmap, string OutputFormat) {
+		/// <param name="bitmap">The bitmap.</param>
+		/// <param name="outputFormat">The output format.</param>
+		public static byte[] ToByteArray(this Bitmap bitmap, string outputFormat) {
 			// Initialize a new instance of the MemoryStream class.
-			using (MemoryStream MemoryStream = new MemoryStream()) {
+			using (var memoryStream = new MemoryStream()) {
 				// Switch on the output format.
-				switch (OutputFormat) {
+				switch (outputFormat) {
 					case "bmp":
 						// Save using the Bitmap (BMP) format.
-						Bitmap.Save(MemoryStream, ImageFormat.Bmp);
+						bitmap.Save(memoryStream, ImageFormat.Bmp);
 						// Break iteration.
 						break;
 					case "gif":
 						// Save using the Graphics Interchange Format (GIF) format.
-						Bitmap.Save(MemoryStream, ImageFormat.Gif);
+						bitmap.Save(memoryStream, ImageFormat.Gif);
 						// Break iteration.
 						break;
 					case "png":
 						// Save using the W3C Portable Network Graphics (PNG) format.
-						Bitmap.Save(MemoryStream, ImageFormat.Png);
+						bitmap.Save(memoryStream, ImageFormat.Png);
 						// Break iteration.
 						break;
 					default:
 						// Save using the Joint Photographic Experts Group (JPEG) format.
-						Bitmap.Save(MemoryStream, ImageFormat.Jpeg);
+						bitmap.Save(memoryStream, ImageFormat.Jpeg);
 						// Break iteration.
 						break;
 				}
 				// Return the image.
-				return MemoryStream.ToArray();
+				return memoryStream.ToArray();
 			}
 		}
 		#endregion

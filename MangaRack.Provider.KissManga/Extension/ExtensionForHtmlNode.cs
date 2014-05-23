@@ -14,20 +14,20 @@ namespace MangaRack.Provider.KissManga {
 		/// <summary>
 		/// Retrieve the next element.
 		/// </summary>
-		/// <param name="Node">The node.</param>
-		public static HtmlNode NextElement(this HtmlNode Node) {
+		/// <param name="node">The node.</param>
+		public static HtmlNode NextElement(this HtmlNode node) {
 			// Initialize the sibling.
-			HtmlNode Sibling = null;
+			var sibling = null as HtmlNode;
 			// Iterate through each sibling.
-			while ((Sibling = Sibling == null ? Node.NextSibling : Sibling.NextSibling) != null) {
+			while ((sibling = sibling == null ? node.NextSibling : sibling.NextSibling) != null) {
 				// Check if this is an element.
-				if (Sibling.NodeType == HtmlNodeType.Element) {
+				if (sibling.NodeType == HtmlNodeType.Element) {
 					// Return the result.
-					return Sibling;
+					return sibling;
 				}
 			}
 			// Return the result.
-			return Node;
+			return node;
 		}
 		#endregion
 	}

@@ -13,24 +13,24 @@ namespace MangaRack.Provider.Batoto {
 		/// <summary>
 		/// Convert an alphabetic suffix to a numeric suffix.
 		/// </summary>
-		/// <param name="Value">The value.</param>
-		public static string AlphabeticToNumeric(this string Value) {
+		/// <param name="value">The value.</param>
+		public static string AlphabeticToNumeric(this string value) {
 			// Retrieve the alphabetic value.
-			char Alphabetic = Value.ToLowerInvariant()[Value.Length - 1];
+			var alphabetic = value.ToLowerInvariant()[value.Length - 1];
 			// Check if the presumed alphabetic value is actually alphabetic.
-			if (!char.IsDigit(Alphabetic)) {
+			if (!char.IsDigit(alphabetic)) {
 				// Remove the alphabetic value.
-				Value = Value.Substring(0, Value.Length - 1);
+				value = value.Substring(0, value.Length - 1);
 				// Check if the value does not values behind the digit.
-				if (Value.IndexOf('.') == -1) {
+				if (value.IndexOf('.') == -1) {
 					// Append the digit separator.
-					Value += '.';
+					value += '.';
 				}
 				// Convert the alphabetic value to numeric and append it.
-				Value += ((int) Alphabetic - 96).ToString();
+				value += ((int) alphabetic - 96).ToString();
 			}
 			// Return the value.
-			return Value;
+			return value;
 		}
 		#endregion
 	}

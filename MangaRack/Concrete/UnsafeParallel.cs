@@ -13,77 +13,77 @@ namespace MangaRack {
 	/// <summary>
 	/// Represents the class that provides support for terminating parallel loops.
 	/// </summary>
-	public static class UnsafeParallel {
+	static class UnsafeParallel {
 		#region Statics
 		/// <summary>
 		/// Execute a for loop in which iterations run in parallel.
 		/// </summary>
-		/// <param name="FromInclusive">The start index, inclusive.</param>
-		/// <param name="ToExclusive">The end index, exclusive.</param>
-		/// <param name="Body">The delegate that is invoked once per iteration.</param>
-		public static void For(int FromInclusive, int ToExclusive, Action<int> Body) {
+		/// <param name="fromInclusive">The start index, inclusive.</param>
+		/// <param name="toExclusive">The end index, exclusive.</param>
+		/// <param name="body">The delegate that is invoked once per iteration.</param>
+		public static void For(int fromInclusive, int toExclusive, Action<int> body) {
 			// Execute a for loop in which iterations run in parallel.
-			For(FromInclusive, ToExclusive, Environment.ProcessorCount, Body);
+			For(fromInclusive, toExclusive, Environment.ProcessorCount, body);
 		}
 
 		/// <summary>
 		/// Execute a for loop in which iterations run in parallel.
 		/// </summary>
-		/// <param name="FromInclusive">The start index, inclusive.</param>
-		/// <param name="ToExclusive">The end index, exclusive.</param>
-		/// <param name="ThreadCount">The thread count.</param>
-		/// <param name="Body">The delegate that is invoked once per iteration.</param>
-		public static void For(int FromInclusive, int ToExclusive, int ThreadCount, Action<int> Body) {
+		/// <param name="fromInclusive">The start index, inclusive.</param>
+		/// <param name="toExclusive">The end index, exclusive.</param>
+		/// <param name="threadCount">The thread count.</param>
+		/// <param name="body">The delegate that is invoked once per iteration.</param>
+		public static void For(int fromInclusive, int toExclusive, int threadCount, Action<int> body) {
 			// Initialize the exception.
-			Exception Exception = null;
+			var exception = (Exception)null;
 			// Initialize the reset event array.
-			ManualResetEvent[] ManualResetEventSlim = new ManualResetEvent[ThreadCount];
+			var manualResetEventSlim = new ManualResetEvent[threadCount];
 			// Initialize the thread array.
-			Thread[] Thread = new Thread[ThreadCount];
+			var thread = new Thread[threadCount];
 			// Initialize the queue.
-			Queue<int> Queue = new Queue<int>(Enumerable.Range(FromInclusive, ToExclusive));
+			var queue = new Queue<int>(Enumerable.Range(fromInclusive, toExclusive));
 			// Iterate through each thread.
-			for (int x = 0; x < ThreadCount; x++) {
+			for (var x = 0; x < threadCount; x++) {
 				// Initialize the context safe offset.
-				int Offset = x;
+				var offset = x;
 				// Initialize a new instance of the ManualResetEvent class.
-				ManualResetEventSlim[Offset] = new ManualResetEvent(false);
+				manualResetEventSlim[offset] = new ManualResetEvent(false);
 				// Initialize a new instance of the Thread class.
-				(Thread[Offset] = new Thread(() => {
+				(thread[offset] = new Thread(() => {
 					// Attempt the following code.
 					try {
 						// Initialize the integer.
 						int i;
 						// Set the thread culture.
-						Thread[Offset].CurrentCulture = new CultureInfo("en-US");
+						thread[offset].CurrentCulture = new CultureInfo("en-US");
 						// Iterate while an integer is available.
 						while (true) {
 							// Lock the queue.
-							lock (Queue) {
+							lock (queue) {
 								// Check if the queue is empty.
-								if (Queue.Count == 0) {
+								if (queue.Count == 0) {
 									// Break the loop.
 									break;
 								}
 								// Dequeue an integer.
-								i = Queue.Dequeue();
+								i = queue.Dequeue();
 							}
 							// Run the delegate.
-							Body(i);
+							body(i);
 						}
 						// Set the reset event.
-						ManualResetEventSlim[Offset].Set();
+						manualResetEventSlim[offset].Set();
 					} catch (Exception e) {
 						// Lock the thread array.
-						lock (Thread) {
+						lock (thread) {
 							// Check if the exception has not yet been set.
-							if (Exception == null) {
+							if (exception == null) {
 								// Set the exception.
-								Exception = e;
+								exception = e;
 								// Iterate through each thread.
-								for (int y = 0; y < Thread.Length; y++) {
+								for (int y = 0; y < thread.Length; y++) {
 									// Set the reset event.
-									ManualResetEventSlim[y].Set();
+									manualResetEventSlim[y].Set();
 								}
 							}
 						}
@@ -91,19 +91,19 @@ namespace MangaRack {
 				})).Start();
 			}
 			// Iterate through each reset event.
-			for (int x = 0; x < ThreadCount; x++) {
+			for (var x = 0; x < threadCount; x++) {
 				// Wait on the reset event.
-				ManualResetEventSlim[x].WaitOne();
+				manualResetEventSlim[x].WaitOne();
 			}
 			// Check if the exception has been set.
-			if (Exception != null) {
+			if (exception != null) {
 				// Iterate through each thread.
-				for (int x = 0; x < ThreadCount; x++) {
+				for (var x = 0; x < threadCount; x++) {
 					// Abort the thread.
-					Thread[x].Abort();
+					thread[x].Abort();
 				}
 				// Throw the exception.
-				throw Exception;
+				throw exception;
 			}
 		}
 		#endregion

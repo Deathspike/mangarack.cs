@@ -18,11 +18,11 @@ namespace MangaRack.ViewModel {
 		public Action<string> Changed {
 			get {
 				// Retrieve the value.
-				return Get<Action<string>>(() => Changed, (Key) => {
+				return Get<Action<string>>(() => Changed, key => {
 					// Check if the property changed has subscribers.
 					if (PropertyChanged != null) {
 						// Invoke the property changed.
-						PropertyChanged(this, new PropertyChangedEventArgs(Key));
+						PropertyChanged(this, new PropertyChangedEventArgs(key));
 					}
 				});
 			}
@@ -37,12 +37,12 @@ namespace MangaRack.ViewModel {
 		/// <summary>
 		/// Remove a value.
 		/// </summary>
-		/// <param name="Key">The key.</param>
-		public override bool Remove(string Key) {
+		/// <param name="key">The key.</param>
+		public override bool Remove(string key) {
 			// Remove a value and check if it succeeded.
-			if (base.Remove(Key)) {
+			if (base.Remove(key)) {
 				// Raise a changed event.
-				Changed(Key);
+				Changed(key);
 				// Return true.
 				return true;
 			}
@@ -53,18 +53,18 @@ namespace MangaRack.ViewModel {
 		/// <summary>
 		/// Set a value.
 		/// </summary>
-		/// <param name="Key">The key.</param>
-		/// <param name="Value">The value.</param>
-		public override bool Set(string Key, object Value) {
+		/// <param name="key">The key.</param>
+		/// <param name="value">The value.</param>
+		public override bool Set(string key, object value) {
 			// Check if the value is changing.
-			if (base.Set(Key, Value)) {
+			if (base.Set(key, value)) {
 				// Raise a changed event.
-				Changed(Key);
+				Changed(key);
 				// Return true.
 				return true;
 			} else {
 				// Set a value.
-				return base.Set(Key, Value);
+				return base.Set(key, value);
 			}
 		}
 		#endregion
