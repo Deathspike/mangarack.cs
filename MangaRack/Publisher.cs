@@ -212,7 +212,7 @@ namespace MangaRack {
 						}
 					}
 					// Check if footer incision is not disabled.
-					if (!_options.DisableFooterIncision && string.Equals(_provider.UniqueIdentifier, "MangaFox")) {
+					if (!_options.DisableFooterIncision && string.Equals(_provider.Location, "http://mangafox.me/")) {
 						// Crop the image to remove a textual addition.
 						var result = bitmap.Crop();
 						// Check if the result is modified.

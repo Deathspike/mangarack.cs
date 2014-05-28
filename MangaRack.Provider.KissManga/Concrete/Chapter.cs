@@ -20,16 +20,16 @@ namespace MangaRack.Provider.KissManga {
 		/// Initialize a new instance of the Chapter class.
 		/// </summary>
 		/// <param name="number">The number.</param>
+		/// <param name="location">The location.</param>
 		/// <param name="title">The title.</param>
-		/// <param name="uniqueIdentifier">The unique identifier.</param>
 		/// <param name="volume">The volume.</param>
-		public Chapter(double number, string title, string uniqueIdentifier, double volume) {
+		public Chapter(double number, string location, string title, double volume) {
 			// Set the number.
 			Number = number;
+			// Set the location.
+			Location = location;
 			// Set the title.
 			Title = title;
-			// Set the unique identifier.
-			UniqueIdentifier = uniqueIdentifier;
 			// Set the volume.
 			Volume = volume;
 		}
@@ -42,7 +42,7 @@ namespace MangaRack.Provider.KissManga {
 		/// <param name="done">The callback.</param>
 		public void Populate(Action<IChapter> done) {
 			// Get the document.
-			Http.Get(UniqueIdentifier, response => {
+			Http.Get(Location, response => {
 				// Find the images ...
 				Children = Regex.Matches(response.AsString(), @"lstImages\.push\((.*)\)").Cast<Match>()
 					// ... select each page.
@@ -62,6 +62,11 @@ namespace MangaRack.Provider.KissManga {
 		public IEnumerable<IPage> Children { get; private set; }
 
 		/// <summary>
+		/// Contains the location.
+		/// </summary>
+		public string Location { get; private set; }
+
+		/// <summary>
 		/// Contains the number.
 		/// </summary>
 		public double Number { get; private set; }
@@ -70,11 +75,6 @@ namespace MangaRack.Provider.KissManga {
 		/// Contains the title.
 		/// </summary>
 		public string Title { get; private set; }
-
-		/// <summary>
-		/// Contains the unique identifier.
-		/// </summary>
-		public string UniqueIdentifier { get; private set; }
 
 		/// <summary>
 		/// Contains the volume.

@@ -10,6 +10,18 @@ namespace MangaRack.Provider.MangaFox {
 	/// Represents a MangaFox provider.
 	/// </summary>
 	sealed class Provider : IProvider {
+		#region Properties
+		/// <summary>
+		/// Contains the domain.
+		/// </summary>
+		public static string Domain {
+			get {
+				// Return the domain.
+				return "http://mangafox.me/";
+			}
+		}
+		#endregion
+
 		#region IProvider:Methods
 		/// <summary>
 		/// Open a series.
@@ -37,12 +49,12 @@ namespace MangaRack.Provider.MangaFox {
 
 		#region IProvider:Properties
 		/// <summary>
-		/// Contains the unique identifier.
+		/// Contains the location.
 		/// </summary>
-		public string UniqueIdentifier {
+		public string Location {
 			get {
-				// Return the unique identifier.
-				return "MangaFox";
+				// Return the domain.
+				return Domain;
 			}
 		}
 		#endregion

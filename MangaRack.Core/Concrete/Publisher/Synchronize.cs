@@ -85,7 +85,7 @@ namespace MangaRack.Core {
 							// Check if the page is a broken page.
 							if (string.Equals(comicInfoPage.Type, "Deleted")) {
 								// Add the broken page.
-								brokenPages.Add(string.Format("{0}: {1}", number.ToString("000"), Page.UniqueIdentifier));
+								brokenPages.Add(string.Format("{0}: {1}", number.ToString("000"), Page.Location));
 							}
 						}
 					}

@@ -19,16 +19,16 @@ namespace MangaRack.Provider.MangaFox {
 		/// Initialize a new instance of the Chapter class.
 		/// </summary>
 		/// <param name="number">The number.</param>
+		/// <param name="location">The location.</param>
 		/// <param name="title">The title.</param>
-		/// <param name="uniqueIdentifier">The unique identifier.</param>
 		/// <param name="volume">The volume.</param>
-		public Chapter(double number, string title, string uniqueIdentifier, double volume) {
+		public Chapter(double number, string location, string title, double volume) {
 			// Set the number.
 			Number = number;
+			// Set the location.
+			Location = location;
 			// Set the title.
 			Title = title;
-			// Set the unique identifier.
-			UniqueIdentifier = uniqueIdentifier;
 			// Set the volume.
 			Volume = volume;
 		}
@@ -41,7 +41,7 @@ namespace MangaRack.Provider.MangaFox {
 		/// <param name="done">The callback.</param>
 		public void Populate(Action<IChapter> done) {
 			// Get the document.
-			Http.Get(UniqueIdentifier.EndsWith("1.html") ? UniqueIdentifier : UniqueIdentifier + "1.html", response => {
+			Http.Get(Location.EndsWith("1.html") ? Location : Location + "1.html", response => {
 				// Initialize a new instance of the HtmlDocument class.
 				var htmlDocument = new HtmlDocument();
 				// Load the document.
@@ -57,7 +57,7 @@ namespace MangaRack.Provider.MangaFox {
 					// ... with a possible value ...
 					.Where(x => !HtmlEntity.DeEntitize(x.GetAttributeValue("value", string.Empty)).Trim().Equals("0"))
 					// ... select each page ...
-					.Select(x => new Page(string.Join("/", UniqueIdentifier.Split('/').TakeWhile(y => !y.EndsWith(".html")).ToArray()).TrimEnd('/') + "/" + HtmlEntity.DeEntitize(x.GetAttributeValue("value", string.Empty)).Trim() + ".html") as IPage)
+					.Select(x => new Page(string.Join("/", Location.Split('/').TakeWhile(y => !y.EndsWith(".html")).ToArray()).TrimEnd('/') + "/" + HtmlEntity.DeEntitize(x.GetAttributeValue("value", string.Empty)).Trim() + ".html") as IPage)
 					// ... and create an array.
 					.ToArray();
 				// Invoke the callback.
@@ -73,6 +73,11 @@ namespace MangaRack.Provider.MangaFox {
 		public IEnumerable<IPage> Children { get; private set; }
 
 		/// <summary>
+		/// Contains the location.
+		/// </summary>
+		public string Location { get; private set; }
+
+		/// <summary>
 		/// Contains the number.
 		/// </summary>
 		public double Number { get; private set; }
@@ -81,11 +86,6 @@ namespace MangaRack.Provider.MangaFox {
 		/// Contains the title.
 		/// </summary>
 		public string Title { get; private set; }
-
-		/// <summary>
-		/// Contains the unique identifier.
-		/// </summary>
-		public string UniqueIdentifier { get; private set; }
 
 		/// <summary>
 		/// Contains the volume.

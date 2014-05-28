@@ -33,7 +33,7 @@ namespace MangaRack.Provider.MangaFox {
 		/// <param name="done">The callback.</param>
 		public void Populate(Action<ISearch> done) {
 			// Get the document.
-			Http.Get("http://mangafox.me/search.php?advopts=1&name=" + Uri.EscapeDataString(Input), response => {
+			Http.Get(Provider.Domain + "search.php?advopts=1&name=" + Uri.EscapeDataString(Input), response => {
 				// Initialize a new instance of the HtmlDocument class.
 				var htmlDocument = new HtmlDocument();
 				// Load the document.

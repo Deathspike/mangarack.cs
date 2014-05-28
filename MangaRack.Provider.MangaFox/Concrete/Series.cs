@@ -70,6 +70,8 @@ namespace MangaRack.Provider.MangaFox {
 						.Where(y => HtmlEntity.DeEntitize(y.GetAttributeValue("href", string.Empty)).Trim().Contains("/manga/"))
 						// ... and select each chapter with a number ...
 						.Select(y => new Chapter(double.TryParse(Regex.Match(HtmlEntity.DeEntitize(y.InnerText).Trim(), "(?<Number>[0-9.]+)$", RegexOptions.IgnoreCase).Groups["Number"].Value, out ProcessedNumber) ? ProcessedNumber : -1,
+							// ... with a location ...
+							HtmlEntity.DeEntitize(y.GetAttributeValue("href", string.Empty)).Trim(),
 							// ... with a title ...
 							y.ParentNode.Descendants("span")
 								// ... with a class indicating a title ...
@@ -78,8 +80,6 @@ namespace MangaRack.Provider.MangaFox {
 								.Select(z => HtmlEntity.DeEntitize(z.InnerText).Trim())
 								// ... use the first or default ...
 								.FirstOrDefault(),
-							// ... with an unique identifier ...
-							HtmlEntity.DeEntitize(y.GetAttributeValue("href", string.Empty)).Trim(),
 							// ... with a volume.
 							double.TryParse(x.Match.Groups["Volume"].Value, out ProcessedVolume) ? ProcessedVolume : -1) as IChapter))
 					// ... reverse the order ...
@@ -150,19 +150,19 @@ namespace MangaRack.Provider.MangaFox {
 		/// <summary>
 		/// Initialize a new instance of the Series class.
 		/// </summary>
-		/// <param name="uniqueIdentifier">The unique identifier.</param>
-		public Series(string uniqueIdentifier) {
-			// Set the unique identifier.
-			UniqueIdentifier = uniqueIdentifier;
+		/// <param name="location">The location.</param>
+		public Series(string location) {
+			// Set the location.
+			Location = location;
 		}
 
 		/// <summary>
 		/// Initialize a new instance of the Series class.
 		/// </summary>
-		/// <param name="uniqueIdentifier">The unique identifier.</param>
+		/// <param name="location">The location.</param>
 		/// <param name="title">The title.</param>
-		public Series(string uniqueIdentifier, string title)
-			: this(uniqueIdentifier) {
+		public Series(string location, string title)
+			: this(location) {
 			// Set the title.
 			Title = title;
 		}
@@ -175,7 +175,7 @@ namespace MangaRack.Provider.MangaFox {
 		/// <param name="done">The callback.</param>
 		public void Populate(Action<ISeries> done) {
 			// Get the document.
-			Http.Get(UniqueIdentifier, response => {
+			Http.Get(Location, response => {
 				// Initialize a new instance of the HtmlDocument class.
 				var htmlDocument = new HtmlDocument();
 				// Load the document.
@@ -247,6 +247,11 @@ namespace MangaRack.Provider.MangaFox {
 		public IEnumerable<string> Genres { get; private set; }
 
 		/// <summary>
+		/// Contains the location.
+		/// </summary>
+		public string Location { get; private set; }
+
+		/// <summary>
 		/// Contains the preview image.
 		/// </summary>
 		public byte[] PreviewImage { get; private set; }
@@ -260,11 +265,6 @@ namespace MangaRack.Provider.MangaFox {
 		/// Contains the title.
 		/// </summary>
 		public string Title { get; private set; }
-
-		/// <summary>
-		/// Contains the unique identifier.
-		/// </summary>
-		public string UniqueIdentifier { get; private set; }
 		#endregion
 	}
 }

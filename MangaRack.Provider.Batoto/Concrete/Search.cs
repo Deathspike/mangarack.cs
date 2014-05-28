@@ -32,7 +32,7 @@ namespace MangaRack.Provider.Batoto {
 		/// <param name="done">The callback.</param>
 		public void Populate(Action<ISearch> done) {
 			// Get the document.
-			Http.Get("http://www.batoto.net/search?name=" + Uri.EscapeDataString(Input), Response => {
+			Http.Get(Provider.Domain + "search?name=" + Uri.EscapeDataString(Input), Response => {
 				// Initialize a new instance of the HtmlDocument class.
 				var htmlDocument = new HtmlDocument();
 				// Load the document.

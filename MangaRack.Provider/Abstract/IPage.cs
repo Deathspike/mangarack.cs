@@ -17,9 +17,9 @@ namespace MangaRack.Provider {
 		byte[] Image { get; }
 
 		/// <summary>
-		/// Contains the unique identifier.
+		/// Contains the location.
 		/// </summary>
-		string UniqueIdentifier { get; }
+		string Location { get; }
 		#endregion
 	}
 }

@@ -17,6 +17,11 @@ namespace MangaRack.Provider {
 		IEnumerable<IPage> Children { get; }
 
 		/// <summary>
+		/// Contains the location.
+		/// </summary>
+		string Location { get; }
+
+		/// <summary>
 		/// Contains the number.
 		/// </summary>
 		double Number { get; }
@@ -25,11 +30,6 @@ namespace MangaRack.Provider {
 		/// Contains the title.
 		/// </summary>
 		string Title { get; }
-
-		/// <summary>
-		/// Contains the unique identifier.
-		/// </summary>
-		string UniqueIdentifier { get; }
 
 		/// <summary>
 		/// Contains the volume.

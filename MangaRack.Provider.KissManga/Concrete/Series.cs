@@ -45,11 +45,11 @@ namespace MangaRack.Provider.KissManga {
 					// ... with a references indicating a chapter ...
 					.Where(x => HtmlEntity.DeEntitize(x.GetAttributeValue("href", string.Empty)).Trim().StartsWith("/Manga/") && HtmlEntity.DeEntitize(x.GetAttributeValue("title", string.Empty)).Trim().StartsWith("Read"))
 					// ... selecting each valid volume ...
-					.Select(x => new { Chapter = x, Match = Regex.Match(HtmlEntity.DeEntitize(x.InnerText).Trim().ReplaceWhileWithDigit(".0", ".").RemoveToIncluding(Title).Trim(), @"(\s?Vol\.\s?(?<Volume>[0-9\.]+))?\s?(Ch\.)?([a-z]+)?\s?(?<Number>([0-9\.]+[a-z]?|Extra|Omake))(\s?-\s?[0-9\.]+)?(\s?v\.?[0-9]+)?(\s?\(?Part\s(?<Part>[0-9]+)\)?)?(\s?(-|\+)\s?)?\s?(Read Onl?ine|:?\s?(?<Title>.+?)?(Read Online)?)$", RegexOptions.IgnoreCase) })
+					.Select(x => new { Chapter = x, Match = Regex.Match(HtmlEntity.DeEntitize(x.InnerText).Trim().ReplaceWhileWithDigit(".0", ".").RemoveToIncluding(Title).Trim(), @"(Vol\.\s*(?<Volume>[0-9\.]+))?\s*(Ch\.)?([a-z]+)?\s*(?<Number>([0-9\.]+[a-z]?|Extra|Omake))(\s?-\s?[0-9\.]+)?(\s?v\.?[0-9]+)?(\s*\(?Part\s+(?<Part>[0-9]+)\)?)?(\s?(-|\+))?\s*(Read Onl?ine|:?\s?(?<Title>.*)?(Read Online)?)$", RegexOptions.IgnoreCase) })
 					// ... where the previous match was successful ...
 					.Where(x => x.Match.Success && x.Chapter.ParentNode != null && x.Chapter.ParentNode.Name.Equals("td"))
 					// ... selecting a proper type with all relevant information ...
-					.Select(x => new Chapter(double.TryParse(x.Match.Groups["Number"].Value.AlphabeticToNumeric(), out ProcessedNumber) ? ProcessedNumber + (string.IsNullOrEmpty(x.Match.Groups["Part"].Value) ? 0 : double.Parse(x.Match.Groups["Part"].Value) / 10) : -1, x.Match.Groups["Title"].Value, Provider.Domain + HtmlEntity.DeEntitize(x.Chapter.GetAttributeValue("href", string.Empty)).Trim(), double.TryParse(x.Match.Groups["Volume"].Value, out ProcessedVolume) ? ProcessedVolume : -1) as IChapter)
+					.Select(x => new Chapter(double.TryParse(x.Match.Groups["Number"].Value.AlphabeticToNumeric(), out ProcessedNumber) ? ProcessedNumber + (string.IsNullOrEmpty(x.Match.Groups["Part"].Value) ? 0 : double.Parse(x.Match.Groups["Part"].Value) / 10) : -1, Provider.Domain + HtmlEntity.DeEntitize(x.Chapter.GetAttributeValue("href", string.Empty)).Trim().TrimStart('/'), x.Match.Groups["Title"].Value, double.TryParse(x.Match.Groups["Volume"].Value, out ProcessedVolume) ? ProcessedVolume : -1) as IChapter)
 					// ... reverse the order ...
 					.Reverse()
 					// ... and create an array.
@@ -112,19 +112,19 @@ namespace MangaRack.Provider.KissManga {
 		/// <summary>
 		/// Initialize a new instance of the Series class.
 		/// </summary>
-		/// <param name="uniqueIdentifier">The unique identifier.</param>
-		public Series(string uniqueIdentifier) {
-			// Set the unique identifier.
-			UniqueIdentifier = uniqueIdentifier;
+		/// <param name="location">The location.</param>
+		public Series(string location) {
+			// Set the location.
+			Location = location;
 		}
 
 		/// <summary>
 		/// Initialize a new instance of the Series class.
 		/// </summary>
-		/// <param name="uniqueIdentifier">The unique identifier.</param>
+		/// <param name="location">The location.</param>
 		/// <param name="title">The title.</param>
-		public Series(string uniqueIdentifier, string title)
-			: this(uniqueIdentifier) {
+		public Series(string location, string title)
+			: this(location) {
 			// Set the title.
 			Title = title;
 		}
@@ -137,7 +137,7 @@ namespace MangaRack.Provider.KissManga {
 		/// <param name="done">The callback.</param>
 		public void Populate(Action<ISeries> done) {
 			// Get the document.
-			Http.Get(UniqueIdentifier + "?confirm=yes", response => {
+			Http.Get(Location + "?confirm=yes", response => {
 				// Initialize a new instance of the HtmlDocument class.
 				var htmlDocument = new HtmlDocument();
 				// Load the document.
@@ -214,6 +214,11 @@ namespace MangaRack.Provider.KissManga {
 		public IEnumerable<string> Genres { get; private set; }
 
 		/// <summary>
+		/// Contains the location.
+		/// </summary>
+		public string Location { get; private set; }
+
+		/// <summary>
 		/// Contains the preview image.
 		/// </summary>
 		public byte[] PreviewImage { get; private set; }
@@ -227,11 +232,6 @@ namespace MangaRack.Provider.KissManga {
 		/// Contains the title.
 		/// </summary>
 		public string Title { get; private set; }
-
-		/// <summary>
-		/// Contains the unique identifier.
-		/// </summary>
-		public string UniqueIdentifier { get; private set; }
 		#endregion
 	}
 }

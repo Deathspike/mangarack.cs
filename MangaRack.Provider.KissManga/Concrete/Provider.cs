@@ -16,8 +16,8 @@ namespace MangaRack.Provider.KissManga {
 		/// </summary>
 		public static string Domain {
 			get {
-				// Return the value.
-				return "http://kissmanga.com";
+				// Return the domain.
+				return "http://kissmanga.com/";
 			}
 		}
 		#endregion
@@ -49,12 +49,12 @@ namespace MangaRack.Provider.KissManga {
 
 		#region IProvider:Properties
 		/// <summary>
-		/// Contains the unique identifier.
+		/// Contains the location.
 		/// </summary>
-		public string UniqueIdentifier {
+		public string Location {
 			get {
-				// Return the unique identifier.
-				return "KissManga";
+				// Return the domain.
+				return Domain;
 			}
 		}
 		#endregion

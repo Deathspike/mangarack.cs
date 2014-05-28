@@ -25,9 +25,9 @@ namespace MangaRack.Provider {
 
 		#region Properties
 		/// <summary>
-		/// Contains the unique identifier.
+		/// Contains the location.
 		/// </summary>
-		string UniqueIdentifier { get; }
+		string Location { get; }
 		#endregion
 	}
 }

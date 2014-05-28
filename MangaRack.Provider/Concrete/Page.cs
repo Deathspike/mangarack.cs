@@ -62,12 +62,12 @@ namespace MangaRack.Provider {
 		}
 
 		/// <summary>
-		/// Contains the unique identifier.
+		/// Contains the location.
 		/// </summary>
-		public string UniqueIdentifier {
+		public string Location {
 			get {
-				// Return the unique identifier.
-				return _page.UniqueIdentifier;
+				// Return the location.
+				return _page.Location;
 			}
 		}
 		#endregion

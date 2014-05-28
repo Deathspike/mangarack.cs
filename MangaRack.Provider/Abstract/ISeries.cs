@@ -32,14 +32,14 @@ namespace MangaRack.Provider {
 		IEnumerable<string> Genres { get; }
 
 		/// <summary>
+		/// Contains the location.
+		/// </summary>
+		string Location { get; }
+
+		/// <summary>
 		/// Contains the preview image.
 		/// </summary>
 		byte[] PreviewImage { get; }
-
-		/// <summary>
-		/// Contains the unique identifier.
-		/// </summary>
-		string UniqueIdentifier { get; }
 
 		/// <summary>
 		/// Contains the summary.

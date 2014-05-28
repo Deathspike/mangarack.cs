@@ -142,22 +142,22 @@ namespace MangaRack.Provider {
 		}
 
 		/// <summary>
+		/// Contains the location.
+		/// </summary>
+		public string Location {
+			get {
+				// Return the location.
+				return _series.Location;
+			}
+		}
+
+		/// <summary>
 		/// Contains the preview image.
 		/// </summary>
 		public byte[] PreviewImage {
 			get {
 				// Return the preview image.
 				return _series.PreviewImage;
-			}
-		}
-
-		/// <summary>
-		/// Contains the unique identifier.
-		/// </summary>
-		public string UniqueIdentifier {
-			get {
-				// Return the unique identifier.
-				return _series.UniqueIdentifier;
 			}
 		}
 

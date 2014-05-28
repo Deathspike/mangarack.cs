@@ -19,16 +19,16 @@ namespace MangaRack.Provider.Batoto {
 		/// Initialize a new instance of the Chapter class.
 		/// </summary>
 		/// <param name="number">The number.</param>
+		/// <param name="location">The location.</param>
 		/// <param name="title">The title.</param>
-		/// <param name="uniqueIdentifier">The unique identifier.</param>
 		/// <param name="volume">The volume.</param>
-		public Chapter(double number, string title, string uniqueIdentifier, double volume) {
+		public Chapter(double number, string location, string title, double volume) {
 			// Set the number.
 			Number = number;
+			// Set the location.
+			Location = location;
 			// Set the title.
 			Title = title;
-			// Set the unique identifier.
-			UniqueIdentifier = uniqueIdentifier;
 			// Set the volume.
 			Volume = volume;
 		}
@@ -40,14 +40,14 @@ namespace MangaRack.Provider.Batoto {
 		/// </summary>
 		/// <param name="done">The callback.</param>
 		public void Populate(Action<IChapter> done) {
-			// Retrieve the address.
-			var address = UniqueIdentifier;
+			// Initialize the location.
+			var location = Location;
 			// Initialize the next.
 			var next = null as Action;
 			// Initialize the next handler.
 			next = () => {
 				// Get the document.
-				Http.Get(address, response => {
+				Http.Get(location, response => {
 					// Initialize a new instance of the HtmlDocument class.
 					var htmlDocument = new HtmlDocument();
 					// Initialize the node.
@@ -56,8 +56,8 @@ namespace MangaRack.Provider.Batoto {
 					htmlDocument.LoadHtml(response.AsString());
 					// Check if a link allowing switching to traditional reading mode is available.
 					if ((htmlNode = htmlDocument.DocumentNode.Descendants("a").FirstOrDefault(x => HtmlEntity.DeEntitize(x.GetAttributeValue("href", string.Empty)).Equals("?supress_webtoon=t"))) != null) {
-						// Set the address.
-						address = address + HtmlEntity.DeEntitize(htmlNode.Attributes["href"].Value).Trim();
+						// Set the location.
+						location = location + HtmlEntity.DeEntitize(htmlNode.Attributes["href"].Value).Trim();
 						// Invoke the next handler.
 						next();
 						// Stop the function.
@@ -93,6 +93,11 @@ namespace MangaRack.Provider.Batoto {
 		public IEnumerable<IPage> Children { get; private set; }
 
 		/// <summary>
+		/// Contains the location.
+		/// </summary>
+		public string Location { get; private set; }
+
+		/// <summary>
 		/// Contains the number.
 		/// </summary>
 		public double Number { get; private set; }
@@ -101,12 +106,7 @@ namespace MangaRack.Provider.Batoto {
 		/// Contains the title.
 		/// </summary>
 		public string Title { get; private set; }
-
-		/// <summary>
-		/// Contains the unique identifier.
-		/// </summary>
-		public string UniqueIdentifier { get; private set; }
-
+		
 		/// <summary>
 		/// Contains the volume.
 		/// </summary>

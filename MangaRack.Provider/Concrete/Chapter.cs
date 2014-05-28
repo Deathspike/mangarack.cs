@@ -68,6 +68,16 @@ namespace MangaRack.Provider {
 		}
 
 		/// <summary>
+		/// Contains the location.
+		/// </summary>
+		public string Location {
+			get {
+				// Return the location.
+				return _chapter.Location;
+			}
+		}
+
+		/// <summary>
 		/// Contains the number.
 		/// </summary>
 		public double Number {
@@ -88,16 +98,6 @@ namespace MangaRack.Provider {
 			get {
 				// Return the title.
 				return _chapter.Title;
-			}
-		}
-
-		/// <summary>
-		/// Contains the unique identifier.
-		/// </summary>
-		public string UniqueIdentifier {
-			get {
-				// Return the unique identifier.
-				return _chapter.UniqueIdentifier;
 			}
 		}
 

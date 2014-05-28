@@ -46,12 +46,12 @@ namespace MangaRack.Provider.MangaFox {
 
 		#region IProvider:Properties
 		/// <summary>
-		/// Contains the unique identifier.
+		/// Contains the location.
 		/// </summary>
-		public string UniqueIdentifier {
+		public string Location {
 			get {
-				// Return the unique identifier.
-				return _provider.UniqueIdentifier;
+				// Return the location.
+				return _provider.Location;
 			}
 		}
 		#endregion

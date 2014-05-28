@@ -15,10 +15,10 @@ namespace MangaRack.Provider.KissManga {
 		/// <summary>
 		/// Initialize a new instance of the Page class.
 		/// </summary>
-		/// <param name="uniqueIdentifier">The unique identifier.</param>
-		public Page(string uniqueIdentifier) {
-			// Set the unique identifier.
-			UniqueIdentifier = uniqueIdentifier;
+		/// <param name="location">The location.</param>
+		public Page(string location) {
+			// Set the location.
+			Location = location;
 		}
 		#endregion
 
@@ -29,7 +29,7 @@ namespace MangaRack.Provider.KissManga {
 		/// <param name="done">The callback.</param>
 		public void Populate(Action<IPage> done) {
 			// Download the source image.
-			Http.Get(UniqueIdentifier, imageResponse => {
+			Http.Get(Location, imageResponse => {
 				// Set the image.
 				Image = imageResponse.AsBinary();
 				// Invoke the callback.
@@ -55,9 +55,9 @@ namespace MangaRack.Provider.KissManga {
 		public byte[] Image { get; private set; }
 
 		/// <summary>
-		/// Contains the unique identifier.
+		/// Contains the location.
 		/// </summary>
-		public string UniqueIdentifier { get; private set; }
+		public string Location { get; private set; }
 		#endregion
 	}
 }

@@ -18,10 +18,10 @@ namespace MangaRack.Provider.MangaFox {
 		/// <summary>
 		/// Initialize a new instance of the Page class.
 		/// </summary>
-		/// <param name="uniqueIdentifier">The unique identifier.</param>
-		public Page(string uniqueIdentifier) {
-			// Set the unique identifier.
-			UniqueIdentifier = uniqueIdentifier;
+		/// <param name="location">The location.</param>
+		public Page(string location) {
+			// Set the location.
+			Location = location;
 		}
 		#endregion
 
@@ -32,7 +32,7 @@ namespace MangaRack.Provider.MangaFox {
 		/// <param name="done">The callback.</param>
 		public void Populate(Action<IPage> done) {
 			// Get the document.
-			Http.Get(UniqueIdentifier, htmlResponse => {
+			Http.Get(Location, htmlResponse => {
 				// Initialize a new instance of the HtmlDocument class.
 				var htmlDocument = new HtmlDocument();
 				// Initialize a new instance of the HtmlNode class.
@@ -94,9 +94,9 @@ namespace MangaRack.Provider.MangaFox {
 		public byte[] Image { get; private set; }
 
 		/// <summary>
-		/// Contains the unique identifier.
+		/// Contains the location.
 		/// </summary>
-		public string UniqueIdentifier { get; private set; }
+		public string Location { get; private set; }
 		#endregion
 	}
 }

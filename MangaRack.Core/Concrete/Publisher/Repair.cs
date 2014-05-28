@@ -109,8 +109,8 @@ namespace MangaRack.Core {
 								var uniqueIdentifier = oldBrokenPages.Current.Substring(separator + 1).Trim();
 								// Advance the enumerator to the next element.
 								while (pages.MoveNext()) {
-									// Check if the unique identifier is valid.
-									if (string.Equals(pages.Current.UniqueIdentifier, uniqueIdentifier)) {
+									// Check if the location is valid.
+									if (string.Equals(pages.Current.Location, uniqueIdentifier)) {
 										// Populate asynchronously.
 										pages.Current.Populate(page => {
 											// Publish the page.
@@ -118,7 +118,7 @@ namespace MangaRack.Core {
 												// Check if the page is a broken page.
 												if (string.Equals(newComicInfoPage.Type, "Deleted")) {
 													// Add the broken page.
-													newBrokenPages.Add(string.Format("{0}: {1}", number.ToString("000"), page.UniqueIdentifier));
+													newBrokenPages.Add(string.Format("{0}: {1}", number.ToString("000"), page.Location));
 												}
 												// Check if comic information is available.
 												if (_comicInfo != null) {
