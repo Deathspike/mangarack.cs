@@ -51,6 +51,17 @@ namespace MangaRack {
 				yield return chapter;
 			}
 		}
+
+		/// <summary>
+		/// Convert the chapter to a file name.
+		/// </summary>
+		/// <param name="chapter">The chapter.</param>
+		/// <param name="seriesTitle">The series title.</param>
+		/// <param name="options">The collection of options.</param>
+		public static string ToFileName(this IChapter chapter, string seriesTitle, Options options) {
+			// Initialize the file name.
+			return string.Format(chapter.Volume == -1 ? "{0} #{2}.{3}" : "{0} V{1} #{2}.{3}", seriesTitle, chapter.Volume.ToString("00"), chapter.Number.ToString("000.####"), options.FileExtension.InvalidatePath());
+		}
 		#endregion
 	}
 }

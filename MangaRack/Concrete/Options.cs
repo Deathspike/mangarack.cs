@@ -37,7 +37,7 @@ namespace MangaRack {
 			// Create a new instance of the HelpText class using common values.
 			var text = HelpText.AutoBuild(this);
 			// Add a text line before options usage strings.
-			text.AddPreOptionsLine("\r\n  Usage: mangarack [options] [uniqueIdentifier, ...]");
+			text.AddPreOptionsLine("\r\n  Usage: mangarack [options] [location, ...]");
 			// Return the text.
 			return text.ToString();
 		}
@@ -105,9 +105,9 @@ namespace MangaRack {
 		public bool EnableOverwriteMetaInformation { get; set; }
 
 		/// <summary>
-		/// Indicates whether persistent synchronization tracking is enabled.
+		/// Indicates whether persistent synchronization is enabled.
 		/// </summary>
-		[Option('p', "persistent", HelpText = "Enable persistent synchronization tracking.")]
+		[Option('p', "persistent", HelpText = "Enable persistent synchronization.")]
 		public bool EnablePersistentSynchronization { get; set; }
 
 		/// <summary>
@@ -129,6 +129,12 @@ namespace MangaRack {
 		public double FilterOnVolume { get; set; }
 
 		/// <summary>
+		/// Contains each location.
+		/// </summary>
+		[ValueList(typeof(List<string>))]
+		public IList<string> Locations { get; set; }
+
+		/// <summary>
 		/// Contains the maximum parallel worker threads.
 		/// </summary>
 		[Option('w', "worker", HelpText = "The maximum parallel worker threads. (Default: # cores)")]
@@ -139,12 +145,6 @@ namespace MangaRack {
 		/// </summary>
 		[Option('s', "source", HelpText = "The batch-mode source file. (Default: MangaRack.txt)")]
 		public string SourceFile { get; set; }
-
-		/// <summary>
-		/// Contains each unique identifier.
-		/// </summary>
-		[ValueList(typeof(List<string>))]
-		public IList<string> UniqueIdentifiers { get; set; }
 		#endregion
 	}
 }

@@ -32,6 +32,11 @@ namespace MangaRack.Provider {
 		string Title { get; }
 
 		/// <summary>
+		/// Contains the unique identifier.
+		/// </summary>
+		string UniqueIdentifier { get; }
+
+		/// <summary>
 		/// Contains the volume.
 		/// </summary>
 		double Volume { get; }

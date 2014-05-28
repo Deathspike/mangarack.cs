@@ -58,22 +58,22 @@ namespace MangaRack {
 				foreach (var line in File.ReadAllLines(options.SourceFile)) {
 					// Initialize a new instance of the Options class.
 					var lineOptions = new Options();
-					// Parse each command line argument into the options instance and check if an unique identifier is available.
-					if (Parser.Default.ParseArguments(line.Split(' '), lineOptions) && lineOptions.UniqueIdentifiers.Count != 0) {
+					// Parse each command line argument into the options instance and check if a location is available.
+					if (Parser.Default.ParseArguments(line.Split(' '), lineOptions) && lineOptions.Locations.Count != 0) {
 						// Check if meta-information overwriting is enabled.
 						if (options.EnableOverwriteMetaInformation) {
 							// Enable meta-information overwriting.
 							lineOptions.EnableOverwriteMetaInformation = true;
 						}
-						// Iterate through each unique identifier.
-						foreach (var uniqueIdentifier in lineOptions.UniqueIdentifiers) {
+						// Iterate through each location.
+						foreach (var location in lineOptions.Locations) {
 							// Check if worker threads are not disabled.
 							if (lineOptions.MaximumParallelWorkerThreads > 1 && options.MaximumParallelWorkerThreads > 1) {
-								// Add the unique identifier of the line to the worker item list.
-								workerItems.Add(new KeyValuePair<Options, string>(lineOptions, uniqueIdentifier));
+								// Add the location of the line to the worker item list.
+								workerItems.Add(new KeyValuePair<Options, string>(lineOptions, location));
 							} else {
 								// Run in single processing mode.
-								Single(lineOptions, uniqueIdentifier);
+								Single(location, lineOptions);
 							}
 						}
 					}
@@ -83,7 +83,7 @@ namespace MangaRack {
 					// Iterate through each worker item.
 					UnsafeParallel.For(0, workerItems.Count, options.MaximumParallelWorkerThreads, i => {
 						// Run in single processing mode.
-						Single(workerItems[i].Key, workerItems[i].Value);
+						Single(workerItems[i].Value, workerItems[i].Key);
 					});
 					// Return true.
 					return true;
@@ -125,26 +125,26 @@ namespace MangaRack {
 					// Set the maximum number of worker threads.
 					options.MaximumParallelWorkerThreads = 1;
 				}
-				// Check if no unique identifier is available.
-				if (options.UniqueIdentifiers.Count == 0) {
+				// Check if no location is available.
+				if (options.Locations.Count == 0) {
 					// Run in batch processing mode.
 					if (!Batch(options)) {
 						// Write the message.
-						Console.WriteLine("No valid source file was found.");
+						Console.WriteLine("Breaking due to invalid source file.");
 					}
 				} else {
 					// Check if worker threads are not disabled.
 					if (options.MaximumParallelWorkerThreads > 1) {
-						// Iterate through each unique identifier.
-						UnsafeParallel.For(0, options.UniqueIdentifiers.Count, options.MaximumParallelWorkerThreads, i => {
-							// Run in single processing mode for the unique identifier.
-							Single(options, options.UniqueIdentifiers[i]);
+						// Iterate through each location.
+						UnsafeParallel.For(0, options.Locations.Count, options.MaximumParallelWorkerThreads, i => {
+							// Run in single processing mode for the location.
+							Single(options.Locations[i], options);
 						});
 					} else {
-						// Iterate through each unique identifier.
-						foreach (var uniqueIdentifier in options.UniqueIdentifiers) {
-							// Run in single processing mode for the unique identifier.
-							Single(options, uniqueIdentifier);
+						// Iterate through each location.
+						foreach (var location in options.Locations) {
+							// Run in single processing mode for the location.
+							Single(location, options);
 						}
 					}
 				}
@@ -153,7 +153,7 @@ namespace MangaRack {
 					// Calculate the elapsed time.
 					var elapsed = new TimeSpan(DateTime.Now.Ticks - time);
 					// Write the message.
-					Console.WriteLine("Completed ({0}:{1}:{2})!", elapsed.Hours.ToString("00"), elapsed.Minutes.ToString("00"), elapsed.Seconds.ToString("00"));
+					Console.WriteLine("Complete ({0}:{1}:{2})!", elapsed.Hours.ToString("00"), elapsed.Minutes.ToString("00"), elapsed.Seconds.ToString("00"));
 				}
 				// Check if the keep-alive behavior is not disabled.
 				if (!options.DisableKeepAliveBehavior) {
@@ -166,31 +166,70 @@ namespace MangaRack {
 		}
 
 		/// <summary>
-		/// Run in single processing mode for the unique identifier.
+		/// Persist the state.
 		/// </summary>
+		/// <param name="persistencePath">The persistence path.</param>
+		/// <param name="persistence">The persistence.</param>
+		public static void Persist(string persistencePath, List<List<string>> persistence) {
+			// Write each line to the persistence file path.
+			File.WriteAllLines(persistencePath, persistence.Select(x => string.Join("\0", x.ToArray())).ToArray());
+		}
+
+		/// <summary>
+		/// Run in single processing mode for the location.
+		/// </summary>
+		/// <param name="location">The location.</param>
 		/// <param name="options">The collection of options.</param>
-		/// <param name="uniqueIdentifier">The unique identifier.</param>
-		public static void Single(Options options, string uniqueIdentifier) {
+		public static void Single(string location, Options options) {
 			// Select the provider.
-			var provider = _providers.FirstOrDefault(x => x.Open(uniqueIdentifier) != null);
+			var provider = _providers.FirstOrDefault(x => x.Open(location) != null);
 			// Check if the provider is valid.
 			if (provider != null) {
 				// Initialize the series.
-				using (var series = provider.Open(uniqueIdentifier)) {
+				using (var series = provider.Open(location)) {
 					// Populate the series.
 					using (series.Populate()) {
 						// Initialize the series title.
-						var title = series.Title.InvalidatePath();
-						// Initialize the persistence.
-						var persistence = new List<string>();
+						var seriesTitle = series.Title.InvalidatePath();
 						// Initialize the persistence file path.
-						var persistencePath = Path.Combine(title, ".mangarack-persist");
-						// Check if persistent synchronization tracking is enabled and a tracking file is available.
+						var persistencePath = Path.Combine(seriesTitle, ".mangarack-persist");
+						// Initialize the persistence.
+						var persistence = new List<List<string>>();
+						// Check if a persistence file is available.
 						if (File.Exists(persistencePath)) {
+							// Initialize the persistence version.
+							const int persistenceVersion = 2;
 							// Iterate through each line in the persistence file.
 							foreach (var line in File.ReadAllLines(persistencePath)) {
-								// Add the line to the persistence file names.
-								persistence.Add(line);
+								// Initialize the pieces.
+								var pieces = new List<string>(line.Split('\0'));
+								// Ensure suffient pieces are available.
+								while (pieces.Count < persistenceVersion) pieces.Add(string.Empty);
+								// Add the pieces.
+								persistence.Add(pieces);
+							}
+						}
+						// Iterate through each chapter.
+						foreach (var chapter in series.Children) {
+							// Initialize the line matching the unique identifier.
+							var line = persistence.Where(x => string.Equals(x[1], chapter.UniqueIdentifier)).FirstOrDefault();
+							// Check if the line is available.
+							if (line != null) {
+								// Initialize the current file path.
+								var currentFilePath = Path.Combine(seriesTitle, line[0]);
+								// Initialize the next file name.
+								var nextFileName = chapter.ToFileName(seriesTitle, options);
+								// Check if the file names differs from the persistet file name.
+								if (!string.Equals(line[0], nextFileName) && File.Exists(currentFilePath)) {
+									// Rename the file.
+									File.Move(currentFilePath, Path.Combine(seriesTitle, nextFileName));
+									// Update the file name.
+									line[0] = nextFileName;
+									// Persist the state.
+									Persist(persistencePath, persistence);
+									// Write a message.
+									Console.WriteLine("Switched {0}", nextFileName);
+								}
 							}
 						}
 						// Iterate through each chapter using the chapter and volume filters.
@@ -198,16 +237,21 @@ namespace MangaRack {
 							// Initialize whether sychronization has failed.
 							var hasFailed = false;
 							// Initialize the file name.
-							var fileName = string.Format(chapter.Volume == -1 ? "{0} #{2}.{3}" : "{0} V{1} #{2}.{3}", title, chapter.Volume.ToString("00"), chapter.Number.ToString("000.####"), options.FileExtension.InvalidatePath());
+							var fileName = chapter.ToFileName(seriesTitle, options);
 							// Initialize the file path.
-							var filePath = Path.Combine(title, fileName);
-							// Check if persistent synchronization tracking is enabled and the file name is persisted.
-							if (persistence.Contains(fileName)) {
+							var filePath = Path.Combine(seriesTitle, fileName);
+							// Initialize the persistence file.
+							var persistenceFile = persistence.FirstOrDefault(x => string.Equals(x[0], fileName));
+							// Check if persistent synchronization is enabled and the file has been persistent.
+							if (options.EnablePersistentSynchronization && persistenceFile != null) {
 								// Continue to the next chapter.
 								continue;
+							} else if (persistenceFile != null) {
+								// Update the unique identifier.
+								persistenceFile[1] = chapter.UniqueIdentifier ?? string.Empty;
 							} else {
-								// Add the file name to the persistence file names.
-								persistence.Add(fileName);
+								// Add the file name and unique identifier.
+								persistence.Add(new List<string> { fileName, chapter.UniqueIdentifier ?? string.Empty });
 							}
 							// Do the following code.
 							do {
@@ -330,11 +374,8 @@ namespace MangaRack {
 									}
 								}
 							} while (hasFailed);
-							// Check if persistent synchronization tracking is enabled.
-							if (options.EnablePersistentSynchronization) {
-								// Write each line to the persistence file path.
-								File.WriteAllLines(persistencePath, persistence.ToArray());
-							}
+							// Persist the state.
+							Persist(persistencePath, persistence);
 						}
 					}
 				}

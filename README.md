@@ -16,7 +16,7 @@ If you have a question or issue, go to the issues (https://github.com/Deathspike
 
 ## Instructions
 
-MangaRack is a console application. A number of options and filters are available to customize the way synchronization works, while each additional input represents a unique identifier for an online resource (usually the address of the series). Running the application without command line parameters will put the application into batch-mode, in which each line of the same-name text file is processed as a command line parameter instead.
+MangaRack is a console application. A number of options and filters are available to customize the way synchronization works, while each additional input represents a location for an online resource (usually the web address of the series). Running the application without command line parameters will put the application into batch-mode, in which each line of the same-name text file is processed as a command line parameter instead.
 
 ### Basic Usage
 
@@ -25,7 +25,7 @@ MangaRack is a console application. A number of options and filters are availabl
 	1. Ensure Microsoft .NET Framework 4 is installed (http://www.microsoft.com/en-us/download/details.aspx?id=17851).
 	2. Download the 'MangaRack for NET' archive from the Build directory.
 	3. Extract the contents of the archive to a directory in which to synchronize.
-	4. Open the text file and add unique identifiers of manga series to synchronize.
+	4. Open the text file and add locations of manga series to synchronize.
 	5. Run MangaRack and wait for the synchronization to be completed.
 	6. (Optionally) Import the directory in ComicRack and synchronize to a reading device.
 	7. Have fun reading!
@@ -35,14 +35,14 @@ MangaRack is a console application. A number of options and filters are availabl
 	1. Ensure Mono 2.10.8+ is installed. Debian/Ubuntu requires `sudo apt-get install mono-runtime mono-gmcs libgdiplus libmono-system-data2.0-cil`
 	2. Download the 'MangaRack for Mono' archive from the Build directory.
 	3. Extract the contents of the archive to a directory in which to synchronize.
-	4. Open the text file and add unique identifiers of manga series to synchronize.
+	4. Open the text file and add locations of manga series to synchronize.
 	5. Run MangaRack and wait for the synchronization to be completed.
 	6. (Optionally) Import the directory in ComicRack and synchronize to a reading device.
 	7. Have fun reading!
 	
 ### Advanced Usage
 
-	Usage: mangarack [options] [uniqueIdentifier, ...]
+	Usage: mangarack [options] [location, ...]
 	
 	-a, --animation      Disable animation framing.
 	-d, --duplication    Disable duplication prevention.
@@ -53,7 +53,7 @@ MangaRack is a console application. A number of options and filters are availabl
 	-m, --meta           Disable embedded meta information.
 	-r, --repair         Disable repair and error tracking.
 	-t, --total          Disable total elapsed time notification.
-	-p, --persistent     Enable persistent synchronization tracking.
+	-p, --persistent     Enable persistent synchronization.
 	-e, --extension      The file extension for each output file. (Default: cbz)
 	-c, --chapter        The chapter filter.
 	-v, --volume         The volume filter.
@@ -103,7 +103,7 @@ The toggle to enable embedded meta information overwriting. This is the process 
 
 #### --persistent (-p)
 
-The toggle to enable persistent synchronization tracking. This is the process of generating an additional file for each series containing the names of the previously synchronized chapters. The feature was added to allow for chapters to be archived or deleted without causing re-synchronization.
+The toggle to enable persistent synchronization. This is the process of generating an additional file for each series containing the names of the previously synchronized chapters. The feature was added to allow for chapters to be archived or deleted without causing re-synchronization.
 
 #### --extension (-e)
 
