@@ -4,11 +4,11 @@ MangaRack is a console application capable of synchronizing manga series from po
 
 ## Motivation
 
-It is relatively easy to find quality sources for anime, but this is not the case for manga. It is often difficult to find the series/chapter you are looking for, and the series that can be found often come in unfamiliar archives and without embedded information. Reading on an online reading site is often possible, but is also uncomfortable, especially when you are used to using a reading device. This issue has been  addressed through the creation of comic book archives from these familiar online resources.
+It is relatively easy to find quality sources for anime, but this is not the case for manga. It is often difficult to find the series and/or chapter(s) you are looking for, and the series that can be found often come in unfamiliar archives and without embedded information. Reading on an online reading site is often possible, but is also uncomfortable, especially when you are used to using a reading device. This issue has been solved through the creation of comic book archives from these familiar online resources.
 
 ## Questions/Issues
 
-If you have a question or issue, go to the issues (https://github.com/Deathspike/mangarack/issues) and check if another item is available describing the same situation. If there is no such available item, please open one to have the question answered or issue resolved. Alternatively, you can e-mail the lead developer at roel.van.uden@hotmail.com.
+If you have a question or issue, go to the issue tracker (https://github.com/Deathspike/mangarack/issues) and check if another item is available describing the same situation. If there is no such available item, please open one to have the question answered or issue resolved. Alternatively, you can e-mail me, the lead developer, at roel.van.uden@hotmail.com.
 
 ## Instructions
 
