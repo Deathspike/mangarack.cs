@@ -123,7 +123,7 @@ The batch-mode source file. This specifies the input file which is used when run
 
 ### FAQ
 
-> What do the Fetching/Modified/Shredded/Squashed/Switched
+> What do the Fetching/Modified/Shredded/Squashed/Switched messages mean?
 
 * Checking: Started repairing broken pages for an existing chapter.
 * Modified: Updated an existing chapter with meta-information.
