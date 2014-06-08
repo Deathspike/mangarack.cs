@@ -120,3 +120,15 @@ The maximum parallel worker threads. This specified amount is used when worker t
 #### --source (-s)
 
 The batch-mode source file. This specifies the input file which is used when running in batch-mode. By default, this value equals the main assembly name with a `.txt` suffix. This is, without modifications, the  value `MangaRack.txt`. This feature was added to provide control over the batch-mode source file.
+
+### FAQ
+
+> What do the Fetching/Modified/Shredded/Squashed/Switched
+
+* Checking: Started repairing broken pages for an existing chapter.
+* Modified: Updated an existing chapter with meta-information.
+* Fetching: Started synchronization for the chapter.
+* Finished: Finished synchronization for the chapter.
+* Shredded: Deleted a broken page and marked it as broken.
+* Squashed: Failed broken page recovery, deleted existing chapter.
+* Switched: Detected change on provider and renamed local file to match.
