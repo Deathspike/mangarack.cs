@@ -16,25 +16,8 @@ namespace MangaRack.Provider {
 		/// <summary>
 		/// Initialize a new instance of the Provider class.
 		/// </summary>
-		public static IProvider Create<T>() where T : IProvider {
-			// Initialize a new instance of the Provider class.
-			return Create(typeof(T));
-		}
-
-		/// <summary>
-		/// Initialize a new instance of the Provider class.
-		/// </summary>
-		/// <param name="type">The type.</param>
-		public static IProvider Create(Type type) {
-			// Check if the interface is implemented.
-			if (type.GetInterfaces().FirstOrDefault(x => x.FullName.Equals(typeof(IProvider).FullName)) != null) {
-				// Initialize the constructor information.
-				var constructorInfo = type.GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic).FirstOrDefault(x => x.GetParameters().Length == 0);
-				// Initialize a new instance of the Provider class.
-				return constructorInfo == null ? null : new Provider(constructorInfo.Invoke(null) as IProvider);
-			}
-			// Return null.
-			return null;
+		public static IProvider Create<T>() where T : IProvider, new() {
+            return new Provider(new T());
 		}
 		#endregion
 	}

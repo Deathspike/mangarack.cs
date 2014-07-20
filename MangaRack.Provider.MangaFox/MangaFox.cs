@@ -18,7 +18,7 @@ namespace MangaRack.Provider.MangaFox {
 		/// <summary>
 		/// Initialize a new instance of the MangaFox class.
 		/// </summary>
-		private MangaFox() {
+		public MangaFox() {
 			// Set the provider.
 			_provider = new Provider();
 		}

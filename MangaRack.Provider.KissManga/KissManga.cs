@@ -18,7 +18,7 @@ namespace MangaRack.Provider.KissManga {
 		/// <summary>
 		/// Initialize a new instance of the KissManga class.
 		/// </summary>
-		private KissManga() {
+		public KissManga() {
 			// Set the provider.
 			_provider = new Provider();
 		}

@@ -18,7 +18,7 @@ namespace MangaRack.Provider.Batoto {
 		/// <summary>
 		/// Initialize a new instance of the Batoto class.
 		/// </summary>
-		private Batoto() {
+		public Batoto() {
 			// Set the provider.
 			_provider = new Provider();
 		}

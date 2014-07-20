@@ -143,7 +143,7 @@ namespace MangaRack.Provider.KissManga {
 				// Load the document.
 				htmlDocument.LoadHtml(response.AsString());
 				// Iterate through each property to populate the series without retaining the document.
-				foreach (var propertyInfo in GetType().GetProperties(BindingFlags.Instance | BindingFlags.NonPublic).Where(x => x.CanWrite).Reverse()) {
+				foreach (var propertyInfo in GetType().GetTypeInfo().DeclaredProperties.Where(x => x.PropertyType == typeof(HtmlDocument) && x.CanWrite)) {
 					// Set the value, causing it to populate this property.
 					propertyInfo.SetValue(this, htmlDocument, null);
 				}
