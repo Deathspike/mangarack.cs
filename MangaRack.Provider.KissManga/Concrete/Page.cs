@@ -4,13 +4,14 @@
 // this file, you can obtain one at http://mozilla.org/MPL/2.0/.
 // ======================================================================
 using System;
+using MangaRack.Provider.Interfaces;
 using TinyHttp;
 
 namespace MangaRack.Provider.KissManga {
 	/// <summary>
 	/// Represents a KissManga page.
 	/// </summary>
-	sealed class Page : IPage {
+	class Page : IPage {
 		#region Constructor
 		/// <summary>
 		/// Initialize a new instance of the Page class.

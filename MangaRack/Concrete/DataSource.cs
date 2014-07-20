@@ -10,7 +10,7 @@ namespace MangaRack {
 	/// <summary>
 	/// Represents a stream data source.
 	/// </summary>
-	sealed class DataSource : IStaticDataSource {
+	class DataSource : IStaticDataSource {
 		/// <summary>
 		/// Contains the stream.
 		/// </summary>

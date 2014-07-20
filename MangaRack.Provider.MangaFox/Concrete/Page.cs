@@ -7,13 +7,14 @@ using HtmlAgilityPack;
 using System;
 using System.Linq;
 using System.Net;
+using MangaRack.Provider.Interfaces;
 using TinyHttp;
 
 namespace MangaRack.Provider.MangaFox {
 	/// <summary>
 	/// Represents a MangaFox page.
 	/// </summary>
-	sealed class Page : IPage {
+	class Page : IPage {
 		#region Constructor
 		/// <summary>
 		/// Initialize a new instance of the Page class.

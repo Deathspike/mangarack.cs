@@ -8,13 +8,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using MangaRack.Provider.Interfaces;
 using TinyHttp;
 
 namespace MangaRack.Provider.KissManga {
 	/// <summary>
 	/// Represents a KissManga chapter.
 	/// </summary>
-	sealed class Chapter : IChapter {
+	class Chapter : IChapter {
 		#region Constructor
 		/// <summary>
 		/// Initialize a new instance of the Chapter class.

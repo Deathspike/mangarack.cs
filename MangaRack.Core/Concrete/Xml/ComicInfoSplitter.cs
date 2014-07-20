@@ -14,7 +14,7 @@ namespace MangaRack.Core {
 	/// <summary>
 	/// Represents a collection of comma separated comic information.
 	/// </summary>
-	public sealed class ComicInfoSplitter : List<string>, IXmlSerializable {
+	public class ComicInfoSplitter : List<string>, IXmlSerializable {
 		#region Constructor
 		/// <summary>
 		/// Initialize a new instance of the ComicInfoSplitter class.
@@ -43,7 +43,7 @@ namespace MangaRack.Core {
 		/// </summary>
 		public XmlSchema GetSchema() {
 			// Throw an exception.
-			throw new NotImplementedException();
+			throw new NotSupportedException();
 		}
 
 		/// <summary>

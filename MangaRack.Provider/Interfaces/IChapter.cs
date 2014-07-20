@@ -5,21 +5,19 @@
 // ======================================================================
 using System.Collections.Generic;
 
-namespace MangaRack.Provider {
-	/// <summary>
-	/// Represents a search.
-	/// </summary>
-	public interface ISearch : IAsync<ISearch> {
-		#region Properties
-		/// <summary>
-		/// Contains each child.
-		/// </summary>
-		IEnumerable<ISeries> Children { get; }
+namespace MangaRack.Provider.Interfaces
+{
+    public interface IChapter : IAsync<IChapter>
+    {
+        #region Properties
 
-		/// <summary>
-		/// Contains the input.
-		/// </summary>
-		string Input { get; }
-		#endregion
-	}
+        IEnumerable<IPage> Children { get; }
+        string Location { get; }
+        double Number { get; }
+        string Title { get; }
+        string UniqueIdentifier { get; }
+        double Volume { get; }
+
+        #endregion
+    }
 }

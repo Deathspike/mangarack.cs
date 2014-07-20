@@ -10,7 +10,7 @@ namespace MangaRack.Core {
 	/// Represents comic page information.
 	/// </summary>
 	[XmlRoot("Page")]
-	public sealed class ComicInfoPage {
+	public class ComicInfoPage {
 		#region Properties
 		/// <summary>
 		/// Contains the key.

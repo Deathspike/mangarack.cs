@@ -7,12 +7,13 @@ using MangaRack.Provider;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MangaRack.Provider.Interfaces;
 
 namespace MangaRack.Core {
 	/// <summary>
 	/// Represents a repair publisher.
 	/// </summary>
-	public sealed class Repair : IAsync<Repair> {
+	public class Repair : IAsync<Repair> {
 		/// <summary>
 		/// Contains each broken page.
 		/// </summary>

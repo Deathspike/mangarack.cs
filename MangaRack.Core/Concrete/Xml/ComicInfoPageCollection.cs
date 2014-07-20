@@ -14,7 +14,7 @@ namespace MangaRack.Core {
 	/// <summary>
 	/// Represents a collection of comic page information.
 	/// </summary>
-	public sealed class ComicInfoPageCollection : List<ComicInfoPage>, IXmlSerializable {
+	public class ComicInfoPageCollection : List<ComicInfoPage>, IXmlSerializable {
 		#region Constructor
 		/// <summary>
 		/// Initialize a new instance of the ComicInfoPageCollection class.
@@ -43,7 +43,7 @@ namespace MangaRack.Core {
 		/// </summary>
 		public XmlSchema GetSchema() {
 			// Throw an exception.
-			throw new NotImplementedException();
+            throw new NotSupportedException();
 		}
 
 		/// <summary>

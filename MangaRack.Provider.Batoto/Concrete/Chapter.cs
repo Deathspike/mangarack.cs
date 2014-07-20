@@ -7,13 +7,14 @@ using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MangaRack.Provider.Interfaces;
 using TinyHttp;
 
 namespace MangaRack.Provider.Batoto {
 	/// <summary>
 	/// Represents a Batoto chapter.
 	/// </summary>
-	sealed class Chapter : IChapter {
+	class Chapter : IChapter {
 		#region Constructor
 		/// <summary>
 		/// Initialize a new instance of the Chapter class.

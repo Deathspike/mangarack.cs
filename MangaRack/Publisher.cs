@@ -11,12 +11,13 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using MangaRack.Provider.Interfaces;
 
 namespace MangaRack {
 	/// <summary>
 	/// Represents a publisher.
 	/// </summary>
-	sealed class Publisher : IDisposable, IPublisher {
+	class Publisher : IDisposable, IPublisher {
 		/// <summary>
 		/// Contains the begin time.
 		/// </summary>

@@ -6,12 +6,13 @@
 using MangaRack.Provider;
 using System;
 using System.Collections.Generic;
+using MangaRack.Provider.Interfaces;
 
 namespace MangaRack.Core {
 	/// <summary>
 	/// Represents a synchronize publisher.
 	/// </summary>
-	public sealed class Synchronize : IAsync<Synchronize> {
+	public class Synchronize : IAsync<Synchronize> {
 		/// <summary>
 		/// Contains the chapter.
 		/// </summary>

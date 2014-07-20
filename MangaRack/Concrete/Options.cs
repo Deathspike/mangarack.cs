@@ -13,7 +13,7 @@ namespace MangaRack {
 	/// <summary>
 	/// Represents a collection of options.
 	/// </summary>
-	public sealed class Options {
+	public class Options {
 		#region Constructor
 		/// <summary>
 		/// Initialize a new instance of the Options class.

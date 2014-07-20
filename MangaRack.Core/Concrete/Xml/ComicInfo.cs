@@ -8,13 +8,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml.Serialization;
+using MangaRack.Provider.Interfaces;
 
 namespace MangaRack.Core {
 	/// <summary>
 	/// Represents comic information.
 	/// </summary>
 	[XmlRoot("ComicInfo")]
-	public sealed class ComicInfo {
+	public class ComicInfo {
 		#region Constructor
 		/// <summary>
 		/// Initialize a new instance of the ComicInfo class.

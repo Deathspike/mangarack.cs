@@ -8,27 +8,16 @@ using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using MangaRack.Provider.Interfaces;
 
-namespace MangaRack.Provider.KissManga
+namespace MangaRack.Provider.Contracts
 {
-    public class KissManga : IProvider
+    // ReSharper disable once InconsistentNaming
+    [ContractClassFor(typeof (IProvider))]
+    internal abstract class IProviderContract : IProvider
     {
-        private readonly IProvider _provider;
+        #region Implementation of IDisposable
 
-        #region Constructor
-
-        public KissManga()
+        public void Dispose()
         {
-            _provider = new Provider();
-        }
-
-        #endregion
-
-        #region Contract
-
-        [ContractInvariantMethod]
-        private void ObjectInvariant()
-        {
-            Contract.Invariant(_provider != null);
         }
 
         #endregion
@@ -37,12 +26,14 @@ namespace MangaRack.Provider.KissManga
 
         public ISeries Open(string location)
         {
-            return _provider.Open(location);
+            Contract.Requires<ArgumentNullException>(location != null);
+            return null;
         }
 
         public void Search(string input, Action<IEnumerable<ISeries>> done)
         {
-            _provider.Search(input, done);
+            Contract.Requires<ArgumentNullException>(input != null);
+            Contract.Requires<ArgumentNullException>(done != null);
         }
 
         #endregion
@@ -51,7 +42,11 @@ namespace MangaRack.Provider.KissManga
 
         public string Location
         {
-            get { return _provider.Location; }
+            get
+            {
+                Contract.Ensures(Contract.Result<string>() != null);
+                return null;
+            }
         }
 
         #endregion

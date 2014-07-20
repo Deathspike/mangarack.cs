@@ -6,13 +6,14 @@
 using HtmlAgilityPack;
 using System;
 using System.Linq;
+using MangaRack.Provider.Interfaces;
 using TinyHttp;
 
 namespace MangaRack.Provider.Batoto {
 	/// <summary>
 	/// Represents a Batoto page.
 	/// </summary>
-	sealed class Page : IPage {
+	class Page : IPage {
 		#region Constructor
 		/// <summary>
 		/// Initialize a new instance of the Page class.

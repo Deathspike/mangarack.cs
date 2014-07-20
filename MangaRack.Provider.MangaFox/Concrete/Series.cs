@@ -9,13 +9,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using MangaRack.Provider.Interfaces;
 using TinyHttp;
 
 namespace MangaRack.Provider.MangaFox {
 	/// <summary>
 	/// Represents a MangaFox series.
 	/// </summary>
-	sealed class Series : ISeries {
+	class Series : ISeries {
 		#region Abstract
 		/// <summary>
 		/// Populate each artist.

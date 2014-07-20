@@ -8,6 +8,8 @@ using ICSharpCode.SharpZipLib.Zip;
 using MangaRack.Core;
 using MangaRack.Provider;
 using MangaRack.Provider.Batoto;
+using MangaRack.Provider.Extensions;
+using MangaRack.Provider.Interfaces;
 using MangaRack.Provider.KissManga;
 using MangaRack.Provider.MangaFox;
 using System;

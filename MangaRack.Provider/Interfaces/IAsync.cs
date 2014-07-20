@@ -4,18 +4,19 @@
 // this file, you can obtain one at http://mozilla.org/MPL/2.0/.
 // ======================================================================
 using System;
+using System.Diagnostics.Contracts;
+using MangaRack.Provider.Contracts;
 
-namespace MangaRack.Provider {
-	/// <summary>
-	/// Represents an asynchronous population.
-	/// </summary>
-	public interface IAsync<T> : IDisposable {
-		#region Methods
-		/// <summary>
-		/// Populate asynchronously.
-		/// </summary>
-		/// <param name="done">The callback.</param>
-		void Populate(Action<T> done);
-		#endregion
-	}
+namespace MangaRack.Provider.Interfaces
+{
+    // TODO: Switch to async/await for population.
+    [ContractClass(typeof (IAsyncContract<>))]
+    public interface IAsync<out T> : IDisposable
+    {
+        #region Methods
+
+        void Populate(Action<T> done);
+
+        #endregion
+    }
 }

@@ -3,13 +3,16 @@
 // License, version 2.0. If a copy of the MPL was not distributed with 
 // this file, you can obtain one at http://mozilla.org/MPL/2.0/.
 // ======================================================================
+using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using MangaRack.Provider.Interfaces;
 
 namespace MangaRack.Provider.MangaFox {
 	/// <summary>
 	/// Represents a MangaFox provider.
 	/// </summary>
-	sealed class Provider : IProvider {
+	class Provider : IProvider {
 		#region Properties
 		/// <summary>
 		/// Contains the domain.
@@ -26,12 +29,12 @@ namespace MangaRack.Provider.MangaFox {
 		/// <summary>
 		/// Open a series.
 		/// </summary>
-		/// <param name="uniqueIdentifier">The unique identifier.</param>
-		public ISeries Open(string uniqueIdentifier) {
+		/// <param name="location">The unique identifier.</param>
+		public ISeries Open(string location) {
 			// Check if the unique identifier can be handled.
-			if (Regex.Match(uniqueIdentifier, @"^http://mangafox\.(com|me)/manga/(.*)/$", RegexOptions.IgnoreCase).Success) {
+			if (Regex.Match(location, @"^http://mangafox\.(com|me)/manga/(.*)/$", RegexOptions.IgnoreCase).Success) {
 				// Initialize a new instance of the Series class.
-				return new Series(uniqueIdentifier);
+				return new Series(location);
 			}
 			// Return null.
 			return null;
@@ -41,22 +44,26 @@ namespace MangaRack.Provider.MangaFox {
 		/// Search series.
 		/// </summary>
 		/// <param name="input">The input.</param>
-		public ISearch Search(string input) {
+        public void Search(string input, Action<IEnumerable<ISeries>> done)
+        {
 			// Initialize a new instance of the Search class.
-			return new Search(input);
-		}
+			var search = new Search(input);
+		    search.Populate(() => done(search));
+        }
 		#endregion
 
-		#region IProvider:Properties
-		/// <summary>
-		/// Contains the location.
-		/// </summary>
-		public string Location {
-			get {
-				// Return the domain.
-				return Domain;
-			}
-		}
-		#endregion
+        #region IProvider:Properties
+        /// <summary>
+        /// Contains the location.
+        /// </summary>
+        public string Location
+        {
+            get
+            {
+                // Return the domain as the unique identifier.
+                return Domain;
+            }
+        }
+        #endregion
 	}
 }
