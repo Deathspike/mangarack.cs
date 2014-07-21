@@ -3,6 +3,7 @@
 // License, version 2.0. If a copy of the MPL was not distributed with 
 // this file, you can obtain one at http://mozilla.org/MPL/2.0/.
 // ======================================================================
+using System.Threading.Tasks;
 using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
@@ -43,19 +44,15 @@ namespace MangaRack.Provider.KissManga {
 		/// <summary>
 		/// Populate asynchronously.
 		/// </summary>
-		/// <param name="done">The callback.</param>
-		public void Populate(Action<IChapter> done) {
+		public async Task PopulateAsync() {
 			// Get the document.
-			Http.Get(Location, response => {
-				// Find the images ...
-				Children = Regex.Matches(response.AsString(), @"lstImages\.push\((.*)\)").Cast<Match>()
-					// ... select each page.
-					.Select(x => new Page(HtmlEntity.DeEntitize(x.Groups[1].Value).Trim('"')) as IPage)
-					// ... and create an array.
-					.ToArray();
-				// Invoke the callback.
-				done(this);
-			});
+		    var response = await Http.GetAsync(Location);
+			// Find the images ...
+			Children = Regex.Matches(response.AsString(), @"lstImages\.push\((.*)\)").Cast<Match>()
+				// ... select each page.
+				.Select(x => new Page(HtmlEntity.DeEntitize(x.Groups[1].Value).Trim('"')) as IPage)
+				// ... and create an array.
+				.ToArray();
 		}
 		#endregion
 

@@ -42,6 +42,9 @@
     </DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\MangaRack.Provider.MangaFox\Http.cs">
+      <Link>Http.cs</Link>
+    </Compile>
     <Compile Include="..\MangaRack\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>

@@ -4,6 +4,7 @@
 // this file, you can obtain one at http://mozilla.org/MPL/2.0/.
 // ======================================================================
 using System;
+using System.Threading.Tasks;
 using MangaRack.Provider.Interfaces;
 using TinyHttp;
 
@@ -27,15 +28,11 @@ namespace MangaRack.Provider.KissManga {
 		/// <summary>
 		/// Populate asynchronously.
 		/// </summary>
-		/// <param name="done">The callback.</param>
-		public void Populate(Action<IPage> done) {
+		public async Task PopulateAsync() {
 			// Download the source image.
-			Http.Get(Location, imageResponse => {
-				// Set the image.
-				Image = imageResponse.AsBinary();
-				// Invoke the callback.
-				done(this);
-			});
+		    var imageResponse = await Http.GetAsync(Location);
+			// Set the image.
+			Image = imageResponse.AsBinary();
 		}
 		#endregion
 

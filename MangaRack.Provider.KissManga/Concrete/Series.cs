@@ -3,6 +3,7 @@
 // License, version 2.0. If a copy of the MPL was not distributed with 
 // this file, you can obtain one at http://mozilla.org/MPL/2.0/.
 // ======================================================================
+using System.Threading.Tasks;
 using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
@@ -135,33 +136,28 @@ namespace MangaRack.Provider.KissManga {
 		/// <summary>
 		/// Populate asynchronously.
 		/// </summary>
-		/// <param name="done">The callback.</param>
-		public void Populate(Action<ISeries> done) {
+		public async Task PopulateAsync() {
 			// Get the document.
-			Http.Get(Location + "?confirm=yes", response => {
-				// Initialize a new instance of the HtmlDocument class.
-				var htmlDocument = new HtmlDocument();
-				// Load the document.
-				htmlDocument.LoadHtml(response.AsString());
-				// Iterate through each property to populate the series without retaining the document.
-				foreach (var propertyInfo in GetType().GetTypeInfo().DeclaredProperties.Where(x => x.PropertyType == typeof(HtmlDocument) && x.CanWrite)) {
-					// Set the value, causing it to populate this property.
-					propertyInfo.SetValue(this, htmlDocument, null);
-				}
-				// Find each image element ..
-				Http.Get(htmlDocument.DocumentNode.Descendants("img")
-					// ... with a reference containing a preview image ...
-					.Where(x => HtmlEntity.DeEntitize(x.GetAttributeValue("src", string.Empty)).Trim().Contains("/Uploads/"))
-					// ... select the reference attribute ...
-					.Select(x => HtmlEntity.DeEntitize(x.Attributes["src"].Value).Trim())
-					// ... download the first preview image ...
-					.First(), ImageResponse => {
-						// ... and set the image for the bytes.
-						PreviewImage = ImageResponse.AsBinary();
-						// Invoke the handler indicating the initialization is completed.
-						done(this);
-					});
-			});
+		    var response = await Http.GetAsync(Location + "?confirm=yes");
+			// Initialize a new instance of the HtmlDocument class.
+			var htmlDocument = new HtmlDocument();
+			// Load the document.
+			htmlDocument.LoadHtml(response.AsString());
+			// Iterate through each property to populate the series without retaining the document.
+			foreach (var propertyInfo in GetType().GetTypeInfo().DeclaredProperties.Where(x => x.PropertyType == typeof(HtmlDocument) && x.CanWrite)) {
+				// Set the value, causing it to populate this property.
+				propertyInfo.SetValue(this, htmlDocument, null);
+			}
+			// Find each image element ..
+		    var ImageResponse = await Http.GetAsync(htmlDocument.DocumentNode.Descendants("img")
+		        // ... with a reference containing a preview image ...
+		        .Where(x => HtmlEntity.DeEntitize(x.GetAttributeValue("src", string.Empty)).Trim().Contains("/Uploads/"))
+		        // ... select the reference attribute ...
+		        .Select(x => HtmlEntity.DeEntitize(x.Attributes["src"].Value).Trim())
+		        // ... download the first preview image ...
+		        .First());
+			// ... and set the image for the bytes.
+			PreviewImage = ImageResponse.AsBinary();
 		}
 		#endregion
 

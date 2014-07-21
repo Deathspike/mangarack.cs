@@ -4,6 +4,7 @@
 // this file, you can obtain one at http://mozilla.org/MPL/2.0/.
 // ======================================================================
 using System.Collections;
+using System.Threading.Tasks;
 using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
@@ -32,25 +33,21 @@ namespace MangaRack.Provider.MangaFox {
 		/// <summary>
 		/// Populate asynchronously.
 		/// </summary>
-		/// <param name="done">The callback.</param>
-		public void Populate(Action done) {
+		public async Task PopulateAsync() {
 			// Get the document.
-			Http.Get(Provider.Domain + "search.php?advopts=1&name=" + Uri.EscapeDataString(Input), response => {
-				// Initialize a new instance of the HtmlDocument class.
-				var htmlDocument = new HtmlDocument();
-				// Load the document.
-				htmlDocument.LoadHtml(response.AsString());
-				// Find each anchor element ...
-				Children = htmlDocument.DocumentNode.Descendants("a")
-					// ... with a references indicating a series ...
-					.Where(x => Regex.Match(HtmlEntity.DeEntitize(x.GetAttributeValue("href", string.Empty)).Trim(), "/manga/([^/]+?)/?$", RegexOptions.IgnoreCase).Success)
-					// ... select the results ...
-					.Select(x => new Series(HtmlEntity.DeEntitize(x.Attributes["href"].Value).Trim(), HtmlEntity.DeEntitize(x.InnerText).Trim()) as ISeries)
-					// ... and create an array.
-					.ToArray();
-				// Invoke the callback.
-				done();
-			});
+		    var response = await Http.GetAsync(Provider.Domain + "search.php?advopts=1&name=" + Uri.EscapeDataString(Input));
+			// Initialize a new instance of the HtmlDocument class.
+			var htmlDocument = new HtmlDocument();
+			// Load the document.
+			htmlDocument.LoadHtml(response.AsString());
+			// Find each anchor element ...
+			Children = htmlDocument.DocumentNode.Descendants("a")
+				// ... with a references indicating a series ...
+				.Where(x => Regex.Match(HtmlEntity.DeEntitize(x.GetAttributeValue("href", string.Empty)).Trim(), "/manga/([^/]+?)/?$", RegexOptions.IgnoreCase).Success)
+				// ... select the results ...
+				.Select(x => new Series(HtmlEntity.DeEntitize(x.Attributes["href"].Value).Trim(), HtmlEntity.DeEntitize(x.InnerText).Trim()) as ISeries)
+				// ... and create an array.
+				.ToArray();
 		}
 		#endregion
 

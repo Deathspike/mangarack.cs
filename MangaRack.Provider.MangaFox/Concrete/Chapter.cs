@@ -3,6 +3,7 @@
 // License, version 2.0. If a copy of the MPL was not distributed with 
 // this file, you can obtain one at http://mozilla.org/MPL/2.0/.
 // ======================================================================
+using System.Threading.Tasks;
 using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
@@ -42,31 +43,27 @@ namespace MangaRack.Provider.MangaFox {
 		/// <summary>
 		/// Populate asynchronously.
 		/// </summary>
-		/// <param name="done">The callback.</param>
-		public void Populate(Action<IChapter> done) {
+		public async Task PopulateAsync() {
 			// Get the document.
-			Http.Get(Location.EndsWith("1.html") ? Location : Location + "1.html", response => {
-				// Initialize a new instance of the HtmlDocument class.
-				var htmlDocument = new HtmlDocument();
-				// Load the document.
-				htmlDocument.LoadHtml(response.AsString());
-				// Find each select element ...
-				Children = htmlDocument.DocumentNode.Descendants("select")
-					// ... with the page selection change handler ...
-					.Where(x => HtmlEntity.DeEntitize(x.GetAttributeValue("onchange", string.Empty)).Trim().StartsWith("change_page"))
-					// ... select each option element ...
-					.Select(x => x.Descendants("option"))
-					// ... select the first set of elements ...
-					.First()
-					// ... with a possible value ...
-					.Where(x => !HtmlEntity.DeEntitize(x.GetAttributeValue("value", string.Empty)).Trim().Equals("0"))
-					// ... select each page ...
-					.Select(x => new Page(string.Join("/", Location.Split('/').TakeWhile(y => !y.EndsWith(".html")).ToArray()).TrimEnd('/') + "/" + HtmlEntity.DeEntitize(x.GetAttributeValue("value", string.Empty)).Trim() + ".html") as IPage)
-					// ... and create an array.
-					.ToArray();
-				// Invoke the callback.
-				done(this);
-			});
+		    var response = await Http.GetAsync(Location.EndsWith("1.html") ? Location : Location + "1.html");
+			// Initialize a new instance of the HtmlDocument class.
+			var htmlDocument = new HtmlDocument();
+			// Load the document.
+			htmlDocument.LoadHtml(response.AsString());
+			// Find each select element ...
+			Children = htmlDocument.DocumentNode.Descendants("select")
+				// ... with the page selection change handler ...
+				.Where(x => HtmlEntity.DeEntitize(x.GetAttributeValue("onchange", string.Empty)).Trim().StartsWith("change_page"))
+				// ... select each option element ...
+				.Select(x => x.Descendants("option"))
+				// ... select the first set of elements ...
+				.First()
+				// ... with a possible value ...
+				.Where(x => !HtmlEntity.DeEntitize(x.GetAttributeValue("value", string.Empty)).Trim().Equals("0"))
+				// ... select each page ...
+				.Select(x => new Page(string.Join("/", Location.Split('/').TakeWhile(y => !y.EndsWith(".html")).ToArray()).TrimEnd('/') + "/" + HtmlEntity.DeEntitize(x.GetAttributeValue("value", string.Empty)).Trim() + ".html") as IPage)
+				// ... and create an array.
+				.ToArray();
 		}
 		#endregion
 

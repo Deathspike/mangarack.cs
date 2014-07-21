@@ -3,6 +3,7 @@
 // License, version 2.0. If a copy of the MPL was not distributed with 
 // this file, you can obtain one at http://mozilla.org/MPL/2.0/.
 // ======================================================================
+using System.Threading.Tasks;
 using HtmlAgilityPack;
 using System;
 using System.Linq;
@@ -29,34 +30,26 @@ namespace MangaRack.Provider.Batoto {
 		/// <summary>
 		/// Populate asynchronously.
 		/// </summary>
-		/// <param name="done">The callback.</param>
-		public void Populate(Action<IPage> done) {
+		public async Task PopulateAsync() {
 			// Get the document.
-			Http.Get(Location + "?supress_webtoon=t", HtmlResponse => {
-				// Initialize a new instance of the HtmlDocument class.
-				var htmlDocument = new HtmlDocument();
-				// Initialize a new instance of the HtmlNode class.
-				var htmlNode = null as HtmlNode;
-				// Load the document.
-				htmlDocument.LoadHtml(HtmlResponse.AsString());
-				// Find each image ...
-				if ((htmlNode = htmlDocument.DocumentNode.Descendants("img")
-					// ... whith an attribute indicating the main image ...
-					.Where(x => HtmlEntity.DeEntitize(x.GetAttributeValue("alt", string.Empty)).Trim().EndsWith("Batoto!"))
-					// ... use the first or default.
-					.FirstOrDefault()) != null) {
-					// Request the image.
-					Http.Get(HtmlEntity.DeEntitize(htmlNode.GetAttributeValue("src", string.Empty)).Trim(), imageResponse => {
-						// Set the image.
-						Image = imageResponse.AsBinary();
-						// Invoke the callback.
-						done(this);
-					});
-				} else {
-					// Invoke the callback.
-					done(this);
-				}
-			});
+		    var HtmlResponse = await Http.GetAsync(Location + "?supress_webtoon=t");
+			// Initialize a new instance of the HtmlDocument class.
+			var htmlDocument = new HtmlDocument();
+			// Initialize a new instance of the HtmlNode class.
+			var htmlNode = null as HtmlNode;
+			// Load the document.
+			htmlDocument.LoadHtml(HtmlResponse.AsString());
+			// Find each image ...
+			if ((htmlNode = htmlDocument.DocumentNode.Descendants("img")
+				// ... whith an attribute indicating the main image ...
+				.Where(x => HtmlEntity.DeEntitize(x.GetAttributeValue("alt", string.Empty)).Trim().EndsWith("Batoto!"))
+				// ... use the first or default.
+				.FirstOrDefault()) != null) {
+				// Request the image.
+				var imageResponse = await Http.GetAsync(HtmlEntity.DeEntitize(htmlNode.GetAttributeValue("src", string.Empty)).Trim());
+				// Set the image.
+				Image = imageResponse.AsBinary();
+			}
 		}
 		#endregion
 

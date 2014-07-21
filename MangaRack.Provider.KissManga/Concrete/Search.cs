@@ -4,6 +4,7 @@
 // this file, you can obtain one at http://mozilla.org/MPL/2.0/.
 // ======================================================================
 using System.Collections;
+using System.Threading.Tasks;
 using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
@@ -32,29 +33,25 @@ namespace MangaRack.Provider.KissManga {
 		/// <summary>
 		/// Populate asynchronously.
 		/// </summary>
-		/// <param name="done">The callback.</param>
-		public void Populate(Action done) {
+		public async Task PopulateAsync() {
 			// Initialize each value.
 			var values = new Dictionary<string, string>();
 			// Add the keyword.
 			values.Add("keyword", Input);
 			// Get the document.
-			Http.Post(Provider.Domain + "/Search/Manga", values, response => {
-				// Initialize a new instance of the HtmlDocument class.
-				var htmlDocument = new HtmlDocument();
-				// Load the document.
-				htmlDocument.LoadHtml(response.AsString());
-				// Find each anchor element ...
-				Children = htmlDocument.DocumentNode.Descendants("a")
-					// ... with a references indicating a series ...
-					.Where(x => Regex.Match(HtmlEntity.DeEntitize(x.GetAttributeValue("href", string.Empty)).Trim(), "^(?!http).*/manga/([^/]+?)/?$", RegexOptions.IgnoreCase).Success)
-					// ... select the results ...
-					.Select(x => new Series(Provider.Domain + HtmlEntity.DeEntitize(x.Attributes["href"].Value).Trim().TrimStart('/'), HtmlEntity.DeEntitize(x.InnerText).Trim()) as ISeries)
-					// ... and create an array.
-					.ToArray();
-				// Invoke the callback.
-				done();
-			});
+		    var response = await Http.PostAsync(Provider.Domain + "/Search/Manga", values);
+			// Initialize a new instance of the HtmlDocument class.
+			var htmlDocument = new HtmlDocument();
+			// Load the document.
+			htmlDocument.LoadHtml(response.AsString());
+			// Find each anchor element ...
+			Children = htmlDocument.DocumentNode.Descendants("a")
+				// ... with a references indicating a series ...
+				.Where(x => Regex.Match(HtmlEntity.DeEntitize(x.GetAttributeValue("href", string.Empty)).Trim(), "^(?!http).*/manga/([^/]+?)/?$", RegexOptions.IgnoreCase).Success)
+				// ... select the results ...
+				.Select(x => new Series(Provider.Domain + HtmlEntity.DeEntitize(x.Attributes["href"].Value).Trim().TrimStart('/'), HtmlEntity.DeEntitize(x.InnerText).Trim()) as ISeries)
+				// ... and create an array.
+				.ToArray();
 		}
 		#endregion
 

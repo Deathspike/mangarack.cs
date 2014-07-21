@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Threading.Tasks;
 using MangaRack.Provider.Interfaces;
 
 namespace MangaRack.Provider.Internals
@@ -71,30 +72,27 @@ namespace MangaRack.Provider.Internals
 
         #region Implementation of IAsync
 
-        public void Populate(Action<ISeries> done)
+        public async Task PopulateAsync()
         {
-            _series.Populate(ignorableChapter =>
+            await _series.PopulateAsync();
+
+            _children = _series.Children.Select(x => new Chapter(x)).ToList();
+
+            foreach (var chapter in _children.Where(x => x.Number < 0))
             {
-                _children = _series.Children.Select(x => new Chapter(x)).ToList();
+                IChapter previousChapter;
+                var computedDifferences = Compute(_children, chapter, out previousChapter);
 
-                foreach (var chapter in _children.Where(x => x.Number < 0))
+                if (computedDifferences.Count != 0)
                 {
-                    IChapter previousChapter;
-                    var computedDifferences = Compute(_children, chapter, out previousChapter);
-
-                    if (computedDifferences.Count != 0)
-                    {
-                        var bestDifference = computedDifferences.OrderByDescending(x => x.Value).FirstOrDefault().Key;
-                        var clampedDifference = (bestDifference <= 0 || bestDifference >= 1 ? 1 : bestDifference);
-                        chapter.Number = Math.Round(previousChapter.Number + clampedDifference/2, 4);
-                        continue;
-                    }
-
-                    chapter.Number = previousChapter == null ? 0.5 : previousChapter.Number + 0.5;
+                    var bestDifference = computedDifferences.OrderByDescending(x => x.Value).FirstOrDefault().Key;
+                    var clampedDifference = (bestDifference <= 0 || bestDifference >= 1 ? 1 : bestDifference);
+                    chapter.Number = Math.Round(previousChapter.Number + clampedDifference/2, 4);
+                    continue;
                 }
 
-                done(this);
-            });
+                chapter.Number = previousChapter == null ? 0.5 : previousChapter.Number + 0.5;
+            }
         }
 
         #endregion

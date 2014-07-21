@@ -3,6 +3,7 @@
 // License, version 2.0. If a copy of the MPL was not distributed with 
 // this file, you can obtain one at http://mozilla.org/MPL/2.0/.
 // ======================================================================
+using System.Threading.Tasks;
 using HtmlAgilityPack;
 using System;
 using System.Linq;
@@ -30,51 +31,40 @@ namespace MangaRack.Provider.MangaFox {
 		/// <summary>
 		/// Populate asynchronously.
 		/// </summary>
-		/// <param name="done">The callback.</param>
-		public void Populate(Action<IPage> done) {
+		public async Task PopulateAsync() {
 			// Get the document.
-			Http.Get(Location, htmlResponse => {
-				// Initialize a new instance of the HtmlDocument class.
-				var htmlDocument = new HtmlDocument();
-				// Initialize a new instance of the HtmlNode class.
-				var htmlNode = null as HtmlNode;
-				// Load the document.
-				htmlDocument.LoadHtml(htmlResponse.AsString());
-				// Find the each meta ...
-				if ((htmlNode = htmlDocument.DocumentNode.Descendants("meta")
-					// ... with a property indicating the image thumbnail ...
-					.Where(x => HtmlEntity.DeEntitize(x.GetAttributeValue("property", string.Empty)).Equals("og:image"))
-					// ... use the first or default.
-					.FirstOrDefault()) != null) {
-					// Initialize the address ...
-					var address = HtmlEntity.DeEntitize(htmlNode.GetAttributeValue("content", string.Empty)).Trim()
-						// ... replace the thumbnail address for the page address ...
-						.Replace("thumbnails/mini.", "compressed/")
-						// ... replace the back-up server for the main server.
-						.Replace("http://l.", "http://l.");
-					// Request the image.
-					Http.Get(address, imageResponse => {
-						// Check if the image response is invalid.
-						if (imageResponse == null || imageResponse.StatusCode != HttpStatusCode.OK) {
-							// Request an alternative image.
-							Http.Get(address.Replace("http://z.", "http://l."), alternativeImageResponse => {
-								// Set the image.
-								Image = alternativeImageResponse.AsBinary();
-								// Invoke the callback.
-								done(this);
-							});
-						} else {
-							// Set the image.
-							Image = imageResponse.AsBinary();
-							// Invoke the callback.
-							done(this);
-						}
-					});
+		    var htmlResponse = await Http.GetAsync(Location);
+			// Initialize a new instance of the HtmlDocument class.
+			var htmlDocument = new HtmlDocument();
+			// Initialize a new instance of the HtmlNode class.
+			var htmlNode = null as HtmlNode;
+			// Load the document.
+			htmlDocument.LoadHtml(htmlResponse.AsString());
+			// Find the each meta ...
+			if ((htmlNode = htmlDocument.DocumentNode.Descendants("meta")
+				// ... with a property indicating the image thumbnail ...
+				.Where(x => HtmlEntity.DeEntitize(x.GetAttributeValue("property", string.Empty)).Equals("og:image"))
+				// ... use the first or default.
+				.FirstOrDefault()) != null) {
+				// Initialize the address ...
+				var address = HtmlEntity.DeEntitize(htmlNode.GetAttributeValue("content", string.Empty)).Trim()
+					// ... replace the thumbnail address for the page address ...
+					.Replace("thumbnails/mini.", "compressed/")
+					// ... replace the back-up server for the main server.
+					.Replace("http://l.", "http://l.");
+				// Request the image.
+				var imageResponse = await Http.GetAsync(address);
+				// Check if the image response is invalid.
+				if (imageResponse == null || imageResponse.StatusCode != HttpStatusCode.OK) {
+					// Request an alternative image.
+				    var alternativeImageResponse = await Http.GetAsync(address.Replace("http://z.", "http://l."));
+					// Set the image.
+					Image = alternativeImageResponse.AsBinary();
 				} else {
-					// Invoke the callback.
-					done(this);
+					// Set the image.
+					Image = imageResponse.AsBinary();
 				}
-			});
+			}
 		}
 		#endregion
 

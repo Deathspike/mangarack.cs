@@ -3,6 +3,7 @@
 // License, version 2.0. If a copy of the MPL was not distributed with 
 // this file, you can obtain one at http://mozilla.org/MPL/2.0/.
 // ======================================================================
+using System.Threading.Tasks;
 using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
@@ -42,51 +43,40 @@ namespace MangaRack.Provider.Batoto {
 		/// <summary>
 		/// Populate asynchronously.
 		/// </summary>
-		/// <param name="done">The callback.</param>
-		public void Populate(Action<IChapter> done) {
+		public async Task PopulateAsync() {
 			// Initialize the location.
 			var location = Location;
-			// Initialize the next.
-			var next = null as Action;
-			// Initialize the next handler.
-			next = () => {
+			while (true) {
 				// Get the document.
-				Http.Get(location, response => {
-					// Initialize a new instance of the HtmlDocument class.
-					var htmlDocument = new HtmlDocument();
-					// Initialize the node.
-					var htmlNode = null as HtmlNode;
-					// Load the document.
-					htmlDocument.LoadHtml(response.AsString());
-					// Check if a link allowing switching to traditional reading mode is available.
-					if ((htmlNode = htmlDocument.DocumentNode.Descendants("a").FirstOrDefault(x => HtmlEntity.DeEntitize(x.GetAttributeValue("href", string.Empty)).Equals("?supress_webtoon=t"))) != null) {
-						// Set the location.
-						location = location + HtmlEntity.DeEntitize(htmlNode.Attributes["href"].Value).Trim();
-						// Invoke the next handler.
-						next();
-						// Stop the function.
-						return;
-					}
-					// Find each select element ...
-					Children = htmlDocument.DocumentNode.Descendants("select")
-						// ... with the page selection name ...
-						.Where(x => HtmlEntity.DeEntitize(x.GetAttributeValue("name", string.Empty)).Trim().Equals("page_select"))
-						// ... select each option element ...
-						.Select(x => x.Descendants("option"))
-						// ... select the first set of elements ...
-						.First()
-						// ... with a value pointing to a read page ...
-						.Where(x => HtmlEntity.DeEntitize(x.GetAttributeValue("value", string.Empty)).Trim().Contains("/read/"))
-						// ... select each page ...
-						.Select(x => new Page(HtmlEntity.DeEntitize(x.GetAttributeValue("value", string.Empty)).Trim()) as IPage)
-						// ... and create an array.
-						.ToArray();
-					// Invoke the callback.
-					done(this);
-				});
-			};
-			// Start population.
-			next();
+			    var response = await Http.GetAsync(location);
+				// Initialize a new instance of the HtmlDocument class.
+				var htmlDocument = new HtmlDocument();
+				// Initialize the node.
+				var htmlNode = null as HtmlNode;
+				// Load the document.
+				htmlDocument.LoadHtml(response.AsString());
+				// Check if a link allowing switching to traditional reading mode is available.
+				if ((htmlNode = htmlDocument.DocumentNode.Descendants("a").FirstOrDefault(x => HtmlEntity.DeEntitize(x.GetAttributeValue("href", string.Empty)).Equals("?supress_webtoon=t"))) != null) {
+					// Set the location.
+					location = location + HtmlEntity.DeEntitize(htmlNode.Attributes["href"].Value).Trim();
+					continue;
+				}
+				// Find each select element ...
+				Children = htmlDocument.DocumentNode.Descendants("select")
+					// ... with the page selection name ...
+					.Where(x => HtmlEntity.DeEntitize(x.GetAttributeValue("name", string.Empty)).Trim().Equals("page_select"))
+					// ... select each option element ...
+					.Select(x => x.Descendants("option"))
+					// ... select the first set of elements ...
+					.First()
+					// ... with a value pointing to a read page ...
+					.Where(x => HtmlEntity.DeEntitize(x.GetAttributeValue("value", string.Empty)).Trim().Contains("/read/"))
+					// ... select each page ...
+					.Select(x => new Page(HtmlEntity.DeEntitize(x.GetAttributeValue("value", string.Empty)).Trim()) as IPage)
+					// ... and create an array.
+					.ToArray();
+				break;
+			}
 		}
 		#endregion
 

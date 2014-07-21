@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace MangaRack.Provider.Interfaces
 {
-    public interface ISeries : IAsync<ISeries>
+    public interface ISeries : IAsync
     {
         #region Properties
 

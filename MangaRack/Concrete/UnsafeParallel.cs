@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace MangaRack {
 	/// <summary>
@@ -21,7 +22,7 @@ namespace MangaRack {
 		/// <param name="fromInclusive">The start index, inclusive.</param>
 		/// <param name="toExclusive">The end index, exclusive.</param>
 		/// <param name="body">The delegate that is invoked once per iteration.</param>
-		public static void For(int fromInclusive, int toExclusive, Action<int> body) {
+		public static void For(int fromInclusive, int toExclusive, Func<int, Task> body) {
 			// Execute a for loop in which iterations run in parallel.
 			For(fromInclusive, toExclusive, Environment.ProcessorCount, body);
 		}
@@ -33,7 +34,7 @@ namespace MangaRack {
 		/// <param name="toExclusive">The end index, exclusive.</param>
 		/// <param name="threadCount">The thread count.</param>
 		/// <param name="body">The delegate that is invoked once per iteration.</param>
-		public static void For(int fromInclusive, int toExclusive, int threadCount, Action<int> body) {
+		public static void For(int fromInclusive, int toExclusive, int threadCount, Func<int, Task> body) {
 			// Initialize the exception.
 			var exception = (Exception)null;
 			// Initialize the reset event array.
@@ -49,7 +50,7 @@ namespace MangaRack {
 				// Initialize a new instance of the ManualResetEvent class.
 				manualResetEventSlim[offset] = new ManualResetEvent(false);
 				// Initialize a new instance of the Thread class.
-				(thread[offset] = new Thread(() => {
+				(thread[offset] = new Thread(async () => {
 					// Attempt the following code.
 					try {
 						// Initialize the integer.
@@ -69,7 +70,7 @@ namespace MangaRack {
 								i = queue.Dequeue();
 							}
 							// Run the delegate.
-							body(i);
+							await body(i);
 						}
 						// Set the reset event.
 						manualResetEventSlim[offset].Set();

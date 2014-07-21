@@ -47,6 +47,7 @@
     </Compile>
     <Compile Include="Concrete\Chapter.cs" />
     <Compile Include="Concrete\Page.cs" />
+    <Compile Include="Http.cs" />
     <Compile Include="MangaFox.cs" />
     <Compile Include="Concrete\Provider.cs" />
     <Compile Include="Concrete\Search.cs" />

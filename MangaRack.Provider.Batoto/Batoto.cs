@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Threading.Tasks;
 using MangaRack.Provider.Interfaces;
 
 namespace MangaRack.Provider.Batoto
@@ -40,9 +41,9 @@ namespace MangaRack.Provider.Batoto
             return _provider.Open(location);
         }
 
-        public void Search(string input, Action<IEnumerable<ISeries>> done)
+        public Task<IEnumerable<ISeries>> SearchAsync(string input)
         {
-            _provider.Search(input, done);
+            return _provider.SearchAsync(input);
         }
 
         #endregion

@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Threading.Tasks;
 using MangaRack.Provider.Interfaces;
 
 namespace MangaRack.Provider.Internals
@@ -37,9 +38,9 @@ namespace MangaRack.Provider.Internals
 
         #region Implementation of IAsync
 
-        public void Populate(Action<IChapter> done)
+        public Task PopulateAsync()
         {
-            _chapter.Populate(done);
+            return _chapter.PopulateAsync();
         }
 
         #endregion

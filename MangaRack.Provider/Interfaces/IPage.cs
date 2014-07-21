@@ -5,7 +5,7 @@
 // ======================================================================
 namespace MangaRack.Provider.Interfaces
 {
-    public interface IPage : IAsync<IPage>
+    public interface IPage : IAsync
     {
         #region Properties
 

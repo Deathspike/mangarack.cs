@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Threading.Tasks;
 using MangaRack.Provider.Interfaces;
 
 namespace MangaRack.Provider.Internals
@@ -43,9 +44,9 @@ namespace MangaRack.Provider.Internals
             return series == null ? null : new Series(series);
         }
 
-        public void Search(string input, Action<IEnumerable<ISeries>> done)
+        public async Task<IEnumerable<ISeries>> SearchAsync(string input)
         {
-            _provider.Search(input, series => done(series.Select(x => new Series(x))));
+            return (await _provider.SearchAsync(input)).Select(x => new Series(x));
         }
 
         #endregion

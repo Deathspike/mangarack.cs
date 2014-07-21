@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using MangaRack.Provider.Interfaces;
 
 namespace MangaRack.Provider.KissManga {
@@ -40,15 +41,16 @@ namespace MangaRack.Provider.KissManga {
 			return null;
 		}
 
-		/// <summary>
-		/// Search series.
-		/// </summary>
-		/// <param name="input">The input.</param>
-        public void Search(string input, Action<IEnumerable<ISeries>> done)
+        /// <summary>
+        /// Search series.
+        /// </summary>
+        /// <param name="input">The input.</param>
+        public async Task<IEnumerable<ISeries>> SearchAsync(string input)
         {
-			// Initialize a new instance of the Search class.
-			var search = new Search(input);
-		    search.Populate(() => done(search));
+            // Initialize a new instance of the Search class.
+            var search = new Search(input);
+            await search.PopulateAsync();
+            return search;
         }
 		#endregion
 

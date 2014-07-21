@@ -5,17 +5,17 @@
 // ======================================================================
 using System;
 using System.Diagnostics.Contracts;
+using System.Threading.Tasks;
 using MangaRack.Provider.Contracts;
 
 namespace MangaRack.Provider.Interfaces
 {
-    // TODO: Switch to async/await for population.
-    [ContractClass(typeof (IAsyncContract<>))]
-    public interface IAsync<out T> : IDisposable
+    [ContractClass(typeof (IAsyncContract))]
+    public interface IAsync : IDisposable
     {
         #region Methods
 
-        void Populate(Action<T> done);
+        Task PopulateAsync();
 
         #endregion
     }

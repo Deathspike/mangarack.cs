@@ -3,9 +3,9 @@
 // License, version 2.0. If a copy of the MPL was not distributed with 
 // this file, you can obtain one at http://mozilla.org/MPL/2.0/.
 // ======================================================================
-using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Threading.Tasks;
 using MangaRack.Provider.Interfaces;
 
 namespace MangaRack.Provider.MangaFox
@@ -40,9 +40,9 @@ namespace MangaRack.Provider.MangaFox
             return _provider.Open(location);
         }
 
-        public void Search(string input, Action<IEnumerable<ISeries>> done)
+        public Task<IEnumerable<ISeries>> SearchAsync(string input)
         {
-            _provider.Search(input, done);
+            return _provider.SearchAsync(input);
         }
 
         #endregion

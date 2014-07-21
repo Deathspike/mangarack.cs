@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Threading.Tasks;
 using MangaRack.Provider.Interfaces;
 
 namespace MangaRack.Provider.Contracts
@@ -30,10 +31,11 @@ namespace MangaRack.Provider.Contracts
             return null;
         }
 
-        public void Search(string input, Action<IEnumerable<ISeries>> done)
+        public Task<IEnumerable<ISeries>> SearchAsync(string input)
         {
             Contract.Requires<ArgumentNullException>(input != null);
-            Contract.Requires<ArgumentNullException>(done != null);
+            Contract.Ensures(Contract.Result<Task<IEnumerable<ISeries>>>() != null);
+            return null;
         }
 
         #endregion
