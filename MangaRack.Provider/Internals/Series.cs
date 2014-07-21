@@ -78,6 +78,7 @@ namespace MangaRack.Provider.Internals
 
             _children = _series.Children.Select(x => new Chapter(x)).ToList();
 
+            // TODO: Number should become nullable to indicate it's not set.
             foreach (var chapter in _children.Where(x => x.Number < 0))
             {
                 IChapter previousChapter;

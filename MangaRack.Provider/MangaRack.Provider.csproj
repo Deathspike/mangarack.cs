@@ -133,7 +133,7 @@
     <Compile Include="Interfaces\IPage.cs" />
     <Compile Include="Interfaces\IProvider.cs" />
     <Compile Include="Interfaces\ISeries.cs" />
-    <Compile Include="Factory.cs" />
+    <Compile Include="Extensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

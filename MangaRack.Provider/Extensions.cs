@@ -3,18 +3,21 @@
 // License, version 2.0. If a copy of the MPL was not distributed with 
 // this file, you can obtain one at http://mozilla.org/MPL/2.0/.
 // ======================================================================
+using System;
+using System.Diagnostics.Contracts;
 using MangaRack.Provider.Interfaces;
 
 namespace MangaRack.Provider
 {
-    // TODO: Name this in a more sensible way. It's not a factory now.
-    public static class Factory
+    public static class Extensions
     {
-        #region Methods
+        #region Statics
 
-        public static IProvider Create<T>() where T : IProvider, new()
+        public static IProvider EnableApproximation(this IProvider provider)
         {
-            return new Internals.Provider(new T());
+            Contract.Requires<ArgumentNullException>(provider != null);
+            Contract.Ensures(Contract.Result<IProvider>() != null);
+            return new Internals.Provider(provider);
         }
 
         #endregion
