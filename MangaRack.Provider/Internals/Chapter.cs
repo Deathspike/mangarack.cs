@@ -57,7 +57,7 @@ namespace MangaRack.Provider.Internals
             get { return _chapter.Location; }
         }
 
-        public double Number
+        public double? Number
         {
             get { return _number ?? _chapter.Number; }
             set { _number = value; }
@@ -73,7 +73,7 @@ namespace MangaRack.Provider.Internals
             get { return _chapter.UniqueIdentifier; }
         }
 
-        public double Volume
+        public double? Volume
         {
             get { return _chapter.Volume; }
         }

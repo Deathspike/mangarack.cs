@@ -23,7 +23,7 @@ namespace MangaRack {
 			// Iterate through each chapter.
 			foreach (var chapter in chapters) {
 				// Check if the chapter number is valid.
-				if (chapter.Number != -1) {
+				if (chapter.Number != null) {
 					// Filter on negative chapter number values.
 					if (options.FilterOnChapter < 0 && chapter.Number >= Math.Abs(options.FilterOnChapter)) {
 						// Continue iteration.
@@ -36,7 +36,7 @@ namespace MangaRack {
 					}
 				}
 				// Check if the volume is valid.
-				if (chapter.Volume != -1) {
+				if (chapter.Volume != null) {
 					// Filter on negative chapter volume values.
 					if (options.FilterOnVolume < 0 && chapter.Volume >= Math.Abs(options.FilterOnVolume)) {
 						// Continue iteration.
@@ -61,7 +61,7 @@ namespace MangaRack {
 		/// <param name="options">The collection of options.</param>
 		public static string ToFileName(this IChapter chapter, string seriesTitle, Options options) {
 			// Initialize the file name.
-			return string.Format(chapter.Volume == -1 ? "{0} #{2}.{3}" : "{0} V{1} #{2}.{3}", seriesTitle, chapter.Volume.ToString("00"), chapter.Number.ToString("000.####"), options.FileExtension.InvalidatePath());
+			return string.Format(chapter.Volume == null ? "{0} #{2}.{3}" : "{0} V{1} #{2}.{3}", seriesTitle, (chapter.Volume ?? 0).ToString("00"), (chapter.Number ?? 0).ToString("000.####"), options.FileExtension.InvalidatePath());
 		}
 		#endregion
 	}

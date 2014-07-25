@@ -89,7 +89,7 @@ namespace MangaRack.Core {
 		/// Contains the number.
 		/// </summary>
 		[XmlElement]
-		public double Number { get; set; }
+		public double? Number { get; set; }
 
 		/// <summary>
 		/// Contains the manga specification.
@@ -141,7 +141,7 @@ namespace MangaRack.Core {
 		/// Contains the volume.
 		/// </summary>
 		[XmlElement]
-		public double Volume { get; set; }
+		public double? Volume { get; set; }
 
 		/// <summary>
 		/// Contains each writer.

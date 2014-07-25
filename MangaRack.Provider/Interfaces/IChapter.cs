@@ -13,10 +13,10 @@ namespace MangaRack.Provider.Interfaces
 
         IEnumerable<IPage> Children { get; }
         string Location { get; }
-        double Number { get; }
+        double? Number { get; }
         string Title { get; }
         string UniqueIdentifier { get; }
-        double Volume { get; }
+        double? Volume { get; }
 
         #endregion
     }

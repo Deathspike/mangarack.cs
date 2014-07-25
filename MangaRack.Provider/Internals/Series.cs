@@ -27,22 +27,26 @@ namespace MangaRack.Provider.Internals
             Contract.Requires<ArgumentNullException>(children != null);
             Contract.Requires<ArgumentNullException>(chapter != null);
             Contract.Ensures(Contract.Result<Dictionary<double, int>>() != null);
+            
             var computedDifferences = new Dictionary<double, int>();
             previousChapter = null;
 
-            foreach (var next in children
-                .Where(x => x != chapter)
-                .Where(x => x.Number >= 0)
-                .Where(x => Math.Abs(x.Volume - chapter.Volume) <= 0))
+            // TODO: Continue with nullable number and volume.
+            foreach (var current in children
+                .Where(x => x != null && x != chapter)
+                .Where(x => x.Number != null)
+                .Where(x => x.Volume == chapter.Volume))
             {
+                Contract.Assume(current != null);
+
                 if (previousChapter != null)
                 {
-                    var difference = Math.Round(next.Number - previousChapter.Number, 4);
+                    var difference = Math.Round(current.Number ?? 0 - previousChapter.Number ?? 0, 4);
                     if (!computedDifferences.ContainsKey(difference)) computedDifferences[difference] = 0;
                     computedDifferences[difference]++;
                 }
 
-                previousChapter = next;
+                previousChapter = current;
             }
 
             return computedDifferences;
@@ -78,7 +82,6 @@ namespace MangaRack.Provider.Internals
 
             _children = _series.Children.Select(x => new Chapter(x)).ToList();
 
-            // TODO: Number should become nullable to indicate it's not set.
             foreach (var chapter in _children.Where(x => x.Number < 0))
             {
                 IChapter previousChapter;
@@ -88,7 +91,7 @@ namespace MangaRack.Provider.Internals
                 {
                     var bestDifference = computedDifferences.OrderByDescending(x => x.Value).FirstOrDefault().Key;
                     var clampedDifference = (bestDifference <= 0 || bestDifference >= 1 ? 1 : bestDifference);
-                    chapter.Number = Math.Round(previousChapter.Number + clampedDifference/2, 4);
+                    chapter.Number = Math.Round(previousChapter.Number ?? 0 + clampedDifference/2, 4);
                     continue;
                 }
 

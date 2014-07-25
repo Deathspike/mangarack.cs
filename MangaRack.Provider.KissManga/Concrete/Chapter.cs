@@ -26,7 +26,7 @@ namespace MangaRack.Provider.KissManga {
 		/// <param name="title">The title.</param>
 		/// <param name="uniqueIdentifier">The unique identifier.</param>
 		/// <param name="volume">The volume.</param>
-		public Chapter(double number, string location, string title, string uniqueIdentifier, double volume) {
+		public Chapter(double? number, string location, string title, string uniqueIdentifier, double? volume) {
 			// Set the number.
 			Number = number;
 			// Set the location.
@@ -70,7 +70,7 @@ namespace MangaRack.Provider.KissManga {
 		/// <summary>
 		/// Contains the number.
 		/// </summary>
-		public double Number { get; private set; }
+		public double? Number { get; private set; }
 
 		/// <summary>
 		/// Contains the title.
@@ -85,7 +85,7 @@ namespace MangaRack.Provider.KissManga {
 		/// <summary>
 		/// Contains the volume.
 		/// </summary>
-		public double Volume { get; private set; }
+		public double? Volume { get; private set; }
 		#endregion
 
 		#region IDisposable
