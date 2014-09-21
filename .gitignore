@@ -1,5 +1,5 @@
-Build/.NET
-Build/Mono
+Build/Debug
+Build/Release
 *\bin
 *\obj
 
