@@ -37,11 +37,11 @@ namespace MangaRack {
 			// Initialize each provider ...
 			_providers = new IProvider[] {
 				// ... with Batoto support ...
-				new Batoto().EnableApproximation(),
+				new Batoto().WithApproximation(),
 				// ... with KissManga support ...
-				new KissManga().EnableApproximation(),
+				new KissManga().WithApproximation(),
 				// ... with MangaFox support.
-				new MangaFox().EnableApproximation()
+				new MangaFox().WithApproximation()
 			};
 		}
 		#endregion

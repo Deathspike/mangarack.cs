@@ -13,7 +13,7 @@ namespace MangaRack.Provider
     {
         #region Statics
 
-        public static IProvider EnableApproximation(this IProvider provider)
+        public static IProvider WithApproximation(this IProvider provider)
         {
             Contract.Requires<ArgumentNullException>(provider != null);
             Contract.Ensures(Contract.Result<IProvider>() != null);

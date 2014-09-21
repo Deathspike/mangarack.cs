@@ -12,7 +12,6 @@ using MangaRack.Provider.Interfaces;
 
 namespace MangaRack.Provider.Internals
 {
-    // TODO: Clean up the abstract here.
     internal class Series : ISeries
     {
         private readonly ISeries _series;
@@ -20,36 +19,60 @@ namespace MangaRack.Provider.Internals
 
         #region Abstract
 
-        private static Dictionary<double, int> Compute(IEnumerable<IChapter> children,
-            IChapter chapter,
-            out IChapter previousChapter)
+        private static IEnumerable<Chapter> Approximate(ICollection<Chapter> chapters)
         {
-            Contract.Requires<ArgumentNullException>(children != null);
-            Contract.Requires<ArgumentNullException>(chapter != null);
-            Contract.Ensures(Contract.Result<Dictionary<double, int>>() != null);
-            
-            var computedDifferences = new Dictionary<double, int>();
-            previousChapter = null;
+            Contract.Requires<ArgumentNullException>(chapters != null);
+            Contract.Ensures(Contract.Result<IEnumerable<Chapter>>() != null);
 
-            // TODO: Continue with nullable number and volume.
-            foreach (var current in children
-                .Where(x => x != null && x != chapter)
-                .Where(x => x.Number != null)
-                .Where(x => x.Volume == chapter.Volume))
+            foreach (var chapter in chapters)
             {
-                Contract.Assume(current != null);
-
-                if (previousChapter != null)
-                {
-                    var difference = Math.Round(current.Number ?? 0 - previousChapter.Number ?? 0, 4);
-                    if (!computedDifferences.ContainsKey(difference)) computedDifferences[difference] = 0;
-                    computedDifferences[difference]++;
-                }
-
-                previousChapter = current;
+                if (chapter == null || chapter.Number != null) continue;
+                Approximate(chapters, chapter);
             }
 
-            return computedDifferences;
+            return chapters;
+        }
+
+        private static void Approximate(IEnumerable<Chapter> chapters, Chapter chapter)
+        {
+            Contract.Requires<ArgumentNullException>(chapters != null);
+            Contract.Requires<ArgumentNullException>(chapter != null);
+
+            // Initialize the differences.
+            var differences = new Dictionary<double, int>();
+            var previous = null as Chapter;
+
+            // Iterate through each chapter.
+            foreach (var next in chapters)
+            {
+                // Check if the next chapter is a valid candidate.
+                if (next == null
+                    || next == chapter
+                    || next.Number == null
+                    || next.Volume != chapter.Volume) continue;
+
+                // Check if a previous chapter is available and calculate the difference.
+                if (previous != null && previous.Number != null)
+                {
+                    var difference = Math.Round((double) next.Number - (double) previous.Number, 4);
+                    differences[difference] = differences.ContainsKey(difference) ? differences[difference] + 1 : 1;
+                }
+
+                // Set the previous chapter.
+                previous = next;
+            }
+
+            // Approximate the chapter number.
+            if (differences.Count != 0 && previous != null)
+            {
+                var value = differences.OrderByDescending(x => x.Value).Select(x => x.Value).FirstOrDefault();
+                var clampedValue = Math.Min(Math.Max(value, 0), 1);
+                chapter.Number = previous.Number + clampedValue/2;
+            }
+            else
+            {
+                chapter.Number = previous != null ? previous.Number + 0.5 : 0.5;
+            }
         }
 
         #endregion
@@ -80,23 +103,7 @@ namespace MangaRack.Provider.Internals
         {
             await _series.PopulateAsync();
 
-            _children = _series.Children.Select(x => new Chapter(x)).ToList();
-
-            foreach (var chapter in _children.Where(x => x.Number < 0))
-            {
-                IChapter previousChapter;
-                var computedDifferences = Compute(_children, chapter, out previousChapter);
-
-                if (computedDifferences.Count != 0)
-                {
-                    var bestDifference = computedDifferences.OrderByDescending(x => x.Value).FirstOrDefault().Key;
-                    var clampedDifference = (bestDifference <= 0 || bestDifference >= 1 ? 1 : bestDifference);
-                    chapter.Number = Math.Round(previousChapter.Number ?? 0 + clampedDifference/2, 4);
-                    continue;
-                }
-
-                chapter.Number = previousChapter == null ? 0.5 : previousChapter.Number + 0.5;
-            }
+            _children = Approximate(_series.Children.Select(x => new Chapter(x)).ToList());
         }
 
         #endregion
