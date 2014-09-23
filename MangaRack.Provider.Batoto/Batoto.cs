@@ -5,7 +5,7 @@
 // ======================================================================
 using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
-using MangaRack.Provider.Interfaces;
+using MangaRack.Provider.Interface;
 
 namespace MangaRack.Provider.Batoto
 {
@@ -17,7 +17,7 @@ namespace MangaRack.Provider.Batoto
 
         public Batoto()
         {
-            _provider = new Provider();
+            _provider = new Internal.Provider();
         }
 
         #endregion

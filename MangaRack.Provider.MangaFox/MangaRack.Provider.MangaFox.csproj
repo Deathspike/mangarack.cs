@@ -130,13 +130,13 @@
     <Compile Include="..\MangaRack\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Internals\Chapter.cs" />
-    <Compile Include="Internals\Page.cs" />
+    <Compile Include="Internal\Chapter.cs" />
+    <Compile Include="Internal\Page.cs" />
     <Compile Include="Http.cs" />
     <Compile Include="MangaFox.cs" />
-    <Compile Include="Internals\Provider.cs" />
-    <Compile Include="Internals\Search.cs" />
-    <Compile Include="Internals\Series.cs" />
+    <Compile Include="Internal\Provider.cs" />
+    <Compile Include="Internal\Search.cs" />
+    <Compile Include="Internal\Series.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="HtmlAgilityPack-PCL">

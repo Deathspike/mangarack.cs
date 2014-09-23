@@ -5,7 +5,7 @@
 // ======================================================================
 using HtmlAgilityPack;
 
-namespace MangaRack.Provider.KissManga {
+namespace MangaRack.Provider.KissManga.Extension {
 	/// <summary>
 	/// Represents the class providing extensions for the HtmlNode class.
 	/// </summary>

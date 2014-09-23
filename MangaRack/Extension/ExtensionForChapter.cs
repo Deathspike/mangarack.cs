@@ -6,7 +6,7 @@
 using MangaRack.Provider;
 using System;
 using System.Collections.Generic;
-using MangaRack.Provider.Interfaces;
+using MangaRack.Provider.Interface;
 
 namespace MangaRack {
 	/// <summary>

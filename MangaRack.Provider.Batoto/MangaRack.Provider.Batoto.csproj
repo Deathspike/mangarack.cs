@@ -49,13 +49,13 @@
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Batoto.cs" />
-    <Compile Include="Concrete\Chapter.cs" />
+    <Compile Include="Internal\Chapter.cs" />
     <Compile Include="Extension\ExtensionForHtmlNode.cs" />
     <Compile Include="Extension\ExtensionForString.cs" />
-    <Compile Include="Concrete\Page.cs" />
-    <Compile Include="Concrete\Provider.cs" />
-    <Compile Include="Concrete\Search.cs" />
-    <Compile Include="Concrete\Series.cs" />
+    <Compile Include="Internal\Page.cs" />
+    <Compile Include="Internal\Provider.cs" />
+    <Compile Include="Internal\Search.cs" />
+    <Compile Include="Internal\Series.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="HtmlAgilityPack-PCL">

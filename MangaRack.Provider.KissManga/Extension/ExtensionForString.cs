@@ -4,7 +4,7 @@
 // this file, you can obtain one at http://mozilla.org/MPL/2.0/.
 // ======================================================================
 
-namespace MangaRack.Provider.KissManga {
+namespace MangaRack.Provider.KissManga.Extension {
 	/// <summary>
 	/// Represents the class providing extensions for the String class.
 	/// </summary>

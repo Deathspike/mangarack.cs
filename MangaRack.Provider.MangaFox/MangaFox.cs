@@ -6,7 +6,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
-using MangaRack.Provider.Interfaces;
+using MangaRack.Provider.Interface;
 
 namespace MangaRack.Provider.MangaFox
 {
@@ -18,7 +18,7 @@ namespace MangaRack.Provider.MangaFox
 
         public MangaFox()
         {
-            _provider = new Internals.Provider();
+            _provider = new Internal.Provider();
         }
 
         #endregion

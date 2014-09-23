@@ -4,32 +4,20 @@
 // this file, you can obtain one at http://mozilla.org/MPL/2.0/.
 // ======================================================================
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
 using MangaRack.Provider.Interface;
 
-namespace MangaRack.Provider.KissManga
+namespace MangaRack.Provider.Contract
 {
-    public class KissManga : IProvider
+    // ReSharper disable once InconsistentNaming
+    [ContractClassFor(typeof (IProvider))]
+    internal abstract class IProviderContract : IProvider
     {
-        private readonly IProvider _provider;
+        #region Implementation of IDisposable
 
-        #region Constructor
-
-        public KissManga()
+        public void Dispose()
         {
-            _provider = new Internal.Provider();
-        }
-
-        #endregion
-
-        #region Contract
-
-        [ContractInvariantMethod]
-        private void ObjectInvariant()
-        {
-            Contract.Invariant(_provider != null);
         }
 
         #endregion
@@ -38,12 +26,15 @@ namespace MangaRack.Provider.KissManga
 
         public ISeries Open(string location)
         {
-            return _provider.Open(location);
+            System.Diagnostics.Contracts.Contract.Requires<ArgumentNullException>(location != null);
+            return null;
         }
 
         public Task<ISearch> SearchAsync(string input)
         {
-            return _provider.SearchAsync(input);
+            System.Diagnostics.Contracts.Contract.Requires<ArgumentNullException>(input != null);
+            System.Diagnostics.Contracts.Contract.Ensures(System.Diagnostics.Contracts.Contract.Result<Task<ISearch>>() != null);
+            return null;
         }
 
         #endregion
@@ -52,7 +43,11 @@ namespace MangaRack.Provider.KissManga
 
         public string Location
         {
-            get { return _provider.Location; }
+            get
+            {
+                System.Diagnostics.Contracts.Contract.Ensures(System.Diagnostics.Contracts.Contract.Result<string>() != null);
+                return null;
+            }
         }
 
         #endregion

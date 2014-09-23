@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using MangaRack.Provider.Interfaces;
+using MangaRack.Provider.Interface;
 
 namespace MangaRack {
 	/// <summary>

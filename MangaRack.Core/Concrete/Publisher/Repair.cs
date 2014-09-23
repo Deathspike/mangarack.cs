@@ -8,7 +8,7 @@ using MangaRack.Provider;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using MangaRack.Provider.Interfaces;
+using MangaRack.Provider.Interface;
 
 namespace MangaRack.Core {
 	/// <summary>

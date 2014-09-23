@@ -5,7 +5,7 @@
 // ======================================================================
 using HtmlAgilityPack;
 
-namespace MangaRack.Provider.Batoto {
+namespace MangaRack.Provider.Batoto.Extension {
 	/// <summary>
 	/// Represents the class providing extensions for the HtmlNode class.
 	/// </summary>

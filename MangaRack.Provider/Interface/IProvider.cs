@@ -3,22 +3,25 @@
 // License, version 2.0. If a copy of the MPL was not distributed with 
 // this file, you can obtain one at http://mozilla.org/MPL/2.0/.
 // ======================================================================
-using System;
 using System.Diagnostics.Contracts;
-using MangaRack.Provider.Interface;
+using System.Threading.Tasks;
+using MangaRack.Provider.Contract;
 
-namespace MangaRack.Provider
+namespace MangaRack.Provider.Interface
 {
-    public static class Extensions
+    [ContractClass(typeof (IProviderContract))]
+    public interface IProvider
     {
-        #region Statics
+        #region Methods
 
-        public static IProvider WithApproximation(this IProvider provider)
-        {
-            Contract.Requires<ArgumentNullException>(provider != null);
-            Contract.Ensures(Contract.Result<IProvider>() != null);
-            return new Internal.Provider(provider);
-        }
+        ISeries Open(string location);
+        Task<ISearch> SearchAsync(string input);
+
+        #endregion
+
+        #region Properties
+
+        string Location { get; }
 
         #endregion
     }

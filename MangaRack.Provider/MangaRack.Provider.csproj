@@ -128,19 +128,19 @@
     <Compile Include="..\MangaRack\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Interfaces\ISearch.cs" />
-    <Compile Include="Contracts\ISearchContract.cs" />
-    <Compile Include="Internals\Chapter.cs" />
-    <Compile Include="Internals\Provider.cs" />
-    <Compile Include="Internals\Search.cs" />
-    <Compile Include="Internals\Series.cs" />
-    <Compile Include="Contracts\IAsyncContract.cs" />
-    <Compile Include="Contracts\IProviderContract.cs" />
-    <Compile Include="Interfaces\IAsync.cs" />
-    <Compile Include="Interfaces\IChapter.cs" />
-    <Compile Include="Interfaces\IPage.cs" />
-    <Compile Include="Interfaces\IProvider.cs" />
-    <Compile Include="Interfaces\ISeries.cs" />
+    <Compile Include="Interface\ISearch.cs" />
+    <Compile Include="Contract\ISearchContract.cs" />
+    <Compile Include="Internal\Chapter.cs" />
+    <Compile Include="Internal\Provider.cs" />
+    <Compile Include="Internal\Search.cs" />
+    <Compile Include="Internal\Series.cs" />
+    <Compile Include="Contract\IAsyncContract.cs" />
+    <Compile Include="Contract\IProviderContract.cs" />
+    <Compile Include="Interface\IAsync.cs" />
+    <Compile Include="Interface\IChapter.cs" />
+    <Compile Include="Interface\IPage.cs" />
+    <Compile Include="Interface\IProvider.cs" />
+    <Compile Include="Interface\ISeries.cs" />
     <Compile Include="Extensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
