@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Threading.Tasks;
 using MangaRack.Provider.Interfaces;
 
 namespace MangaRack.Provider.Internals
@@ -14,15 +15,14 @@ namespace MangaRack.Provider.Internals
     internal class Search : ISearch
     {
         private readonly ISearch _search;
-        private readonly IEnumerable<ISeries> _series;
+        private IEnumerable<ISeries> _children;
 
         #region Constructor
 
         public Search(ISearch search)
         {
-            System.Diagnostics.Contracts.Contract.Requires<ArgumentNullException>(search != null);
+            Contract.Requires<ArgumentException>(search != null);
             _search = search;
-            _series = new List<ISeries>(search.Children.Select(x => new Series(x) as ISeries));
         }
 
         #endregion
@@ -32,8 +32,18 @@ namespace MangaRack.Provider.Internals
         [ContractInvariantMethod]
         private void ObjectInvariant()
         {
-            System.Diagnostics.Contracts.Contract.Invariant(_search != null);
-            System.Diagnostics.Contracts.Contract.Invariant(_series != null);
+            Contract.Invariant(_search != null);
+        }
+
+        #endregion
+
+        #region Implementation of IAsync
+
+        public async Task PopulateAsync()
+        {
+            await _search.PopulateAsync();
+
+            _children = new List<ISeries>(_search.Children.Select(x => new Series(x) as ISeries));
         }
 
         #endregion
@@ -42,12 +52,21 @@ namespace MangaRack.Provider.Internals
 
         public IEnumerable<ISeries> Children
         {
-            get { return _series; }
+            get { return _children != null ? _children.AsEnumerable() : _search.Children; }
         }
 
         public string Input
         {
             get { return _search.Input; }
+        }
+
+        #endregion
+
+        #region Implementation of IDisposable
+
+        public void Dispose()
+        {
+            _search.Dispose();
         }
 
         #endregion

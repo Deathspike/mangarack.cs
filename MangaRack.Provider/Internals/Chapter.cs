@@ -20,7 +20,7 @@ namespace MangaRack.Provider.Internals
 
         public Chapter(IChapter chapter)
         {
-            System.Diagnostics.Contracts.Contract.Requires<ArgumentNullException>(chapter != null);
+            Contract.Requires<ArgumentNullException>(chapter != null);
             _chapter = chapter;
         }
 
@@ -31,7 +31,7 @@ namespace MangaRack.Provider.Internals
         [ContractInvariantMethod]
         private void ObjectInvariant()
         {
-            System.Diagnostics.Contracts.Contract.Invariant(_chapter != null);
+            Contract.Invariant(_chapter != null);
         }
 
         #endregion

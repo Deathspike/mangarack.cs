@@ -21,8 +21,8 @@ namespace MangaRack.Provider.Internals
 
         private static IEnumerable<Chapter> Approximate(ICollection<Chapter> chapters)
         {
-            System.Diagnostics.Contracts.Contract.Requires<ArgumentNullException>(chapters != null);
-            System.Diagnostics.Contracts.Contract.Ensures(System.Diagnostics.Contracts.Contract.Result<IEnumerable<Chapter>>() != null);
+            Contract.Requires<ArgumentNullException>(chapters != null);
+            Contract.Ensures(Contract.Result<IEnumerable<Chapter>>() != null);
 
             foreach (var chapter in chapters)
             {
@@ -35,8 +35,8 @@ namespace MangaRack.Provider.Internals
 
         private static void Approximate(IEnumerable<Chapter> chapters, Chapter chapter)
         {
-            System.Diagnostics.Contracts.Contract.Requires<ArgumentNullException>(chapters != null);
-            System.Diagnostics.Contracts.Contract.Requires<ArgumentNullException>(chapter != null);
+            Contract.Requires<ArgumentNullException>(chapters != null);
+            Contract.Requires<ArgumentNullException>(chapter != null);
 
             // Initialize the differences.
             var differences = new Dictionary<double, int>();
@@ -81,7 +81,7 @@ namespace MangaRack.Provider.Internals
 
         public Series(ISeries series)
         {
-            System.Diagnostics.Contracts.Contract.Requires<ArgumentNullException>(series != null);
+            Contract.Requires<ArgumentNullException>(series != null);
             _series = series;
         }
 
@@ -92,7 +92,7 @@ namespace MangaRack.Provider.Internals
         [ContractInvariantMethod]
         private void ObjectInvariant()
         {
-            System.Diagnostics.Contracts.Contract.Invariant(_series != null);
+            Contract.Invariant(_series != null);
         }
 
         #endregion
@@ -102,6 +102,8 @@ namespace MangaRack.Provider.Internals
         public async Task PopulateAsync()
         {
             await _series.PopulateAsync();
+
+            if (_series.Children == null) return;
 
             _children = Approximate(_series.Children.Select(x => new Chapter(x)).ToList());
         }

@@ -18,7 +18,7 @@ namespace MangaRack.Provider.Internals
 
         public Provider(IProvider provider)
         {
-            System.Diagnostics.Contracts.Contract.Requires<ArgumentNullException>(provider != null);
+            Contract.Requires<ArgumentNullException>(provider != null);
             _provider = provider;
         }
 
@@ -29,7 +29,7 @@ namespace MangaRack.Provider.Internals
         [ContractInvariantMethod]
         private void ObjectInvariant()
         {
-            System.Diagnostics.Contracts.Contract.Invariant(_provider != null);
+            Contract.Invariant(_provider != null);
         }
 
         #endregion

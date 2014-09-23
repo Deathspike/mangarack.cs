@@ -26,14 +26,14 @@ namespace MangaRack.Provider.Contracts
 
         public ISeries Open(string location)
         {
-            System.Diagnostics.Contracts.Contract.Requires<ArgumentNullException>(location != null);
+            Contract.Requires<ArgumentException>(!string.IsNullOrWhiteSpace(location));
             return null;
         }
 
         public Task<ISearch> SearchAsync(string input)
         {
-            System.Diagnostics.Contracts.Contract.Requires<ArgumentNullException>(input != null);
-            System.Diagnostics.Contracts.Contract.Ensures(System.Diagnostics.Contracts.Contract.Result<Task<ISearch>>() != null);
+            Contract.Requires<ArgumentException>(!string.IsNullOrWhiteSpace(input));
+            Contract.Ensures(Contract.Result<ISearch>() != null);
             return null;
         }
 
@@ -45,7 +45,7 @@ namespace MangaRack.Provider.Contracts
         {
             get
             {
-                System.Diagnostics.Contracts.Contract.Ensures(System.Diagnostics.Contracts.Contract.Result<string>() != null);
+                Contract.Ensures(Contract.Result<string>() != null);
                 return null;
             }
         }

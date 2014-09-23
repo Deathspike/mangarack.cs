@@ -17,7 +17,7 @@ namespace MangaRack.Provider.Contracts
 
         public Task PopulateAsync()
         {
-            System.Diagnostics.Contracts.Contract.Ensures(System.Diagnostics.Contracts.Contract.Result<Task>() != null);
+            Contract.Ensures(Contract.Result<Task>() != null);
             return null;
         }
 

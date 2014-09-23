@@ -21,6 +21,7 @@ namespace MangaRack.Provider.Interfaces
 
         #region Properties
 
+        // TODO: Remove this property and enable a different mechanism for MangaFox detection.
         string Location { get; }
 
         #endregion
