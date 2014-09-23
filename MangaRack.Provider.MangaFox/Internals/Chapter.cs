@@ -32,9 +32,9 @@ namespace MangaRack.Provider.MangaFox.Internals
         public async Task PopulateAsync()
         {
             var response = await Http.GetAsync(Location.EndsWith("1.html") ? Location : Location + "1.html");
-            var htmlDocument = new HtmlDocument();
-            htmlDocument.LoadHtml(response.AsString());
-            Children = htmlDocument.DocumentNode.Descendants("select")
+            var document = new HtmlDocument();
+            document.LoadHtml(response.AsString());
+            Children = document.DocumentNode.Descendants("select")
                 .Where(x => HtmlEntity.DeEntitize(x.GetAttributeValue("onchange", string.Empty))
                     .Trim()
                     .StartsWith("change_page"))
@@ -70,8 +70,6 @@ namespace MangaRack.Provider.MangaFox.Internals
                 if (child == null) continue;
                 child.Dispose();
             }
-
-            Children = null;
         }
 
         #endregion
