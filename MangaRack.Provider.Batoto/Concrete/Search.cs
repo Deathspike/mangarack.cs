@@ -16,7 +16,7 @@ namespace MangaRack.Provider.Batoto {
 	/// <summary>
 	/// Represents a Batoto search.
 	/// </summary>
-	class Search : IEnumerable<ISeries> {
+	class Search : ISearch {
 		#region Constructor
 		/// <summary>
 		/// Initialize a new instance of the Search class.
@@ -69,25 +69,10 @@ namespace MangaRack.Provider.Batoto {
 		#endregion
 
 		#region ISearch
-		/// <summary>
-		/// Contains each child.
-		/// </summary>
+
 		public IEnumerable<ISeries> Children { get; private set; }
-
-		/// <summary>
-		/// Contains the input.
-		/// </summary>
 		public string Input { get; private set; }
+
 		#endregion
-
-	    public IEnumerator<ISeries> GetEnumerator()
-	    {
-	        return Children.GetEnumerator();
-	    }
-
-	    IEnumerator IEnumerable.GetEnumerator()
-	    {
-	        return GetEnumerator();
-	    }
 	}
 }

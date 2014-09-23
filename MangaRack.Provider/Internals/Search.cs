@@ -3,22 +3,26 @@
 // License, version 2.0. If a copy of the MPL was not distributed with 
 // this file, you can obtain one at http://mozilla.org/MPL/2.0/.
 // ======================================================================
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
-using System.Threading.Tasks;
+using System.Linq;
 using MangaRack.Provider.Interfaces;
 
-namespace MangaRack.Provider.MangaFox
+namespace MangaRack.Provider.Internals
 {
-    public class MangaFox : IProvider
+    internal class Search : ISearch
     {
-        private readonly IProvider _provider;
+        private readonly ISearch _search;
+        private readonly IEnumerable<ISeries> _series;
 
         #region Constructor
 
-        public MangaFox()
+        public Search(ISearch search)
         {
-            _provider = new Internals.Provider();
+            Contract.Requires<ArgumentNullException>(search != null);
+            _search = search;
+            _series = new List<ISeries>(search.Children.Select(x => new Series(x) as ISeries));
         }
 
         #endregion
@@ -28,30 +32,22 @@ namespace MangaRack.Provider.MangaFox
         [ContractInvariantMethod]
         private void ObjectInvariant()
         {
-            Contract.Invariant(_provider != null);
+            Contract.Invariant(_search != null);
+            Contract.Invariant(_series != null);
         }
 
         #endregion
 
-        #region Implementation of IProvider:Methods
+        #region Implementation of ISearch
 
-        public ISeries Open(string location)
+        public IEnumerable<ISeries> Children
         {
-            return _provider.Open(location);
+            get { return _series; }
         }
 
-        public Task<ISearch> SearchAsync(string input)
+        public string Input
         {
-            return _provider.SearchAsync(input);
-        }
-
-        #endregion
-
-        #region Implementation of IProvider:Properties
-
-        public string Location
-        {
-            get { return _provider.Location; }
+            get { return _search.Input; }
         }
 
         #endregion

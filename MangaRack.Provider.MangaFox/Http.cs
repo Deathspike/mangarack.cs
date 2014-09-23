@@ -1,15 +1,18 @@
-﻿using System;
+﻿// ======================================================================
+// This source code form is subject to the terms of the Mozilla Public
+// License, version 2.0. If a copy of the MPL was not distributed with 
+// this file, you can obtain one at http://mozilla.org/MPL/2.0/.
+// ======================================================================
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace MangaRack.Provider
 {
     // TODO: This thing is merely a stub pending TinyHttp-PCL rewrite.
-    static class Http
+    internal static class Http
     {
         public static Action<HttpWebResponse> Wait(out Task<HttpWebResponse> task)
         {

@@ -4,9 +4,7 @@
 // this file, you can obtain one at http://mozilla.org/MPL/2.0/.
 // ======================================================================
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.Contracts;
-using System.Linq;
 using System.Threading.Tasks;
 using MangaRack.Provider.Interfaces;
 
@@ -44,9 +42,9 @@ namespace MangaRack.Provider.Internals
             return series == null ? null : new Series(series);
         }
 
-        public async Task<IEnumerable<ISeries>> SearchAsync(string input)
+        public async Task<ISearch> SearchAsync(string input)
         {
-            return (await _provider.SearchAsync(input)).Select(x => new Series(x));
+            return new Search(await _provider.SearchAsync(input));
         }
 
         #endregion

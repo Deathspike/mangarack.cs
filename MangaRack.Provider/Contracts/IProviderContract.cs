@@ -4,7 +4,6 @@
 // this file, you can obtain one at http://mozilla.org/MPL/2.0/.
 // ======================================================================
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
 using MangaRack.Provider.Interfaces;
@@ -31,10 +30,10 @@ namespace MangaRack.Provider.Contracts
             return null;
         }
 
-        public Task<IEnumerable<ISeries>> SearchAsync(string input)
+        public Task<ISearch> SearchAsync(string input)
         {
             Contract.Requires<ArgumentNullException>(input != null);
-            Contract.Ensures(Contract.Result<Task<IEnumerable<ISeries>>>() != null);
+            Contract.Ensures(Contract.Result<Task<ISearch>>() != null);
             return null;
         }
 

@@ -3,6 +3,8 @@
 // License, version 2.0. If a copy of the MPL was not distributed with 
 // this file, you can obtain one at http://mozilla.org/MPL/2.0/.
 // ======================================================================
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -11,22 +13,17 @@ using HtmlAgilityPack;
 using MangaRack.Provider.Interfaces;
 using TinyHttp;
 
-namespace MangaRack.Provider.KissManga
+namespace MangaRack.Provider.MangaFox
 {
     /// <summary>
-    ///     Represents a KissManga search.
+    ///     Represents a MangaFox search.
     /// </summary>
     internal class Search : ISearch
     {
         #region Constructor
 
-        /// <summary>
-        ///     Initialize a new instance of the Search class.
-        /// </summary>
-        /// <param name="input">The input.</param>
         public Search(string input)
         {
-            // Set the input.
             Input = input;
         }
 
@@ -39,12 +36,10 @@ namespace MangaRack.Provider.KissManga
         /// </summary>
         public async Task PopulateAsync()
         {
-            // Initialize each value.
-            var values = new Dictionary<string, string>();
-            // Add the keyword.
-            values.Add("keyword", Input);
             // Get the document.
-            var response = await Http.PostAsync(Provider.Domain + "/Search/Manga", values);
+            var response =
+                await
+                    Http.GetAsync(Internals.Provider.Domain + "search.php?advopts=1&name=" + Uri.EscapeDataString(Input));
             // Initialize a new instance of the HtmlDocument class.
             var htmlDocument = new HtmlDocument();
             // Load the document.
@@ -55,12 +50,11 @@ namespace MangaRack.Provider.KissManga
                 .Where(
                     x =>
                         Regex.Match(HtmlEntity.DeEntitize(x.GetAttributeValue("href", string.Empty)).Trim(),
-                            "^(?!http).*/manga/([^/]+?)/?$", RegexOptions.IgnoreCase).Success)
+                            "/manga/([^/]+?)/?$", RegexOptions.IgnoreCase).Success)
                 // ... select the results ...
                 .Select(
                     x =>
-                        new Series(
-                            Provider.Domain + HtmlEntity.DeEntitize(x.Attributes["href"].Value).Trim().TrimStart('/'),
+                        new Series(HtmlEntity.DeEntitize(x.Attributes["href"].Value).Trim(),
                             HtmlEntity.DeEntitize(x.InnerText).Trim()) as ISeries)
                 // ... and create an array.
                 .ToArray();
@@ -93,7 +87,14 @@ namespace MangaRack.Provider.KissManga
 
         #region ISearch
 
+        /// <summary>
+        ///     Contains each child.
+        /// </summary>
         public IEnumerable<ISeries> Children { get; private set; }
+
+        /// <summary>
+        ///     Contains the input.
+        /// </summary>
         public string Input { get; private set; }
 
         #endregion

@@ -45,7 +45,7 @@ namespace MangaRack.Provider.KissManga {
         /// Search series.
         /// </summary>
         /// <param name="input">The input.</param>
-        public async Task<IEnumerable<ISeries>> SearchAsync(string input)
+        public async Task<ISearch> SearchAsync(string input)
         {
             // Initialize a new instance of the Search class.
             var search = new Search(input);

@@ -41,7 +41,7 @@ namespace MangaRack.Provider.KissManga
             return _provider.Open(location);
         }
 
-        public Task<IEnumerable<ISeries>> SearchAsync(string input)
+        public Task<ISearch> SearchAsync(string input)
         {
             return _provider.SearchAsync(input);
         }

@@ -128,8 +128,11 @@
     <Compile Include="..\MangaRack\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Interfaces\ISearch.cs" />
+    <Compile Include="Contracts\ISearchContract.cs" />
     <Compile Include="Internals\Chapter.cs" />
     <Compile Include="Internals\Provider.cs" />
+    <Compile Include="Internals\Search.cs" />
     <Compile Include="Internals\Series.cs" />
     <Compile Include="Contracts\IAsyncContract.cs" />
     <Compile Include="Contracts\IProviderContract.cs" />
