@@ -3,21 +3,23 @@
 // License, version 2.0. If a copy of the MPL was not distributed with 
 // this file, you can obtain one at http://mozilla.org/MPL/2.0/.
 // ======================================================================
+using System;
 using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
 using MangaRack.Provider.Interfaces;
 
-namespace MangaRack.Provider.Batoto
+namespace MangaRack.Provider.Internals
 {
-    public class Batoto : IProvider
+    internal class Provider : IProvider
     {
         private readonly IProvider _provider;
 
         #region Constructor
 
-        public Batoto()
+        public Provider(IProvider provider)
         {
-            _provider = new Internals.Provider();
+            System.Diagnostics.Contracts.Contract.Requires<ArgumentNullException>(provider != null);
+            _provider = provider;
         }
 
         #endregion
@@ -27,7 +29,7 @@ namespace MangaRack.Provider.Batoto
         [ContractInvariantMethod]
         private void ObjectInvariant()
         {
-            Contract.Invariant(_provider != null);
+            System.Diagnostics.Contracts.Contract.Invariant(_provider != null);
         }
 
         #endregion
@@ -36,12 +38,13 @@ namespace MangaRack.Provider.Batoto
 
         public ISeries Open(string location)
         {
-            return _provider.Open(location);
+            var series = _provider.Open(location);
+            return series == null ? null : new Series(series);
         }
 
-        public Task<ISearch> SearchAsync(string input)
+        public async Task<ISearch> SearchAsync(string input)
         {
-            return _provider.SearchAsync(input);
+            return new Search(await _provider.SearchAsync(input));
         }
 
         #endregion

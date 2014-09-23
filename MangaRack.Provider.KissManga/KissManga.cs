@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
-using MangaRack.Provider.Interface;
+using MangaRack.Provider.Interfaces;
 
 namespace MangaRack.Provider.KissManga
 {
@@ -19,7 +19,7 @@ namespace MangaRack.Provider.KissManga
 
         public KissManga()
         {
-            _provider = new Internal.Provider();
+            _provider = new Internals.Provider();
         }
 
         #endregion

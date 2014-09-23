@@ -5,20 +5,17 @@
 // ======================================================================
 using System;
 using System.Diagnostics.Contracts;
-using MangaRack.Provider.Interfaces;
+using System.Threading.Tasks;
+using MangaRack.Provider.Contracts;
 
-namespace MangaRack.Provider
+namespace MangaRack.Provider.Interfaces
 {
-    public static class Extensions
+    [ContractClass(typeof (IAsyncContract))]
+    public interface IAsync : IDisposable
     {
-        #region Statics
+        #region Methods
 
-        public static IProvider WithApproximation(this IProvider provider)
-        {
-            Contract.Requires<ArgumentNullException>(provider != null);
-            Contract.Ensures(Contract.Result<IProvider>() != null);
-            return new Internals.Provider(provider);
-        }
+        Task PopulateAsync();
 
         #endregion
     }

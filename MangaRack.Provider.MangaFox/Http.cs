@@ -9,7 +9,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MangaRack.Provider.MangaFox
+namespace MangaRack.Provider
 {
     // TODO: This thing is merely a stub pending TinyHttp-PCL rewrite.
     internal static class Http

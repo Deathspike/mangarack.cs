@@ -7,9 +7,13 @@ using System.Threading.Tasks;
 using CommandLine;
 using ICSharpCode.SharpZipLib.Zip;
 using MangaRack.Core;
+using MangaRack.Core.Publishers;
+using MangaRack.Core.Serializers;
+using MangaRack.Extensions;
+using MangaRack.Internals;
 using MangaRack.Provider;
 using MangaRack.Provider.Batoto;
-using MangaRack.Provider.Interface;
+using MangaRack.Provider.Interfaces;
 using MangaRack.Provider.KissManga;
 using MangaRack.Provider.MangaFox;
 using System;
@@ -51,7 +55,7 @@ namespace MangaRack {
 		/// Run in batch processing mode.
 		/// </summary>
 		/// <param name="options">The options.</param>
-		public static async Task<bool> BatchAsync(Options options) {
+		static async Task<bool> BatchAsync(Options options) {
 			// Check if the batch-mode source file does exist.
 			if (File.Exists(options.SourceFile)) {
 				// Initialize a new instance of the List class.
@@ -190,7 +194,7 @@ namespace MangaRack {
 		/// </summary>
 		/// <param name="location">The location.</param>
 		/// <param name="options">The collection of options.</param>
-		public static async Task SingleAsync(string location, Options options) {
+		static async Task SingleAsync(string location, Options options) {
 			// Select the provider.
 			var provider = _providers.FirstOrDefault(x => x.Open(location) != null);
 			// Check if the provider is valid.

@@ -59,14 +59,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Concrete\UnsafeParallel.cs" />
-    <Compile Include="Concrete\DataSource.cs" />
-    <Compile Include="Extension\ExtensionForZipFile.cs" />
-    <Compile Include="Extension\ExtensionForBitmap.cs" />
-    <Compile Include="Extension\ExtensionForByteArray.cs" />
-    <Compile Include="Extension\ExtensionForChapter.cs" />
-    <Compile Include="Extension\ExtensionForString.cs" />
-    <Compile Include="Concrete\Options.cs" />
+    <Compile Include="Internals\UnsafeParallel.cs" />
+    <Compile Include="Internals\DataSource.cs" />
+    <Compile Include="Extensions\ExtensionForZipFile.cs" />
+    <Compile Include="Extensions\ExtensionForBitmap.cs" />
+    <Compile Include="Extensions\ExtensionForByteArray.cs" />
+    <Compile Include="Extensions\ExtensionForChapter.cs" />
+    <Compile Include="Extensions\ExtensionForString.cs" />
+    <Compile Include="Internals\Options.cs" />
     <Compile Include="Application.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Publisher.cs" />

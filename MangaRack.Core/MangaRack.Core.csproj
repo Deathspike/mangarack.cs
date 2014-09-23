@@ -52,13 +52,13 @@
     <Compile Include="..\MangaRack\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Abstract\IPublisher.cs" />
-    <Compile Include="Concrete\Xml\ComicInfo.cs" />
-    <Compile Include="Concrete\Xml\ComicInfoPage.cs" />
-    <Compile Include="Concrete\Xml\ComicInfoPageCollection.cs" />
-    <Compile Include="Concrete\Xml\ComicInfoSplitter.cs" />
-    <Compile Include="Concrete\Publisher\Repair.cs" />
-    <Compile Include="Concrete\Publisher\Synchronize.cs" />
+    <Compile Include="Abstracts\IPublisher.cs" />
+    <Compile Include="Serializers\ComicInfo.cs" />
+    <Compile Include="Serializers\ComicInfoPage.cs" />
+    <Compile Include="Serializers\ComicInfoPageCollection.cs" />
+    <Compile Include="Serializers\ComicInfoSplitter.cs" />
+    <Compile Include="Publishers\Repair.cs" />
+    <Compile Include="Publishers\Synchronize.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

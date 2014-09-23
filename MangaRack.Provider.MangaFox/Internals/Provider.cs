@@ -3,31 +3,19 @@
 // License, version 2.0. If a copy of the MPL was not distributed with 
 // this file, you can obtain one at http://mozilla.org/MPL/2.0/.
 // ======================================================================
-using System.Diagnostics.Contracts;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using MangaRack.Provider.Interfaces;
 
-namespace MangaRack.Provider.Batoto
+namespace MangaRack.Provider.MangaFox.Internals
 {
-    public class Batoto : IProvider
+    internal class Provider : IProvider
     {
-        private readonly IProvider _provider;
+        #region Statics
 
-        #region Constructor
-
-        public Batoto()
+        public static string Domain
         {
-            _provider = new Internals.Provider();
-        }
-
-        #endregion
-
-        #region Contract
-
-        [ContractInvariantMethod]
-        private void ObjectInvariant()
-        {
-            Contract.Invariant(_provider != null);
+            get { return "http://mangafox.me/"; }
         }
 
         #endregion
@@ -36,12 +24,18 @@ namespace MangaRack.Provider.Batoto
 
         public ISeries Open(string location)
         {
-            return _provider.Open(location);
+            return Regex.Match(location, @"^http://mangafox\.(com|me)/manga/(.*)/$", RegexOptions.IgnoreCase).Success
+                ? new Series(location)
+                : null;
         }
 
-        public Task<ISearch> SearchAsync(string input)
+        public async Task<ISearch> SearchAsync(string input)
         {
-            return _provider.SearchAsync(input);
+            var search = new Search(input);
+
+            await search.PopulateAsync();
+
+            return search;
         }
 
         #endregion
@@ -50,7 +44,7 @@ namespace MangaRack.Provider.Batoto
 
         public string Location
         {
-            get { return _provider.Location; }
+            get { return Domain; }
         }
 
         #endregion
