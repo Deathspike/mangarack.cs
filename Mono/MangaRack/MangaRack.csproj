@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{DE71D021-1ED1-4C70-AE19-A61FD3745AC6}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MangaRack</RootNamespace>
+    <AssemblyName>MangaRack</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Build\Mono\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\Build\Mono\Debug\MangaRack.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Build\Mono\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\Build\Mono\Release\MangaRack.xml</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AForge, Version=2.2.5.0, Culture=neutral, PublicKeyToken=c1db6ff4eaa06aeb, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AForge.2.2.5\lib\AForge.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Imaging, Version=2.2.5.0, Culture=neutral, PublicKeyToken=ba8ddea9676ca48b, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AForge.Imaging.2.2.5\lib\AForge.Imaging.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Math, Version=2.2.5.0, Culture=neutral, PublicKeyToken=abba2e25397ee8c9, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AForge.Math.2.2.5\lib\AForge.Math.dll</HintPath>
+    </Reference>
+    <Reference Include="CommandLine, Version=1.9.71.2, Culture=neutral, PublicKeyToken=de6f01bd326f8c32, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\CommandLineParser.1.9.71\lib\net35\CommandLine.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Drawing" />
+	<Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\MangaRack\Application.cs">
+      <Link>Application.cs</Link>
+    </Compile>
+    <Compile Include="..\..\MangaRack\Concrete\DataSource.cs">
+      <Link>Concrete\DataSource.cs</Link>
+    </Compile>
+    <Compile Include="..\..\MangaRack\Concrete\Options.cs">
+      <Link>Concrete\Options.cs</Link>
+    </Compile>
+    <Compile Include="..\..\MangaRack\Concrete\UnsafeParallel.cs">
+      <Link>Concrete\UnsafeParallel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\MangaRack\Extension\ExtensionForBitmap.cs">
+      <Link>Extension\ExtensionForBitmap.cs</Link>
+    </Compile>
+    <Compile Include="..\..\MangaRack\Extension\ExtensionForByteArray.cs">
+      <Link>Extension\ExtensionForByteArray.cs</Link>
+    </Compile>
+    <Compile Include="..\..\MangaRack\Extension\ExtensionForChapter.cs">
+      <Link>Extension\ExtensionForChapter.cs</Link>
+    </Compile>
+    <Compile Include="..\..\MangaRack\Extension\ExtensionForString.cs">
+      <Link>Extension\ExtensionForString.cs</Link>
+    </Compile>
+    <Compile Include="..\..\MangaRack\Extension\ExtensionForZipFile.cs">
+      <Link>Extension\ExtensionForZipFile.cs</Link>
+    </Compile>
+    <Compile Include="..\..\MangaRack\Properties\AssemblyInfo.cs">
+      <Link>Properties\AssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\MangaRack\Publisher.cs">
+      <Link>Publisher.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MangaRack.Core\MangaRack.Core.csproj">
+      <Project>{b607c003-c8ab-497d-bbb3-064dd5407b57}</Project>
+      <Name>MangaRack.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MangaRack.Provider.Batoto\MangaRack.Provider.Batoto.csproj">
+      <Project>{e0546636-b8a9-46b7-9fc6-97329caa6777}</Project>
+      <Name>MangaRack.Provider.Batoto</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MangaRack.Provider.KissManga\MangaRack.Provider.KissManga.csproj">
+      <Project>{43beed45-3a9a-4d0e-b5e8-b66b407c04fd}</Project>
+      <Name>MangaRack.Provider.KissManga</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MangaRack.Provider.MangaFox\MangaRack.Provider.MangaFox.csproj">
+      <Project>{ade13700-b08a-41aa-81ee-5985786dfdec}</Project>
+      <Name>MangaRack.Provider.MangaFox</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MangaRack.Provider\MangaRack.Provider.csproj">
+      <Project>{b6a7094c-b53f-478c-bd6a-ab13ce057a2d}</Project>
+      <Name>MangaRack.Provider</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B607C003-C8AB-497D-BBB3-064DD5407B57}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MangaRack.Core</RootNamespace>
+    <AssemblyName>MangaRack.Core</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Build\Mono\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\Build\Mono\Debug\MangaRack.Core.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Build\Mono\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\Build\Mono\Release\MangaRack.Core.xml</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Compile Include="..\..\MangaRack.Core\Abstract\IPublisher.cs">
+      <Link>Abstract\IPublisher.cs</Link>
+    </Compile>
+    <Compile Include="..\..\MangaRack.Core\Concrete\Publisher\Repair.cs">
+      <Link>Concrete\Publisher\Repair.cs</Link>
+    </Compile>
+    <Compile Include="..\..\MangaRack.Core\Concrete\Publisher\Synchronize.cs">
+      <Link>Concrete\Publisher\Synchronize.cs</Link>
+    </Compile>
+    <Compile Include="..\..\MangaRack.Core\Concrete\Xml\ComicInfo.cs">
+      <Link>Concrete\Xml\ComicInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\MangaRack.Core\Concrete\Xml\ComicInfoPage.cs">
+      <Link>Concrete\Xml\ComicInfoPage.cs</Link>
+    </Compile>
+    <Compile Include="..\..\MangaRack.Core\Concrete\Xml\ComicInfoPageCollection.cs">
+      <Link>Concrete\Xml\ComicInfoPageCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\..\MangaRack.Core\Concrete\Xml\ComicInfoSplitter.cs">
+      <Link>Concrete\Xml\ComicInfoSplitter.cs</Link>
+    </Compile>
+    <Compile Include="..\..\MangaRack.Core\Properties\AssemblyInfo.cs">
+      <Link>Properties\AssemblyInfo.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MangaRack.Provider\MangaRack.Provider.csproj">
+      <Project>{b6a7094c-b53f-478c-bd6a-ab13ce057a2d}</Project>
+      <Name>MangaRack.Provider</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

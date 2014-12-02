@@ -1,7 +1,8 @@
-Build/Debug
-Build/Release
-*\bin
-*\obj
+Build/.NET
+Build/Mono
+*/bin
+*/obj
+*/packages
 
 *.config
 *.exe

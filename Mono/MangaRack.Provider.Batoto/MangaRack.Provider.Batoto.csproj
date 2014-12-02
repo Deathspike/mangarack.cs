@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E0546636-B8A9-46B7-9FC6-97329CAA6777}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MangaRack.Provider.Batoto</RootNamespace>
+    <AssemblyName>MangaRack.Provider.Batoto</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Build\Mono\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\Build\Mono\Debug\MangaRack.Provider.Batoto.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Build\Mono\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\Build\Mono\Release\MangaRack.Provider.Batoto.xml</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="HtmlAgilityPack, Version=1.4.6.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\HtmlAgilityPack.1.4.6\lib\Net20\HtmlAgilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\MangaRack.Provider.Batoto\Batoto.cs">
+      <Link>Batoto.cs</Link>
+    </Compile>
+    <Compile Include="..\..\MangaRack.Provider.Batoto\Concrete\Chapter.cs">
+      <Link>Concrete\Chapter.cs</Link>
+    </Compile>
+    <Compile Include="..\..\MangaRack.Provider.Batoto\Concrete\Page.cs">
+      <Link>Concrete\Page.cs</Link>
+    </Compile>
+    <Compile Include="..\..\MangaRack.Provider.Batoto\Concrete\Provider.cs">
+      <Link>Concrete\Provider.cs</Link>
+    </Compile>
+    <Compile Include="..\..\MangaRack.Provider.Batoto\Concrete\Search.cs">
+      <Link>Concrete\Search.cs</Link>
+    </Compile>
+    <Compile Include="..\..\MangaRack.Provider.Batoto\Concrete\Series.cs">
+      <Link>Concrete\Series.cs</Link>
+    </Compile>
+    <Compile Include="..\..\MangaRack.Provider.Batoto\Extension\ExtensionForHtmlNode.cs">
+      <Link>Extension\ExtensionForHtmlNode.cs</Link>
+    </Compile>
+    <Compile Include="..\..\MangaRack.Provider.Batoto\Extension\ExtensionForString.cs">
+      <Link>Extension\ExtensionForString.cs</Link>
+    </Compile>
+    <Compile Include="..\..\MangaRack.Provider.Batoto\Properties\AssemblyInfo.cs">
+      <Link>Properties\AssemblyInfo.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MangaRack.Provider\MangaRack.Provider.csproj">
+      <Project>{b6a7094c-b53f-478c-bd6a-ab13ce057a2d}</Project>
+      <Name>MangaRack.Provider</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TinyHttp\TinyHttp.csproj">
+      <Project>{44e9168c-6f4d-496e-8fc4-22cdeb1614e5}</Project>
+      <Name>TinyHttp</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

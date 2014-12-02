@@ -3,56 +3,57 @@
 // License, version 2.0. If a copy of the MPL was not distributed with 
 // this file, you can obtain one at http://mozilla.org/MPL/2.0/.
 // ======================================================================
-using System.Diagnostics.Contracts;
-using System.Threading.Tasks;
-using MangaRack.Provider.Interfaces;
 
-namespace MangaRack.Provider.Batoto
-{
-    public class Batoto : IProvider
-    {
-        private readonly IProvider _provider;
+namespace MangaRack.Provider.Batoto {
+	/// <summary>
+	/// Represents a Batoto provider.
+	/// </summary>
+	public sealed class Batoto : IProvider {
+		/// <summary>
+		/// Contains the provider.
+		/// </summary>
+		private readonly IProvider _provider;
 
-        #region Constructor
+		#region Constructor
+		/// <summary>
+		/// Initialize a new instance of the Batoto class.
+		/// </summary>
+		private Batoto() {
+			// Set the provider.
+			_provider = new Provider();
+		}
+		#endregion
 
-        public Batoto()
-        {
-            _provider = new Internals.Provider();
-        }
+		#region IProvider:Methods
+		/// <summary>
+		/// Open a series.
+		/// </summary>
+		/// <param name="uniqueIdentifier">The unique identifier.</param>
+		public ISeries Open(string uniqueIdentifier) {
+			// Open a series.
+			return _provider.Open(uniqueIdentifier);
+		}
 
-        #endregion
+		/// <summary>
+		/// Search series.
+		/// </summary>
+		/// <param name="input">The input.</param>
+		public ISearch Search(string input) {
+			// Search series.
+			return _provider.Search(input);
+		}
+		#endregion
 
-        #region Contract
-
-        [ContractInvariantMethod]
-        private void ObjectInvariant()
-        {
-            Contract.Invariant(_provider != null);
-        }
-
-        #endregion
-
-        #region Implementation of IProvider:Methods
-
-        public ISeries Open(string location)
-        {
-            return _provider.Open(location);
-        }
-
-        public Task<ISearch> SearchAsync(string input)
-        {
-            return _provider.SearchAsync(input);
-        }
-
-        #endregion
-
-        #region Implementation of IProvider:Properties
-
-        public string Location
-        {
-            get { return _provider.Location; }
-        }
-
-        #endregion
-    }
+		#region IProvider:Properties
+		/// <summary>
+		/// Contains the location.
+		/// </summary>
+		public string Location {
+			get {
+				// Return the location.
+				return _provider.Location;
+			}
+		}
+		#endregion
+	}
 }

@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MangaRack</RootNamespace>
     <AssemblyName>MangaRack</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -18,25 +18,21 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\Build\Debug\</OutputPath>
+    <OutputPath>..\Build\.NET\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>
-    </DocumentationFile>
-    <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>..\Build\.NET\Debug\MangaRack.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\Build\Release\</OutputPath>
+    <OutputPath>..\Build\.NET\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>
-    </DocumentationFile>
-    <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>..\Build\.NET\Release\MangaRack.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AForge">
@@ -56,17 +52,17 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Xml" />
+	<Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Internals\UnsafeParallel.cs" />
-    <Compile Include="Internals\DataSource.cs" />
-    <Compile Include="Extensions\ExtensionForZipFile.cs" />
-    <Compile Include="Extensions\ExtensionForBitmap.cs" />
-    <Compile Include="Extensions\ExtensionForByteArray.cs" />
-    <Compile Include="Extensions\ExtensionForChapter.cs" />
-    <Compile Include="Extensions\ExtensionForString.cs" />
-    <Compile Include="Internals\Options.cs" />
+    <Compile Include="Concrete\UnsafeParallel.cs" />
+    <Compile Include="Concrete\DataSource.cs" />
+    <Compile Include="Extension\ExtensionForZipFile.cs" />
+    <Compile Include="Extension\ExtensionForBitmap.cs" />
+    <Compile Include="Extension\ExtensionForByteArray.cs" />
+    <Compile Include="Extension\ExtensionForChapter.cs" />
+    <Compile Include="Extension\ExtensionForString.cs" />
+    <Compile Include="Concrete\Options.cs" />
     <Compile Include="Application.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Publisher.cs" />

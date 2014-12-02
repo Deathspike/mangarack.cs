@@ -5,23 +5,18 @@
 // ======================================================================
 using ICSharpCode.SharpZipLib.Zip;
 using MangaRack.Core;
-using MangaRack.Core.Abstracts;
-using MangaRack.Core.Serializers;
-using MangaRack.Extensions;
-using MangaRack.Internals;
 using MangaRack.Provider;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using MangaRack.Provider.Interfaces;
 
 namespace MangaRack {
 	/// <summary>
 	/// Represents a publisher.
 	/// </summary>
-	class Publisher : IDisposable, IPublisher {
+	sealed class Publisher : IDisposable, IPublisher {
 		/// <summary>
 		/// Contains the begin time.
 		/// </summary>
