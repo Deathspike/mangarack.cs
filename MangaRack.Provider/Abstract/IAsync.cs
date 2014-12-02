@@ -5,17 +5,17 @@
 // ======================================================================
 using System;
 
-namespace MangaRack.Provider {
-	/// <summary>
-	/// Represents an asynchronous population.
-	/// </summary>
-	public interface IAsync<T> : IDisposable {
-		#region Methods
-		/// <summary>
-		/// Populate asynchronously.
-		/// </summary>
-		/// <param name="done">The callback.</param>
-		void Populate(Action<T> done);
-		#endregion
-	}
+namespace MangaRack.Provider.Abstract {
+    /// <summary>
+    /// Represents an asynchronous population.
+    /// </summary>
+    public interface IAsync<out T> : IDisposable {
+        #region Methods
+        /// <summary>
+        /// Populate asynchronously.
+        /// </summary>
+        /// <param name="done">The callback.</param>
+        void Populate(Action<T> done);
+        #endregion
+    }
 }

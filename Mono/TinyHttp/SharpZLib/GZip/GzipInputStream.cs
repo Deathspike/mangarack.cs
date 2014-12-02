@@ -1,44 +1,4 @@
 // GzipInputStream.cs
-//
-// Copyright (C) 2001 Mike Krueger
-//
-// This file was translated from java, it was part of the GNU Classpath
-// Copyright (C) 2001 Free Software Foundation, Inc.
-//
-// This program is free software; you can redistribute it and/or
-// modify it under the terms of the GNU General Public License
-// as published by the Free Software Foundation; either version 2
-// of the License, or (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-//
-// Linking this library statically or dynamically with other modules is
-// making a combined work based on this library.  Thus, the terms and
-// conditions of the GNU General Public License cover the whole
-// combination.
-// 
-// As a special exception, the copyright holders of this library give you
-// permission to link this library with independent modules to produce an
-// executable, regardless of the license terms of these independent
-// modules, and to copy and distribute the resulting executable under
-// terms of your choice, provided that you also meet, for each linked
-// independent module, the terms and conditions of the license of that
-// module.  An independent module is a module which is not derived from
-// or based on this library.  If you modify this library, you may extend
-// this exception to your version of the library, but you are not
-// obligated to do so.  If you do not wish to do so, delete this
-// exception statement from your version.
-
-// HISTORY
-//	2009-08-11	T9121	Geoff Hart Added Multi-member gzip support
-//	2012-06-03	Z-1802	Incorrect endianness and subfield in FEXTRA handling. 
 
 using System;
 using System.IO;
@@ -135,28 +95,16 @@ namespace ICSharpCode.SharpZipLib.GZip
 		/// <returns>Returns the number of bytes actually read.</returns>
 		public override int Read(byte[] buffer, int offset, int count) 
 		{
-			// A GZIP file can contain multiple blocks of compressed data, although this is quite rare.
-			// A compressed block could potentially be empty, so we need to loop until we reach EOF or
-			// we find data.
 			while (true) {
-
-				// If we haven't read the header for this block, read it
 				if (! readGZIPHeader) {
-
-					// Try to read header. If there is no header (0 bytes available), this is EOF. If there is
-					// an incomplete header, this will throw an exception.
 					if (! ReadHeader()) {
 						return 0;
 					}
 				}
-
-				// Try to read compressed data
 				int bytesRead = base.Read(buffer, offset, count);
 				if (bytesRead > 0) {
 					crc.Update(buffer, offset, bytesRead);
 				}
-
-				// If this is the end of stream, read the footer
 				if (inf.IsFinished) {
 					ReadFooter();
 				}
@@ -171,20 +119,13 @@ namespace ICSharpCode.SharpZipLib.GZip
 		#region Support routines
 		bool ReadHeader() 
 		{
-			// Initialize CRC for this block
 			crc = new Crc32();
-
-			// Make sure there is data in file. We can't rely on ReadLeByte() to fill the buffer, as this could be EOF,
-			// which is fine, but ReadLeByte() throws an exception if it doesn't find data, so we do this part ourselves.
 			if (inputBuffer.Available <= 0) {
 				inputBuffer.Fill();
 				if (inputBuffer.Available <= 0) {
-					// No header, EOF.
 					return false;
 				}
 			}
-
-			// 1. Check the two magic bytes
 			Crc32 headCRC = new Crc32();
 			int magic = inputBuffer.ReadLeByte();
 
@@ -209,8 +150,6 @@ namespace ICSharpCode.SharpZipLib.GZip
 			}
 
 			headCRC.Update(magic);
-
-			// 2. Check the compression type (must be 8)
 			int compressionType = inputBuffer.ReadLeByte();
 
 			if ( compressionType < 0 ) {
@@ -221,8 +160,6 @@ namespace ICSharpCode.SharpZipLib.GZip
 				throw new GZipException("Error GZIP header, data not in deflate format");
 			}
 			headCRC.Update(compressionType);
-
-			// 3. Check the flags
 			int flags = inputBuffer.ReadLeByte();
 			if (flags < 0) {
 				throw new EndOfStreamException("EOS reading GZIP header");
@@ -241,13 +178,9 @@ namespace ICSharpCode.SharpZipLib.GZip
 			bit 7   reserved
 			*/
 
-			// 3.1 Check the reserved bits are zero
-
 			if ((flags & 0xE0) != 0) {
 				throw new GZipException("Reserved flag bits in GZIP header != 0");
 			}
-
-			// 4.-6. Skip the modification time, extra flags, and OS type
 			for (int i=0; i< 6; i++) {
 				int readByte = inputBuffer.ReadLeByte();
 				if (readByte < 0) {
@@ -255,11 +188,7 @@ namespace ICSharpCode.SharpZipLib.GZip
 				}
 				headCRC.Update(readByte);
 			}
-
-			// 7. Read extra field
 			if ((flags & GZipConstants.FEXTRA) != 0) {
-
-				// XLEN is total length of extra subfields, we will skip them all
 				int len1, len2;
 				len1 = inputBuffer.ReadLeByte();
 				len2 = inputBuffer.ReadLeByte();
@@ -269,7 +198,7 @@ namespace ICSharpCode.SharpZipLib.GZip
 				headCRC.Update(len1);
 				headCRC.Update(len2);
 
-				int extraLen = (len2 << 8) | len1;		// gzip is LSB first
+				int extraLen = (len2 << 8) | len1;
 				for (int i = 0; i < extraLen;i++) {
 					int readByte = inputBuffer.ReadLeByte();
 					if (readByte < 0) 
@@ -279,8 +208,6 @@ namespace ICSharpCode.SharpZipLib.GZip
 					headCRC.Update(readByte);
 				}
 			}
-
-			// 8. Read file name
 			if ((flags & GZipConstants.FNAME) != 0) {
 				int readByte;
 				while ( (readByte = inputBuffer.ReadLeByte()) > 0) {
@@ -292,8 +219,6 @@ namespace ICSharpCode.SharpZipLib.GZip
 				}
 				headCRC.Update(readByte);
 			}
-
-			// 9. Read comment
 			if ((flags & GZipConstants.FCOMMENT) != 0) {
 				int readByte;
 				while ( (readByte = inputBuffer.ReadLeByte()) > 0) {
@@ -306,8 +231,6 @@ namespace ICSharpCode.SharpZipLib.GZip
 
 				headCRC.Update(readByte);
 			}
-
-			// 10. Read header CRC
 			if ((flags & GZipConstants.FHCRC) != 0) {
 				int tempByte;
 				int crcval = inputBuffer.ReadLeByte();
@@ -333,29 +256,21 @@ namespace ICSharpCode.SharpZipLib.GZip
 		void ReadFooter() 
 		{
 			byte[] footer = new byte[8];
-
-			// End of stream; reclaim all bytes from inf, read the final byte count, and reset the inflator
 			long bytesRead = inf.TotalOut & 0xffffffff;
 			inputBuffer.Available += inf.RemainingInput;
-			inf.Reset();            
-
-			// Read footer from inputBuffer
+			inf.Reset();
 			int needed = 8;
 			while (needed > 0) {
 				int count = inputBuffer.ReadClearTextBuffer(footer, 8 - needed, needed);
 				if (count <= 0) {
 					throw new EndOfStreamException("EOS reading GZIP footer");
 				}
-				needed -= count; // Jewel Jan 16
+				needed -= count;
 			}
-
-			// Calculate CRC
 			int crcval = (footer[0] & 0xff) | ((footer[1] & 0xff) << 8) | ((footer[2] & 0xff) << 16) | (footer[3] << 24);
 			if (crcval != (int) crc.Value) {
 				throw new GZipException("GZIP crc sum mismatch, theirs \"" + crcval + "\" and ours \"" + (int) crc.Value);
 			}
-
-			// NOTE The total here is the original total modulo 2 ^ 32.
 			uint total = 
 				(uint)((uint)footer[4] & 0xff) |
 				(uint)(((uint)footer[5] & 0xff) << 8) |
@@ -365,8 +280,6 @@ namespace ICSharpCode.SharpZipLib.GZip
 			if (bytesRead != total) {
 				throw new GZipException("Number of bytes mismatch in footer");
 			}
-
-			// Mark header read as false so if another header exists, we'll continue reading through the file
 			readGZIPHeader = false;
 		}
 		#endregion

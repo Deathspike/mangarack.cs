@@ -1,41 +1,4 @@
 // DeflaterHuffman.cs
-//
-// Copyright (C) 2001 Mike Krueger
-// Copyright (C) 2004 John Reilly
-//
-// This file was translated from java, it was part of the GNU Classpath
-// Copyright (C) 2001 Free Software Foundation, Inc.
-//
-// This program is free software; you can redistribute it and/or
-// modify it under the terms of the GNU General Public License
-// as published by the Free Software Foundation; either version 2
-// of the License, or (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-//
-// Linking this library statically or dynamically with other modules is
-// making a combined work based on this library.  Thus, the terms and
-// conditions of the GNU General Public License cover the whole
-// combination.
-// 
-// As a special exception, the copyright holders of this library give you
-// permission to link this library with independent modules to produce an
-// executable, regardless of the license terms of these independent
-// modules, and to copy and distribute the resulting executable under
-// terms of your choice, provided that you also meet, for each linked
-// independent module, the terms and conditions of the license of that
-// module.  An independent module is a module which is not derived from
-// or based on this library.  If you modify this library, you may extend
-// this exception to your version of the library, but you are not
-// obligated to do so.  If you do not wish to do so, delete this
-// exception statement from your version.
 
 using System;
 
@@ -54,23 +17,13 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 	{
 		const  int BUFSIZE = 1 << (DeflaterConstants.DEFAULT_MEM_LEVEL + 6);
 		const  int LITERAL_NUM = 286;
-
-		// Number of distance codes
 		const  int DIST_NUM = 30;
-		// Number of codes used to transfer bit lengths
 		const  int BITLEN_NUM = 19;
-
-		// repeat previous bit length 3-6 times (2 bits of repeat count)
 		const  int REP_3_6    = 16;
-		// repeat a zero length 3-10 times  (3 bits of repeat count)
 		const  int REP_3_10   = 17;
-		// repeat a zero length 11-138 times  (7 bits of repeat count)
 		const  int REP_11_138 = 18;
 
 		const  int EOF_SYMBOL = 256;
-
-		// The lengths of the bit length codes are sent in order of decreasing
- 		// probability, to avoid transmitting the lengths for unused bit length codes.
 		static readonly int[] BL_ORDER = { 16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15 };
 		
 		static readonly byte[] bit4Reverse = {
@@ -140,10 +93,6 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 			
 			public void WriteSymbol(int code)
 			{
-				//				if (DeflaterConstants.DEBUGGING) {
-				//					freqs[code]--;
-				//					//  	  Console.Write("writeSymbol("+freqs.length+","+code+"): ");
-				//				}
 				dh.pending.WriteBits(codes[code] & 0xffff, length[code]);
 			}
 			
@@ -190,18 +139,9 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 
 				codes = new short[freqs.Length];
 				
-				//				if (DeflaterConstants.DEBUGGING) {
-				//					//Console.WriteLine("buildCodes: "+freqs.Length);
-				//				}
-				
 				for (int bits = 0; bits < maxLength; bits++) {
 					nextCode[bits] = code;
 					code += bl_counts[bits] << (15 - bits);
-
-					//					if (DeflaterConstants.DEBUGGING) {
-					//						//Console.WriteLine("bits: " + ( bits + 1) + " count: " + bl_counts[bits]
-					//						                  +" nextCode: "+code);
-					//					}
 				}
 
 #if DebugDeflation
@@ -213,11 +153,6 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 				for (int i=0; i < numCodes; i++) {
 					int bits = length[i];
 					if (bits > 0) {
-
-						//						if (DeflaterConstants.DEBUGGING) {
-						//								//Console.WriteLine("codes["+i+"] = rev(" + nextCode[bits-1]+"),
-						//								                  +bits);
-						//						}
 
 						codes[i] = BitReverse(nextCode[bits-1]);
 						nextCode[bits-1] += 1 << (16 - bits);
@@ -243,7 +178,6 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 				for (int n = 0; n < numSymbols; n++) {
 					int freq = freqs[n];
 					if (freq != 0) {
-						// Insert n into heap
 						int pos = heapLen++;
 						int ppos;
 						while (pos > 0 && freqs[heap[ppos = (pos - 1) / 2]] > freq) {
@@ -286,8 +220,6 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 				do {
 					int first = heap[0];
 					int last  = heap[--heapLen];
-					
-					// Propagate the hole to the leafs of the heap
 					int ppos = 0;
 					int path = 1;
 					
@@ -312,15 +244,11 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 					
 					
 					int second = heap[0];
-					
-					// Create a new node father of first and second
 					last = numNodes++;
 					childs[2 * last] = first;
 					childs[2 * last + 1] = second;
 					int mindepth = Math.Min(values[first] & 0xff, values[second] & 0xff);
 					values[last] = lastVal = values[first] + values[second] - mindepth + 1;
-					
-					// Again, propagate the hole to the leafs
 					ppos = 0;
 					path = 1;
 					
@@ -333,8 +261,6 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 						ppos = path;
 						path = ppos * 2 + 1;
 					}
-						
-					// Now propagate the new element down along path
 					while ((path = ppos) > 0 && values[heap[ppos = (path - 1)/2]] > lastVal) {
 						heap[path] = heap[ppos];
 					}
@@ -415,10 +341,10 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 			/// <param name="blTree">Tree to write</param>
 			public void WriteTree(Tree blTree)
 			{
-				int max_count;               // max repeat count
-				int min_count;               // min repeat count
-				int count;                   // repeat count of the current code
-				int curlen = -1;             // length of current code
+				int max_count;
+				int min_count;
+				int count;
+				int curlen = -1;
 				
 				int i = 0;
 				while (i < numCodes) {
@@ -472,8 +398,6 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 				for (int i = 0; i < maxLength; i++) {
 					bl_counts[i] = 0;
 				}
-				
-				// First calculate optimal bit lengths
 				int[] lengths = new int[numNodes];
 				lengths[numNodes-1] = 0;
 				
@@ -486,20 +410,11 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 						}
 						lengths[childs[2 * i]] = lengths[childs[2 * i + 1]] = bitLength;
 					} else {
-						// A leaf node
 						int bitLength = lengths[i];
 						bl_counts[bitLength - 1]++;
 						this.length[childs[2*i]] = (byte) lengths[i];
 					}
 				}
-				
-				//				if (DeflaterConstants.DEBUGGING) {
-				//					//Console.WriteLine("Tree "+freqs.Length+" lengths:");
-				//					for (int i=0; i < numLeafs; i++) {
-				//						//Console.WriteLine("Node "+childs[2*i]+" freq: "+freqs[childs[2*i]]
-				//						                  + " len: "+length[childs[2*i]]);
-				//					}
-				//				}
 				
 				if (overflow == 0) {
 					return;
@@ -507,12 +422,8 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 				
 				int incrBitLen = maxLength - 1;
 				do {
-					// Find the first bit length which could increase:
 					while (bl_counts[--incrBitLen] == 0)
 						;
-					
-					// Move this node one down and remove a corresponding
-					// number of overflow nodes.
 					do {
 						bl_counts[incrBitLen]--;
 						bl_counts[++incrBitLen]++;
@@ -540,19 +451,11 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 					while (n > 0) {
 						int childPtr = 2*childs[nodePtr++];
 						if (childs[childPtr + 1] == -1) {
-							// We found another leaf
 							length[childs[childPtr]] = (byte) bits;
 							n--;
 						}
 					}
 				}
-				//				if (DeflaterConstants.DEBUGGING) {
-				//					//Console.WriteLine("*** After overflow elimination. ***");
-				//					for (int i=0; i < numLeafs; i++) {
-				//						//Console.WriteLine("Node "+childs[2*i]+" freq: "+freqs[childs[2*i]]
-				//						                  + " len: "+length[childs[2*i]]);
-				//					}
-				//				}
 			}
 			
 		}
@@ -566,8 +469,6 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 		Tree literalTree;
 		Tree distTree;
 		Tree blTree;
-		
-		// Buffer for distances
 		short[] d_buf;
 		byte[]  l_buf;
 		int last_lit;
@@ -576,8 +477,6 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 
 		static DeflaterHuffman() 
 		{
-			// See RFC 1951 3.2.6
-			// Literal codes
 			staticLCodes = new short[LITERAL_NUM];
 			staticLLength = new byte[LITERAL_NUM];
 
@@ -601,8 +500,6 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 				staticLCodes[i] = BitReverse((0x0c0 - 280 + i)  << 8);
 				staticLLength[i++] = 8;
 			}
-			
-			// Distance codes
 			staticDCodes = new short[DIST_NUM];
 			staticDLength = new byte[DIST_NUM];
 			for (i = 0; i < DIST_NUM; i++) {
@@ -673,9 +570,6 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 				int litlen = l_buf[i] & 0xff;
 				int dist = d_buf[i];
 				if (dist-- != 0) {
-					//					if (DeflaterConstants.DEBUGGING) {
-					//						Console.Write("["+(dist+1)+","+(litlen+3)+"]: ");
-					//					}
 					
 					int lc = Lcode(litlen);
 					literalTree.WriteSymbol(lc);
@@ -693,13 +587,6 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 						pending.WriteBits(dist & ((1 << bits) - 1), bits);
 					}
 				} else {
-					//					if (DeflaterConstants.DEBUGGING) {
-					//						if (litlen > 32 && litlen < 127) {
-					//							Console.Write("("+(char)litlen+"): ");
-					//						} else {
-					//							Console.Write("{"+litlen+"}: ");
-					//						}
-					//					}
 					literalTree.WriteSymbol(litlen);
 				}
 			}
@@ -729,9 +616,6 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 		public void FlushStoredBlock(byte[] stored, int storedOffset, int storedLength, bool lastBlock)
 		{
 #if DebugDeflation
-			//			if (DeflaterConstants.DEBUGGING) {
-			//				//Console.WriteLine("Flushing stored block "+ storedLength);
-			//			}
 #endif
 			pending.WriteBits((DeflaterConstants.STORED_BLOCK << 1) + (lastBlock ? 1 : 0), 3);
 			pending.AlignToByte();
@@ -751,16 +635,10 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 		public void FlushBlock(byte[] stored, int storedOffset, int storedLength, bool lastBlock)
 		{
 			literalTree.freqs[EOF_SYMBOL]++;
-			
-			// Build trees
 			literalTree.BuildTree();
 			distTree.BuildTree();
-			
-			// Calculate bitlen frequency
 			literalTree.CalcBLFreq(blTree);
 			distTree.CalcBLFreq(blTree);
-			
-			// Build bitlen tree
 			blTree.BuildTree();
 			
 			int blTreeCodes = 4;
@@ -781,27 +659,18 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 				static_len += distTree.freqs[i] * staticDLength[i];
 			}
 			if (opt_len >= static_len) {
-				// Force static trees
 				opt_len = static_len;
 			}
 			
 			if (storedOffset >= 0 && storedLength + 4 < opt_len >> 3) {
-				// Store Block
-
-				//				if (DeflaterConstants.DEBUGGING) {
-				//					//Console.WriteLine("Storing, since " + storedLength + " < " + opt_len
-				//					                  + " <= " + static_len);
-				//				}
 				FlushStoredBlock(stored, storedOffset, storedLength, lastBlock);
 			} else if (opt_len == static_len) {
-				// Encode with static tree
 				pending.WriteBits((DeflaterConstants.STATIC_TREES << 1) + (lastBlock ? 1 : 0), 3);
 				literalTree.SetStaticCodes(staticLCodes, staticLLength);
 				distTree.SetStaticCodes(staticDCodes, staticDLength);
 				CompressBlock();
 				Reset();
 			} else {
-				// Encode with dynamic tree
 				pending.WriteBits((DeflaterConstants.DYN_TREES << 1) + (lastBlock ? 1 : 0), 3);
 				SendAllTrees(blTreeCodes);
 				CompressBlock();
@@ -825,13 +694,6 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 		/// <returns>Value indicating internal buffer is full</returns>
 		public bool TallyLit(int literal)
 		{
-			//			if (DeflaterConstants.DEBUGGING) {
-			//				if (lit > 32 && lit < 127) {
-			//					//Console.WriteLine("("+(char)lit+")");
-			//				} else {
-			//					//Console.WriteLine("{"+lit+"}");
-			//				}
-			//			}
 			d_buf[last_lit] = 0;
 			l_buf[last_lit++] = (byte)literal;
 			literalTree.freqs[literal]++;
@@ -846,9 +708,6 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 		/// <returns>Value indicating if internal buffer is full</returns>
 		public bool TallyDist(int distance, int length)
 		{
-			//			if (DeflaterConstants.DEBUGGING) {
-			//				//Console.WriteLine("[" + distance + "," + length + "]");
-			//			}
 			
 			d_buf[last_lit]   = (short)distance;
 			l_buf[last_lit++] = (byte)(length - 3);

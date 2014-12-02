@@ -1,8 +1,4 @@
 ﻿// ======================================================================
-// This source code form is subject to the terms of the Mozilla Public
-// License, version 2.0. If a copy of the MPL was not distributed with 
-// this file, you can obtain one at http://mozilla.org/MPL/2.0/.
-// ======================================================================
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -19,11 +15,8 @@ namespace MangaRack.Internals {
 		/// Initialize a new instance of the Options class.
 		/// </summary>
 		public Options() {
-			// Set the file extension for each output file.
 			FileExtension = "cbz";
-			// Set the maximum degree of parallelism.
 			MaximumParallelWorkerThreads = Environment.ProcessorCount;
-			// Set the batch-mode source file.
 			SourceFile = string.Format("{0}.txt", Assembly.GetExecutingAssembly().GetName().Name);
 		}
 		#endregion
@@ -34,11 +27,8 @@ namespace MangaRack.Internals {
 		/// </summary>
 		[HelpOption]
 		public override string ToString() {
-			// Create a new instance of the HelpText class using common values.
 			var text = HelpText.AutoBuild(this);
-			// Add a text line before options usage strings.
 			text.AddPreOptionsLine("\r\n  Usage: mangarack [options] [location, ...]");
-			// Return the text.
 			return text.ToString();
 		}
 		#endregion

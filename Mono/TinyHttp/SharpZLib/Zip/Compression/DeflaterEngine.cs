@@ -1,41 +1,4 @@
 // DeflaterEngine.cs
-//
-// Copyright (C) 2001 Mike Krueger
-// Copyright (C) 2004 John Reilly
-//
-// This file was translated from java, it was part of the GNU Classpath
-// Copyright (C) 2001 Free Software Foundation, Inc.
-//
-// This program is free software; you can redistribute it and/or
-// modify it under the terms of the GNU General Public License
-// as published by the Free Software Foundation; either version 2
-// of the License, or (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-//
-// Linking this library statically or dynamically with other modules is
-// making a combined work based on this library.  Thus, the terms and
-// conditions of the GNU General Public License cover the whole
-// combination.
-// 
-// As a special exception, the copyright holders of this library give you
-// permission to link this library with independent modules to produce an
-// executable, regardless of the license terms of these independent
-// modules, and to copy and distribute the resulting executable under
-// terms of your choice, provided that you also meet, for each linked
-// independent module, the terms and conditions of the license of that
-// module.  An independent module is a module which is not derived from
-// or based on this library.  If you modify this library, you may extend
-// this exception to your version of the library, but you are not
-// obligated to do so.  If you do not wish to do so, delete this
-// exception statement from your version.
 
 using System;
 
@@ -69,19 +32,6 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 		HuffmanOnly = 2
 	}
 
-	// DEFLATE ALGORITHM:
-	// 
-	// The uncompressed stream is inserted into the window array.  When
-	// the window array is full the first half is thrown away and the
-	// second half is copied to the beginning.
-	//
-	// The head array is a hash table.  Three characters build a hash value
-	// and they the value points to the corresponding index in window of 
-	// the last string with this hash.  The prev array implements a
-	// linked list of matches with the same hash: prev[index & WMASK] points
-	// to the previous index with the same hash.
-	// 
-
 	
 	/// <summary>
 	/// Low level compression engine for deflate algorithm which uses a 32K sliding window
@@ -109,9 +59,6 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 			window = new byte[2 * WSIZE];
 			head   = new short[HASH_SIZE];
 			prev   = new short[WSIZE];
-			
-			// We start at index 1, to avoid an implementation deficiency, that
-			// we cannot build a repeat pattern at index 0.
 			blockStart = strstart = 1;
 		}
 
@@ -151,7 +98,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 					default:
 						throw new InvalidOperationException("unknown compressionFunction");
 				}
-			} while (pending.IsFlushed && progress); // repeat while we have no pending output and progress was made
+			} while (pending.IsFlushed && progress);
 			return progress;
 		}
 
@@ -449,15 +396,10 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 			matchStart -= WSIZE;
 			strstart   -= WSIZE;
 			blockStart -= WSIZE;
-			
-			// Slide the hash table (could be avoided with 32 bit values
-			// at the expense of memory usage).
 			for (int i = 0; i < HASH_SIZE; ++i) {
 				int m = head[i] & 0xffff;
 				head[i] = (short)(m >= WSIZE ? (m - WSIZE) : 0);
 			}
-			
-			// Slide the prev table.
 			for (int i = 0; i < WSIZE; i++) {
 				int m = prev[i] & 0xffff;
 				prev[i] = (short)(m >= WSIZE ? (m - WSIZE) : 0);
@@ -489,8 +431,6 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 			int strend = strstart + MAX_MATCH - 1;
 			byte scan_end1 = window[best_end - 1];
 			byte scan_end  = window[best_end];
-			
-			// Do not waste too much time if we already have a good match:
 			if (best_len >= this.goodLength) {
 				chainLength >>= 2;
 			}
@@ -543,7 +483,6 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 					window[++scan] == window[++match] &&
 					(scan < strend))
 				{
-					// Do nothing
 				}
 				
 				if (scan > best_end) {
@@ -580,8 +519,8 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 			
 			int storedLength = strstart - blockStart;
 			
-			if ((storedLength >= DeflaterConstants.MAX_BLOCK_SIZE) || // Block is full
-				(blockStart < WSIZE && storedLength >= MAX_DIST) ||   // Block may move out of window
+			if ((storedLength >= DeflaterConstants.MAX_BLOCK_SIZE) ||
+				(blockStart < WSIZE && storedLength >= MAX_DIST) ||
 				flush) {
 				bool lastBlock = finish;
 				if (storedLength > DeflaterConstants.MAX_BLOCK_SIZE) {
@@ -611,7 +550,6 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 			
 			while (lookahead >= MIN_LOOKAHEAD || flush) {
 				if (lookahead == 0) {
-					// We are flushing everything
 					huffman.FlushBlock(window, blockStart, strstart - blockStart, finish);
 					blockStart = strstart;
 					return false;
@@ -631,7 +569,6 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 					strategy != DeflateStrategy.HuffmanOnly &&
 					strstart - hashHead <= MAX_DIST && 
 					FindLongestMatch(hashHead)) {
-					// longestMatch sets matchStart and matchLen
 #if DebugDeflation
 					if (DeflaterConstants.DEBUGGING) 
 					{
@@ -663,7 +600,6 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 						continue;
 					}
 				} else {
-					// No match found
 					huffman.TallyLit(window[strstart] & 0xff);
 					++strstart;
 					--lookahead;
@@ -691,8 +627,6 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 						huffman.TallyLit(window[strstart-1] & 0xff);
 					}
 					prevAvailable = false;
-					
-					// We are flushing everything
 #if DebugDeflation
 					if (DeflaterConstants.DEBUGGING && !flush) 
 					{
@@ -723,17 +657,11 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 						hashHead != 0 &&
 						strstart - hashHead <= MAX_DIST &&
 						FindLongestMatch(hashHead)) {
-						
-						// longestMatch sets matchStart and matchLen
-							
-						// Discard match if too small and too far away
 						if (matchLen <= 5 && (strategy == DeflateStrategy.Filtered || (matchLen == MIN_MATCH && strstart - matchStart > TooFar))) {
 							matchLen = MIN_MATCH - 1;
 						}
 					}
 				}
-				
-				// previous match was better
 				if ((prevLen >= MIN_MATCH) && (matchLen <= prevLen) ) {
 #if DebugDeflation
 					if (DeflaterConstants.DEBUGGING) 
@@ -782,8 +710,6 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 		}
 		
 		#region Instance Fields
-
-		// Hash index of string to be inserted
 		int ins_h;
 
 		/// <summary>
@@ -804,9 +730,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 		short[] prev;
 		
 		int    matchStart;
-		// Length of best match
 		int    matchLen;
-		// Set if previous match exists
 		bool   prevAvailable;
 		int    blockStart;
 

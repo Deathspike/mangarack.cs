@@ -1,8 +1,4 @@
 ﻿// ======================================================================
-// This source code form is subject to the terms of the Mozilla Public
-// License, version 2.0. If a copy of the MPL was not distributed with 
-// this file, you can obtain one at http://mozilla.org/MPL/2.0/.
-// ======================================================================
 using System.IO;
 using ICSharpCode.SharpZipLib.Zip;
 
@@ -23,7 +19,6 @@ namespace MangaRack.Internals {
 		/// <param name="buffer">The buffer.</param>
 		public DataSource(byte[] buffer)
 			: this(new MemoryStream(buffer)) {
-			// Stop the function.
 			return;
 		}
 
@@ -32,7 +27,6 @@ namespace MangaRack.Internals {
 		/// </summary>
 		/// <param name="stream">The stream.</param>
 		public DataSource(Stream stream) {
-			// Set the stream.
 			_stream = stream;
 		}
 		#endregion
@@ -42,7 +36,6 @@ namespace MangaRack.Internals {
 		/// Gets the source.
 		/// </summary>
 		public Stream GetSource() {
-			// Return the stream.
 			return _stream;
 		}
 		#endregion

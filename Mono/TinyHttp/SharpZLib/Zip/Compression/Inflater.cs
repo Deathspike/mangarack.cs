@@ -1,41 +1,4 @@
 // Inflater.cs
-//
-// Copyright (C) 2001 Mike Krueger
-// Copyright (C) 2004 John Reilly
-//
-// This file was translated from java, it was part of the GNU Classpath
-// Copyright (C) 2001 Free Software Foundation, Inc.
-//
-// This program is free software; you can redistribute it and/or
-// modify it under the terms of the GNU General Public License
-// as published by the Free Software Foundation; either version 2
-// of the License, or (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software
-// Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-//
-// Linking this library statically or dynamically with other modules is
-// making a combined work based on this library.  Thus, the terms and
-// conditions of the GNU General Public License cover the whole
-// combination.
-// 
-// As a special exception, the copyright holders of this library give you
-// permission to link this library with independent modules to produce an
-// executable, regardless of the license terms of these independent
-// modules, and to copy and distribute the resulting executable under
-// terms of your choice, provided that you also meet, for each linked
-// independent module, the terms and conditions of the license of that
-// module.  An independent module is a module which is not derived from
-// or based on this library.  If you modify this library, you may extend
-// this exception to your version of the library, but you are not
-// obligated to do so.  If you do not wish to do so, delete this
-// exception statement from your version.
 
 using System;
 
@@ -246,8 +209,6 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 				return false;
 			}
 			input.DropBits(16);
-			
-			// The header is written in "wrong" byte order
 			header = ((header << 8) | (header >> 8)) & 0xffff;
 			if (header % 31 != 0) {
 				throw new SharpZipBaseException("Header checksum illegal");
@@ -264,7 +225,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 			int max_wbits = ((header & 0x7000) >> 12) + 8;
 			*/
 			
-			if ((header & 0x0020) == 0) { // Dictionary flag?
+			if ((header & 0x0020) == 0) {
 				mode = DECODE_BLOCKS;
 			} else {
 				mode = DECODE_DICT;
@@ -312,7 +273,6 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 				switch (mode) 
 				{
 					case DECODE_HUFFMAN:
-						// This is the inner loop so it is optimized a bit
 						while (((symbol = litlenTree.GetSymbol(input)) & ~0xff) == 0) 
 						{
 							outputWindow.Write(symbol);
@@ -330,7 +290,6 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 							} 
 							else 
 							{
-								// symbol == 256: end of block
 								distTree = null;
 								litlenTree = null;
 								mode = DECODE_BLOCKS;
@@ -347,7 +306,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 						{
 							throw new SharpZipBaseException("Illegal rep length code");
 						}
-						goto case DECODE_HUFFMAN_LENBITS; // fall through
+						goto case DECODE_HUFFMAN_LENBITS;
 						
 					case DECODE_HUFFMAN_LENBITS:
 						if (neededBits > 0) 
@@ -362,7 +321,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 							repLength += i;
 						}
 						mode = DECODE_HUFFMAN_DIST;
-						goto case DECODE_HUFFMAN_DIST; // fall through
+						goto case DECODE_HUFFMAN_DIST;
 						
 					case DECODE_HUFFMAN_DIST:
 						symbol = distTree.GetSymbol(input);
@@ -381,7 +340,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 							throw new SharpZipBaseException("Illegal rep dist code");
 						}
 						
-						goto case DECODE_HUFFMAN_DISTBITS; // fall through
+						goto case DECODE_HUFFMAN_DISTBITS;
 						
 					case DECODE_HUFFMAN_DISTBITS:
 						if (neededBits > 0) 
@@ -507,7 +466,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 					input.DropBits(16);
 					mode = DECODE_STORED_LEN2;
 				}
-					goto case DECODE_STORED_LEN2; // fall through
+					goto case DECODE_STORED_LEN2;
 					
 				case DECODE_STORED_LEN2: 
 				{
@@ -521,7 +480,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 					}
 					mode = DECODE_STORED;
 				}
-					goto case DECODE_STORED; // fall through
+					goto case DECODE_STORED;
 					
 				case DECODE_STORED: 
 				{
@@ -542,7 +501,7 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 					litlenTree = dynHeader.BuildLitLenTree();
 					distTree = dynHeader.BuildDistTree();
 					mode = DECODE_HUFFMAN;
-					goto case DECODE_HUFFMAN; // fall through
+					goto case DECODE_HUFFMAN;
 					
 				case DECODE_HUFFMAN:
 				case DECODE_HUFFMAN_LENBITS:
@@ -740,11 +699,9 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 			if ( offset + count > buffer.Length ) {
 				throw new ArgumentException("count exceeds buffer bounds");
 			}
-
-			// Special case: count may be zero
 			if (count == 0) 
 			{
-				if (!IsFinished) { // -jr- 08-Nov-2003 INFLATE_BUG fix..
+				if (!IsFinished) {
 					Decode();
 				}
 				return 0;
@@ -855,7 +812,6 @@ namespace ICSharpCode.SharpZipLib.Zip.Compression
 		/// The number of bytes of the input which have not been processed.
 		/// </returns>
 		public int RemainingInput {
-			// TODO: This should be a long?
 			get {
 				return input.AvailableBytes;
 			}

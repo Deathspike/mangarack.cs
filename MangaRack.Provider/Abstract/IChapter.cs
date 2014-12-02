@@ -5,41 +5,41 @@
 // ======================================================================
 using System.Collections.Generic;
 
-namespace MangaRack.Provider {
-	/// <summary>
-	/// Represents a chapter.
-	/// </summary>
-	public interface IChapter : IAsync<IChapter> {
-		#region Properties
-		/// <summary>
-		/// Contains each child.
-		/// </summary>
-		IEnumerable<IPage> Children { get; }
+namespace MangaRack.Provider.Abstract {
+    /// <summary>
+    /// Represents a chapter.
+    /// </summary>
+    public interface IChapter : IAsync<IChapter> {
+        #region Properties
+        /// <summary>
+        /// Contains each child.
+        /// </summary>
+        IEnumerable<IPage> Children { get; }
 
-		/// <summary>
-		/// Contains the location.
-		/// </summary>
-		string Location { get; }
+        /// <summary>
+        /// Contains the location.
+        /// </summary>
+        string Location { get; }
 
-		/// <summary>
-		/// Contains the number.
-		/// </summary>
-		double Number { get; }
+        /// <summary>
+        /// Contains the number.
+        /// </summary>
+        double Number { get; }
 
-		/// <summary>
-		/// Contains the title.
-		/// </summary>
-		string Title { get; }
+        /// <summary>
+        /// Contains the title.
+        /// </summary>
+        string Title { get; }
 
-		/// <summary>
-		/// Contains the unique identifier.
-		/// </summary>
-		string UniqueIdentifier { get; }
+        /// <summary>
+        /// Contains the unique identifier.
+        /// </summary>
+        string UniqueIdentifier { get; }
 
-		/// <summary>
-		/// Contains the volume.
-		/// </summary>
-		double Volume { get; }
-		#endregion
-	}
+        /// <summary>
+        /// Contains the volume.
+        /// </summary>
+        double Volume { get; }
+        #endregion
+    }
 }

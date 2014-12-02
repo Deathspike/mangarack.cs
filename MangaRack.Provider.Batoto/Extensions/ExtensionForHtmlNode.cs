@@ -1,8 +1,4 @@
 ﻿// ======================================================================
-// This source code form is subject to the terms of the Mozilla Public
-// License, version 2.0. If a copy of the MPL was not distributed with 
-// this file, you can obtain one at http://mozilla.org/MPL/2.0/.
-// ======================================================================
 using HtmlAgilityPack;
 
 namespace MangaRack.Provider.Batoto.Extensions {
@@ -16,17 +12,12 @@ namespace MangaRack.Provider.Batoto.Extensions {
 		/// </summary>
 		/// <param name="node">The node.</param>
 		public static HtmlNode LastElement(this HtmlNode node) {
-			// Initialize the result.
 			var result = null as HtmlNode;
-			// Iterate through each child node.
 			foreach (var childNode in node.ChildNodes) {
-				// Check if this is an element.
 				if (childNode.NodeType == HtmlNodeType.Element) {
-					// Set the result.
 					result = childNode;
 				}
 			}
-			// Return the result.
 			return result;
 		}
 		#endregion

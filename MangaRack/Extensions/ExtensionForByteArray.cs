@@ -1,8 +1,4 @@
 ﻿// ======================================================================
-// This source code form is subject to the terms of the Mozilla Public
-// License, version 2.0. If a copy of the MPL was not distributed with 
-// this file, you can obtain one at http://mozilla.org/MPL/2.0/.
-// ======================================================================
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -38,27 +34,18 @@ namespace MangaRack.Extensions {
 		/// </summary>
 		/// <param name="buffer">Each byte.</param>
 		public static string DetectImageFormat(this byte[] buffer) {
-			// Bitmap (BMP)
 			if (_bmp.SequenceEqual(buffer.Take(_bmp.Length))) {
-				// Return the format.
 				return "bmp";
 			}
-			// Graphics Interchange Format (GIF).
 			if (_gif.SequenceEqual(buffer.Take(_gif.Length))) {
-				// Return the format.
 				return "gif";
 			}
-			// Joint Photographic Experts Group (JPEG).
 			if (_jpg.SequenceEqual(buffer.Take(_jpg.Length))) {
-				// Return the format.
 				return "jpg";
 			}
-			// W3C Portable Network Graphics (JPEG).
 			if (_png.SequenceEqual(buffer.Take(_png.Length))) {
-				// Return the format.
 				return "png";
 			}
-			// Return null.
 			return null;
 		}
 
@@ -67,18 +54,13 @@ namespace MangaRack.Extensions {
 		/// </summary>
 		/// <param name="buffer">Each byte.</param>
 		public static Bitmap ToBitmap(this byte[] buffer) {
-			// Attempt the following code.
 			try {
-				// Initialize a new instance of the MemoryStream class.
 				using (var memoryStream = new MemoryStream(buffer)) {
-					// Create the bitmap from the strea.
 					using (var bitmap = Bitmap.FromStream(memoryStream) as Bitmap) {
-						// Create the bitmap clone.
 						return new Bitmap(bitmap);
 					}
 				}
 			} catch {
-				// Return null.
 				return null;
 			}
 		}

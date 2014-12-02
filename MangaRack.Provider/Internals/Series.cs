@@ -1,8 +1,4 @@
 ﻿// ======================================================================
-// This source code form is subject to the terms of the Mozilla Public
-// License, version 2.0. If a copy of the MPL was not distributed with 
-// this file, you can obtain one at http://mozilla.org/MPL/2.0/.
-// ======================================================================
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
@@ -37,32 +33,21 @@ namespace MangaRack.Provider.Internals
         {
             Contract.Requires<ArgumentNullException>(chapters != null);
             Contract.Requires<ArgumentNullException>(chapter != null);
-
-            // Initialize the differences.
             var differences = new Dictionary<double, int>();
             var previous = null as Chapter;
-
-            // Iterate through each chapter.
             foreach (var next in chapters)
             {
-                // Check if the next chapter is a valid candidate.
                 if (next == null
                     || next == chapter
                     || next.Number == null
                     || next.Volume != chapter.Volume) continue;
-
-                // Check if a previous chapter is available and calculate the difference.
                 if (previous != null && previous.Number != null)
                 {
                     var difference = Math.Round((double) next.Number - (double) previous.Number, 4);
                     differences[difference] = differences.ContainsKey(difference) ? differences[difference] + 1 : 1;
                 }
-
-                // Set the previous chapter.
                 previous = next;
             }
-
-            // Approximate the chapter number.
             if (differences.Count != 0 && previous != null)
             {
                 var value = differences.OrderByDescending(x => x.Value).Select(x => x.Value).FirstOrDefault();

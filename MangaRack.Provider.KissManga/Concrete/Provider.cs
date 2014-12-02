@@ -4,59 +4,47 @@
 // this file, you can obtain one at http://mozilla.org/MPL/2.0/.
 // ======================================================================
 using System.Text.RegularExpressions;
+using MangaRack.Provider.Abstract;
 
-namespace MangaRack.Provider.KissManga {
-	/// <summary>
-	/// Represents a KissManga provider.
-	/// </summary>
-	sealed class Provider : IProvider {
-		#region Properties
-		/// <summary>
-		/// Contains the domain.
-		/// </summary>
-		public static string Domain {
-			get {
-				// Return the domain.
-				return "http://kissmanga.com/";
-			}
-		}
-		#endregion
+namespace MangaRack.Provider.KissManga.Concrete {
+    /// <summary>
+    /// Represents a KissManga provider.
+    /// </summary>
+    internal sealed class Provider : IProvider {
+        #region Properties
+        /// <summary>
+        /// Contains the domain.
+        /// </summary>
+        public static string Domain {
+            get { return "http://kissmanga.com/"; }
+        }
+        #endregion
 
-		#region IProvider:Methods
-		/// <summary>
-		/// Open a series.
-		/// </summary>
-		/// <param name="uniqueIdentifier">The unique identifier.</param>
-		public ISeries Open(string uniqueIdentifier) {
-			// Check if the unique identifier can be handled.
-			if (Regex.Match(uniqueIdentifier, @"^http://kissmanga\.com/Manga/(.*)$", RegexOptions.IgnoreCase).Success) {
-				// Initialize a new instance of the Series class.
-				return new Series(uniqueIdentifier);
-			}
-			// Return null.
-			return null;
-		}
+        #region IProvider:Methods
+        /// <summary>
+        /// Open a series.
+        /// </summary>
+        /// <param name="uniqueIdentifier">The unique identifier.</param>
+        public ISeries Open(string uniqueIdentifier) {
+            return Regex.Match(uniqueIdentifier, @"^http://kissmanga\.com/Manga/(.*)$", RegexOptions.IgnoreCase).Success ? new Series(uniqueIdentifier) : null;
+        }
 
-		/// <summary>
-		/// Search series.
-		/// </summary>
-		/// <param name="input">The input.</param>
-		public ISearch Search(string input) {
-			// Initialize a new instance of the Search class.
-			return new Search(input);
-		}
-		#endregion
+        /// <summary>
+        /// Search series.
+        /// </summary>
+        /// <param name="input">The input.</param>
+        public ISearch Search(string input) {
+            return new Search(input);
+        }
+        #endregion
 
-		#region IProvider:Properties
-		/// <summary>
-		/// Contains the location.
-		/// </summary>
-		public string Location {
-			get {
-				// Return the domain.
-				return Domain;
-			}
-		}
-		#endregion
-	}
+        #region IProvider:Properties
+        /// <summary>
+        /// Contains the location.
+        /// </summary>
+        public string Location {
+            get { return Domain; }
+        }
+        #endregion
+    }
 }

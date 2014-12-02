@@ -1,8 +1,4 @@
 ﻿// ======================================================================
-// This source code form is subject to the terms of the Mozilla Public
-// License, version 2.0. If a copy of the MPL was not distributed with 
-// this file, you can obtain one at http://mozilla.org/MPL/2.0/.
-// ======================================================================
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -28,17 +24,13 @@ namespace MangaRack.Provider.MangaFox.Internals
         {
             set
             {
-                // Find each anchor element ...
                 Artists = value.DocumentNode.Descendants("a")
-                    // ... with a reference starting with the appropriate address ...
                     .Where(
                         x =>
                             HtmlEntity.DeEntitize(x.GetAttributeValue("href", string.Empty))
                                 .Trim()
                                 .StartsWith("/search/artist/"))
-                    // ... select the text ...
                     .Select(x => HtmlEntity.DeEntitize(x.InnerText).Trim())
-                    // ... and create an array.
                     .ToArray();
             }
         }
@@ -50,17 +42,13 @@ namespace MangaRack.Provider.MangaFox.Internals
         {
             set
             {
-                // Find each anchor element ...
                 Authors = value.DocumentNode.Descendants("a")
-                    // ... with a reference starting with the appropriate address ...
                     .Where(
                         x =>
                             HtmlEntity.DeEntitize(x.GetAttributeValue("href", string.Empty))
                                 .Trim()
                                 .StartsWith("/search/author/"))
-                    // ... select the text ...
                     .Select(x => HtmlEntity.DeEntitize(x.InnerText).Trim())
-                    // ... and create an array.
                     .ToArray();
             }
         }
@@ -72,18 +60,14 @@ namespace MangaRack.Provider.MangaFox.Internals
         {
             set
             {
-                // Initialize the processed number and volume.
                 double ProcessedNumber, ProcessedVolume;
-                // Find each header element ...
                 Children = value.DocumentNode.Descendants("h3")
-                    // ... with a class indicating a volume ...
                     .Where(
                         x =>
                             HtmlEntity.DeEntitize(x.GetAttributeValue("class", string.Empty))
                                 .Trim()
                                 .Split(' ')
                                 .Contains("volume"))
-                    // ... select each valid volume ...
                     .Select(
                         x =>
                             new
@@ -93,17 +77,13 @@ namespace MangaRack.Provider.MangaFox.Internals
                                         @"^Volume\s(?<Volume>.+)$", RegexOptions.IgnoreCase),
                                 ChapterListing = x.ParentNode.NextSibling
                             })
-                    // ... where the previous match was successful ...
                     .Where(x => x.Match.Success)
-                    // ... select each chapter from each volume ...
                     .SelectMany(x => x.ChapterListing.Descendants("a")
-                        // ... where the chapter is valid ...
                         .Where(
                             y =>
                                 HtmlEntity.DeEntitize(y.GetAttributeValue("href", string.Empty))
                                     .Trim()
                                     .Contains("/manga/"))
-                        // ... and select each chapter with a number ...
                         .Select(
                             y =>
                                 new Chapter(
@@ -112,31 +92,23 @@ namespace MangaRack.Provider.MangaFox.Internals
                                             RegexOptions.IgnoreCase).Groups["Number"].Value, out ProcessedNumber)
                                         ? (double?) ProcessedNumber
                                         : null,
-                                    // ... with a location ...
                                     HtmlEntity.DeEntitize(y.GetAttributeValue("href", string.Empty)).Trim(),
-                                    // ... with a title ...
                                     y.ParentNode.Descendants("span")
-                                        // ... with a class indicating a title ...
                                         .Where(
                                             z =>
                                                 HtmlEntity.DeEntitize(z.GetAttributeValue("class", string.Empty))
                                                     .Trim()
                                                     .Split(' ')
                                                     .Contains("title"))
-                                        // ... select the text ...
                                         .Select(z => HtmlEntity.DeEntitize(z.InnerText).Trim())
-                                        // ... use the first or default ...
                                         .FirstOrDefault(),
-                                    // ... with a link ...
                                     y.ParentNode.ParentNode.Descendants("a")
-                                        // ... with a class indicating an edit ...
                                         .Where(
                                             z =>
                                                 HtmlEntity.DeEntitize(z.GetAttributeValue("class", string.Empty))
                                                     .Trim()
                                                     .Split(' ')
                                                     .Contains("edit"))
-                                        // ... select the identifier ...
                                         .Select(
                                             z =>
                                                 Provider.Domain +
@@ -144,15 +116,11 @@ namespace MangaRack.Provider.MangaFox.Internals
                                                     HtmlEntity.DeEntitize(z.GetAttributeValue("href", string.Empty))
                                                         .Trim(), "chapter_id=(?<UniqueIdentifier>[0-9]+)",
                                                     RegexOptions.IgnoreCase).Groups["UniqueIdentifier"].Value)
-                                        // ... use the first or default ...
                                         .FirstOrDefault(),
-                                    // ... with a volume.
                                     double.TryParse(x.Match.Groups["Volume"].Value, out ProcessedVolume)
                                         ? (double?) ProcessedVolume
                                         : null) as IChapter))
-                    // ... reverse the order ...
                     .Reverse()
-                    // ... and create an array.
                     .ToArray();
             }
         }
@@ -164,17 +132,13 @@ namespace MangaRack.Provider.MangaFox.Internals
         {
             set
             {
-                // Find each anchor element ...
                 Genres = value.DocumentNode.Descendants("a")
-                    // ... with a reference starting with the appropriate address ...
                     .Where(
                         x =>
                             HtmlEntity.DeEntitize(x.GetAttributeValue("href", string.Empty))
                                 .Trim()
                                 .Contains("/search/genres/"))
-                    // ... select the text ...
                     .Select(x => HtmlEntity.DeEntitize(x.InnerText).Trim())
-                    // ... and create an array.
                     .ToArray();
             }
         }
@@ -186,24 +150,17 @@ namespace MangaRack.Provider.MangaFox.Internals
         {
             set
             {
-                // Find each paragraph element ...
                 Summary = string.Join(" ", value.DocumentNode.Descendants("p")
-                    // ... with a class indicating a summary ...
                     .Where(
                         x =>
                             HtmlEntity.DeEntitize(x.GetAttributeValue("class", string.Empty))
                                 .Trim()
                                 .Split(' ')
                                 .Contains("summary"))
-                    // ... select each split summary piece ...
                     .SelectMany(x => Regex.Split(HtmlEntity.DeEntitize(x.InnerText).Trim(), "\n").Select(y => y.Trim()))
-                    // ... with a valid addition to the summary ...
                     .Where(x => !x.EndsWith(":") && !Regex.Match(x, @"^From\s+(.*)$", RegexOptions.IgnoreCase).Success)
-                    // ... skip until the first piece of text ...
                     .SkipWhile(x => string.IsNullOrEmpty(x.Trim()))
-                    // ... until another blank space is encountered ...
                     .TakeWhile(x => !string.IsNullOrEmpty(x.Trim()))
-                    // ... selecting an array to be joined as a summary.
                     .ToArray());
             }
         }
@@ -215,9 +172,7 @@ namespace MangaRack.Provider.MangaFox.Internals
         {
             set
             {
-                // Find each title element ...
                 Title = value.DocumentNode.Descendants("title")
-                    // ... with a regular expression to match the content ...
                     .Select(
                         x =>
                             new
@@ -226,11 +181,8 @@ namespace MangaRack.Provider.MangaFox.Internals
                                     Regex.Match(HtmlEntity.DeEntitize(x.InnerText).Trim(),
                                         @"^(?<Title>.+)(\s+)Manga(\s+)-", RegexOptions.IgnoreCase)
                             })
-                    // ... where a match was found ...
                     .Where(x => x.Match.Success)
-                    // ... select the title ...
                     .Select(x => x.Match.Groups["Title"].Value)
-                    // ... and use the first or default.
                     .FirstOrDefault();
             }
         }
@@ -245,7 +197,6 @@ namespace MangaRack.Provider.MangaFox.Internals
         /// <param name="location">The location.</param>
         public Series(string location)
         {
-            // Set the location.
             Location = location;
         }
 
@@ -257,7 +208,6 @@ namespace MangaRack.Provider.MangaFox.Internals
         public Series(string location, string title)
             : this(location)
         {
-            // Set the title.
             Title = title;
         }
 
@@ -270,31 +220,21 @@ namespace MangaRack.Provider.MangaFox.Internals
         /// </summary>
         public async Task PopulateAsync()
         {
-            // Get the document.
             var response = await Http.GetAsync(Location);
-            // Initialize a new instance of the HtmlDocument class.
             var htmlDocument = new HtmlDocument();
-            // Load the document.
             htmlDocument.LoadHtml(response.AsString());
-            // Iterate through each property to populate the series without retaining the document.
             foreach (
                 var propertyInfo in
                     GetType()
                         .GetTypeInfo()
                         .DeclaredProperties.Where(x => x.PropertyType == typeof (HtmlDocument) && x.CanWrite))
             {
-                // Set the value, causing it to populate this property.
                 propertyInfo.SetValue(this, htmlDocument, null);
             }
-            // Find each image element ..
             var imageResponse = await Http.GetAsync(htmlDocument.DocumentNode.Descendants("img")
-                // ... with a reference containing a preview image ...
                 .Where(x => HtmlEntity.DeEntitize(x.GetAttributeValue("src", string.Empty)).Contains("cover.jpg"))
-                // ... select the reference attribute ...
                 .Select(x => HtmlEntity.DeEntitize(x.Attributes["src"].Value))
-                // ... download the first preview image ...
                 .First());
-            // ... and set the image for the bytes.
             PreviewImage = imageResponse.AsBinary();
         }
 
@@ -307,22 +247,16 @@ namespace MangaRack.Provider.MangaFox.Internals
         /// </summary>
         public void Dispose()
         {
-            // Check if the children are valid.
             if (Children != null)
             {
-                // Iterate through each child.
                 foreach (var child in Children)
                 {
-                    // Dispose of the object.
                     child.Dispose();
                 }
-                // Remove the children.
                 Children = null;
             }
-            // Check if the results are valid.
             if (PreviewImage != null)
             {
-                // Remove the preview image.
                 PreviewImage = null;
             }
         }

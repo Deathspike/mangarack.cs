@@ -5,47 +5,37 @@
 // ======================================================================
 using System;
 using System.Threading;
+using MangaRack.Provider.Abstract;
 
-namespace MangaRack.Provider {
-	/// <summary>
-	/// Represents the class providing extensions for the IAsync interface.
-	/// </summary>
-	public static class ExtensionForAsync {
-		#region Methods
-		/// <summary>
-		/// Populate synchronously.
-		/// </summary>
-		/// <param name="async">The asynchronous population.</param>
-		public static T Populate<T>(this IAsync<T> async) {
-			// Initialize a new instance of the ManualResetEventSlim class.
-			var manualResetEventSlim = new ManualResetEvent(false);
-			// Initialize the result.
-			var result = default(T);
-			// Populate asynchronously.
-			async.Populate(Done => {
-				// Set the result.
-				result = Done;
-				// Raise the event and unblock the calling thread.
-				manualResetEventSlim.Set();
-			});
-			// Block the thread waiting for the event.
-			manualResetEventSlim.WaitOne();
-			// Return the result.
-			return result;
-		}
+namespace MangaRack.Provider.Extension {
+    /// <summary>
+    /// Represents the class providing extensions for the IAsync interface.
+    /// </summary>
+    public static class ExtensionForAsync {
+        #region Methods
+        /// <summary>
+        /// Populate synchronously.
+        /// </summary>
+        /// <param name="async">The asynchronous population.</param>
+        public static T Populate<T>(this IAsync<T> async) {
+            var manualResetEventSlim = new ManualResetEvent(false);
+            var result = default(T);
+            async.Populate(done => {
+                result = done;
+                manualResetEventSlim.Set();
+            });
+            manualResetEventSlim.WaitOne();
+            return result;
+        }
 
-		/// <summary>
-		/// Populate asynchronously.
-		/// </summary>
-		/// <param name="async">The asynchronous population.</param>
-		/// <param name="done">The callback.</param>
-		public static void Populate<T>(this IAsync<T> async, Action done) {
-			// Populate asynchronously.
-			async.Populate(Result => {
-				// Invoke the callback.
-				done();
-			});
-		}
-		#endregion
-	}
+        /// <summary>
+        /// Populate asynchronously.
+        /// </summary>
+        /// <param name="async">The asynchronous population.</param>
+        /// <param name="done">The callback.</param>
+        public static void Populate<T>(this IAsync<T> async, Action done) {
+            async.Populate(result => done());
+        }
+        #endregion
+    }
 }

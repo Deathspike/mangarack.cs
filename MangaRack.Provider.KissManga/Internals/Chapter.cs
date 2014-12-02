@@ -1,8 +1,4 @@
 ﻿// ======================================================================
-// This source code form is subject to the terms of the Mozilla Public
-// License, version 2.0. If a copy of the MPL was not distributed with 
-// this file, you can obtain one at http://mozilla.org/MPL/2.0/.
-// ======================================================================
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -26,15 +22,10 @@ namespace MangaRack.Provider.KissManga.Internals {
 		/// <param name="uniqueIdentifier">The unique identifier.</param>
 		/// <param name="volume">The volume.</param>
 		public Chapter(double? number, string location, string title, string uniqueIdentifier, double? volume) {
-			// Set the number.
 			Number = number;
-			// Set the location.
 			Location = location;
-			// Set the title.
 			Title = title;
-			// Set the unique identifier.
 			UniqueIdentifier = uniqueIdentifier;
-			// Set the volume.
 			Volume = volume;
 		}
 		#endregion
@@ -44,13 +35,9 @@ namespace MangaRack.Provider.KissManga.Internals {
 		/// Populate asynchronously.
 		/// </summary>
 		public async Task PopulateAsync() {
-			// Get the document.
 		    var response = await Http.GetAsync(Location);
-			// Find the images ...
 			Children = Regex.Matches(response.AsString(), @"lstImages\.push\((.*)\)").Cast<Match>()
-				// ... select each page.
 				.Select(x => new Page(HtmlEntity.DeEntitize(x.Groups[1].Value).Trim('"')) as IPage)
-				// ... and create an array.
 				.ToArray();
 		}
 		#endregion
@@ -92,14 +79,10 @@ namespace MangaRack.Provider.KissManga.Internals {
 		/// Dispose of the object.
 		/// </summary>
 		public void Dispose() {
-			// Check if the children are valid.
 			if (Children != null) {
-				// Iterate through each child.
 				foreach (var child in Children) {
-					// Dispose of the object.
 					child.Dispose();
 				}
-				// Remove the children.
 				Children = null;
 			}
 		}

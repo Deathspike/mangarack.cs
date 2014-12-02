@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRack.Provider", "MangaRack.Provider\MangaRack.Provider.csproj", "{510009E1-FDD9-4841-B7C2-A531425AB955}"
 EndProject
@@ -14,10 +14,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRack", "MangaRack\MangaRack.csproj", "{08E413AB-BEF5-4DBC-A3DE-108D5AD9321E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRack.Core", "MangaRack.Core\MangaRack.Core.csproj", "{51033EEC-5C23-4060-A1A3-DCB6D682DED9}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRack.ViewModel", "MangaRack.ViewModel\MangaRack.ViewModel.csproj", "{527AA96C-6B4C-4D2B-B95B-E2D758F94604}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaRack.Analyze", "MangaRack.Analyze\MangaRack.Analyze.csproj", "{5ED07929-44AB-4A34-90AD-82935354DDA7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,14 +45,6 @@ Global
 		{51033EEC-5C23-4060-A1A3-DCB6D682DED9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51033EEC-5C23-4060-A1A3-DCB6D682DED9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{51033EEC-5C23-4060-A1A3-DCB6D682DED9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{527AA96C-6B4C-4D2B-B95B-E2D758F94604}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{527AA96C-6B4C-4D2B-B95B-E2D758F94604}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{527AA96C-6B4C-4D2B-B95B-E2D758F94604}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{527AA96C-6B4C-4D2B-B95B-E2D758F94604}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5ED07929-44AB-4A34-90AD-82935354DDA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5ED07929-44AB-4A34-90AD-82935354DDA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5ED07929-44AB-4A34-90AD-82935354DDA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5ED07929-44AB-4A34-90AD-82935354DDA7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
