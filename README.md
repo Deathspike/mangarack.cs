@@ -1,3 +1,5 @@
+*MangaRack.cs* is in **maintenance mode**. There are no new features planned; bug fixes will be accepted/implemented when reported. A successor, [*MangaRack.js*](https://github.com/Deathspike/mangarack.js), version 3.x, is available. The successor is in active development and use, and is the recommended *MangaRack* version for the foreseeable future.
+
 # MangaRack
 
 MangaRack is a small console application capable of synchronizing manga series from popular online manga scans and scanlations websites. Each synchronized chapter is stored on your computer as a comic book archive, optionally with additional embedded information (such as the writer and summary) ready to be imported to ComicRack.
